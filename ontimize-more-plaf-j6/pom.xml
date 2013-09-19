@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ontimize</groupId>
+		<artifactId>ontimize-more-plaf</artifactId>
+		<version>1.0.5</version>
+	</parent>
+	<artifactId>ontimize-more-plaf-j6</artifactId>
+	<name>ontimize-more-plaf-j6</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ontimize</groupId>
+			<artifactId>ontimize-core</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ontimize</groupId>
+			<artifactId>ontimize-more-agenda</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ontimize</groupId>
+			<artifactId>ontimize-more-diagram</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ontimize</groupId>
+			<artifactId>ontimize-more-gantt</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			 <groupId>com.ontimize.gis</groupId>
+		      <artifactId>ontimizeGis</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+	</dependencies>
+	
+	<profiles>
+		<profile>
+			<id>generate_version</id>
+			<build>
+				<plugins>
+					<!-- Manifest -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.4</version>
+						<configuration>
+							<archive>
+								<addMavenDescriptor>false</addMavenDescriptor>
+								<manifest>
+									<mainClass>com.ontimize.plaf.utils.jar.JarUtil</mainClass>
+								</manifest>
+								<manifestEntries>
+									<Built-By>${project.organization.name}</Built-By>
+									<Ontimize-version-number>${ontimize-core.version}</Ontimize-version-number>
+									<Version-number>${project.version}</Version-number>
+									<Version-date>${maven.build.timestamp}</Version-date>
+									<Component-name>${project.artifactId}</Component-name>	
+								</manifestEntries>
+							</archive>
+						</configuration>
+					</plugin>
+					
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-deploy-plugin</artifactId>
+					</plugin>
+					
+					<!-- Backup -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<id>backup</id>
+								<phase>install</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<echo message="${ontimize-more-plaf.backup}" />
+										<copy
+											todir="${ontimize-more-plaf.backup}/OntimizePLAF-${project.version}"
+											file="${project.build.directory}/${project.artifactId}-${project.version}.jar" />
+										<copy
+											todir="${ontimize-more-plaf.backup}/OntimizePLAF-${project.version}"
+											file="${project.build.directory}/${project.artifactId}-${project.version}-javadoc.jar" />
+										<copy
+											todir="${ontimize-more-plaf.backup}/OntimizePLAF-${project.version}"
+											file="${project.build.directory}/${project.artifactId}-${project.version}-sources.jar" />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>
