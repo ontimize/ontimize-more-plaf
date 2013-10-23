@@ -10,7 +10,7 @@
   
   
   <properties>
-  	<JAVA_1_7_HOME>C:\Programa\Java\jdk1.7.0_10</JAVA_1_7_HOME>
+		<ontimize-version-number>5.3.7</ontimize-version-number>
   </properties>
   
   <build>
@@ -83,7 +83,7 @@
 								</manifest>
 								<manifestEntries>
 									<Built-By>${project.organization.name}</Built-By>
-									<Ontimize-version-number>${ontimize-core.version}</Ontimize-version-number>
+									<Ontimize-version-number>${ontimize-version-number}</Ontimize-version-number>
 									<Version-number>${project.version}</Version-number>
 									<Version-date>${maven.build.timestamp}</Version-date>
 									<Component-name>${project.artifactId}</Component-name>	

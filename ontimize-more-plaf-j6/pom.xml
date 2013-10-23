@@ -8,6 +8,10 @@
 	</parent>
 	<artifactId>ontimize-more-plaf-j6</artifactId>
 	<name>ontimize-more-plaf-j6</name>
+	
+	<properties>
+		<ontimize-version-number>5.3.7</ontimize-version-number>
+	</properties>
 
 	<build>
 		<plugins>
@@ -71,7 +75,7 @@
 								</manifest>
 								<manifestEntries>
 									<Built-By>${project.organization.name}</Built-By>
-									<Ontimize-version-number>${ontimize-core.version}</Ontimize-version-number>
+									<Ontimize-version-number>${ontimize-version-number}</Ontimize-version-number>
 									<Version-number>${project.version}</Version-number>
 									<Version-date>${maven.build.timestamp}</Version-date>
 									<Component-name>${project.artifactId}</Component-name>	
