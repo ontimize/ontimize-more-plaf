@@ -452,6 +452,7 @@ public class OntimizeStyle extends SynthStyle {
             //states. I do need to popuplate this temp list now though, so that
             //the remainder of this method will function as expected.
             states.add(State.Enabled);
+            states.add(State.Required);
             states.add(State.MouseOver);
             states.add(State.Pressed);
             states.add(State.Disabled);
@@ -461,6 +462,7 @@ public class OntimizeStyle extends SynthStyle {
             
             //assign codes for the states
             stateCodes.put("Enabled", ENABLED);
+            stateCodes.put("Required", OSynthConstants.REQUIRED);
             stateCodes.put("MouseOver", MOUSE_OVER);
             stateCodes.put("Pressed", PRESSED);
             stateCodes.put("Disabled", DISABLED);
