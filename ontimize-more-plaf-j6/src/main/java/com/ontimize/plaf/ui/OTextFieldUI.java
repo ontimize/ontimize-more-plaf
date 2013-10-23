@@ -31,6 +31,7 @@ import sun.swing.plaf.synth.SynthUI;
 
 import com.ontimize.gui.Form.StatusBar;
 import com.ontimize.gui.field.DataField;
+import com.ontimize.plaf.OSynthConstants;
 import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeStyle;
@@ -239,6 +240,15 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
     }
 
     protected int getComponentState(JComponent c) {
+    	if(c.getParent() instanceof DataField && c.isEnabled()){
+    		DataField dF = (DataField)c.getParent();
+    		if(dF.isRequired()){
+    			if (c.isFocusOwner()) {
+    				return OSynthConstants.REQUIRED | SynthUI.FOCUSED;
+    			}
+    			return OSynthConstants.REQUIRED;
+    		}
+    	}
         return OntimizeLookAndFeel.getComponentState(c);
     }
 

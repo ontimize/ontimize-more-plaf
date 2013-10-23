@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.plaf.synth.SynthConstants;
 
+import com.ontimize.plaf.OSynthConstants;
+
 /**
  * <p>Represents a built in, or custom, state in Sea Glass.</p>
  *
@@ -77,6 +79,8 @@ public abstract class State<T extends JComponent> {
 
     /** Default state. */
     public static final State               Default = new StandardState(SynthConstants.DEFAULT);
+    
+    public static final State				Required = new StandardState(OSynthConstants.REQUIRED);
 
     protected String name;
 
@@ -260,6 +264,14 @@ public abstract class State<T extends JComponent> {
                 buffer.append("Disabled");
             }
 
+            if ((state & OSynthConstants.REQUIRED) == OSynthConstants.REQUIRED) {
+
+                if (buffer.length() > 0)
+                    buffer.append("+");
+
+                buffer.append("Required");
+            }
+            
             if ((state & SynthConstants.ENABLED) == SynthConstants.ENABLED) {
 
                 if (buffer.length() > 0)
