@@ -509,6 +509,6 @@ public class OTextAreaPainter extends AbstractRegionPainter{
 		
 		return path;
 	}
-
+    
 
 }
