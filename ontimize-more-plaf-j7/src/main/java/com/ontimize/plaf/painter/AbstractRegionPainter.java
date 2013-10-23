@@ -168,8 +168,7 @@ public abstract class AbstractRegionPainter implements Painter<JComponent> {
 			paintWith9SquareCaching(g, ctx, c, w, h, extendedCacheKeys);
 		}
 	}
-	
-	
+
 	/**
 	 * Get any extra attributes which the painter implementation would like
 	 * to include in the image cache lookups. This is checked for every call
