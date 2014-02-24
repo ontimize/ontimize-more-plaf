@@ -4,13 +4,13 @@
 	<parent>
 		<groupId>com.ontimize</groupId>
 		<artifactId>ontimize-more-plaf</artifactId>
-		<version>1.0.6</version>
+		<version>1.0.7</version>
 	</parent>
 	<artifactId>ontimize-more-plaf-j6</artifactId>
 	<name>ontimize-more-plaf-j6</name>
 	
 	<properties>
-		<ontimize-version-number>5.3.7</ontimize-version-number>
+		<ontimize-version-number>5.3.8</ontimize-version-number>
 	</properties>
 
 	<build>
@@ -37,22 +37,26 @@
 			<groupId>com.ontimize</groupId>
 			<artifactId>ontimize-more-agenda</artifactId>
 			<scope>compile</scope>
+			<optional>true</optional>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.ontimize</groupId>
 			<artifactId>ontimize-more-diagram</artifactId>
 			<scope>compile</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.ontimize</groupId>
 			<artifactId>ontimize-more-gantt</artifactId>
 			<scope>compile</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
-			 <groupId>com.ontimize.gis</groupId>
-		      <artifactId>ontimizeGis</artifactId>
+			 <groupId>com.ontimize</groupId>
+		      <artifactId>ontimize-more-gis</artifactId>
 			<scope>compile</scope>
+			<optional>true</optional>
 		</dependency>
 
 	</dependencies>
