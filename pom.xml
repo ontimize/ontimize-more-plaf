@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>ontimize-more-plaf</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.7</version>
   <packaging>pom</packaging>
   <parent>
   	<groupId>com.ontimize</groupId>
   	<artifactId>ontimize-master</artifactId>
-  	<version>1.0.0</version>
+  	<version>1.0.4</version>
   </parent>
   <properties>
       
@@ -16,28 +16,32 @@
          <dependency>
 			<groupId>com.ontimize</groupId>
 			<artifactId>ontimize-core</artifactId>
-			<version>[5.3.7,)</version>
+			<version>[5.3.8,)</version>
 		 </dependency>
           <dependency>
 			<groupId>com.ontimize</groupId>
 			<artifactId>ontimize-more-agenda</artifactId>
 			<version>${ontimize-more-agenda.version}</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.ontimize</groupId>
 			<artifactId>ontimize-more-diagram</artifactId>
 			<version>${ontimize-more-diagram.version}</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.ontimize</groupId>
 			<artifactId>ontimize-more-gantt</artifactId>
-			<version>${ontimize-more-gantt.version}</version>
+			<version>3.0.0</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
-		   <groupId>com.ontimize.gis</groupId>
-		      <artifactId>ontimizeGis</artifactId>
-		      <version>1.0</version>
-		  </dependency>
+		    <groupId>com.ontimize</groupId>
+		    <artifactId>ontimize-more-gis</artifactId>
+		    <version>1.0.2</version>
+		    <optional>true</optional>
+		 </dependency>
       </dependencies>
   </dependencyManagement>
   <modules>

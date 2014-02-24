@@ -542,9 +542,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");//	//oldvalue 3359718F
 		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		Color requiredFgColor = StyleUtil.getColor(compName, "[Required].textForeground", "#FFFFFF");
+		ColorUIResource requiredFgColor = StyleUtil.getColorUI(compName, "[Required].textForeground", "#FFFFFF");
 		DataField.requiredFieldForegroundColor = requiredFgColor;
-		setColor(d, compName, "[Required].textForeground", "#FFFFFF");
+		setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
 		
 		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
 		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
@@ -554,7 +554,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Focused].background", focusedColor);
 		DataField.FOCUS_BACKGROUNDCOLOR = focusedColor;
 
-		Color requiredColor = StyleUtil.getColor(compName, "[Required].background", "#89A5B9");
+		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
 		d.put(compName + "[Required].background", requiredColor);
 		d.put(compName + "[Focused+Required].background", requiredColor);
 		DataField.requiredFieldBackgroundColor = requiredColor;
@@ -1017,6 +1017,17 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		BorderUIResource tBorder = new BorderUIResource(BorderFactory.createLineBorder(borderColor, 2));
 		BorderManager.putBorder(BorderManager.DEFAULT_TABLE_BORDER_KEY, tBorder);
 		d.put("Table.scrollPaneBorder", tBorder);
+		
+		
+		compName = "\"PageFetcher.Label\"";
+		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		
+		setColor(d, compName, "foreground", "#335971");
+		setColor(d, compName, "disabled", "#243b4aCC");
+		setColor(d, compName, "disabledText", "#243b4aCC");
 
 		// Buttons configuration...
 		ImageManager.TABLE_SUMROWSETUP = "com/ontimize/plaf/images/table/calc.png";
@@ -1035,6 +1046,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		ImageManager.TABLE_REMOVE = "com/ontimize/plaf/images/table/recycler.png";
 		ImageManager.TABLE_REFRESH = "com/ontimize/plaf/images/table/refresh.png";
 		ImageManager.TABLE_SAVE_TABLE_FILTER = "com/ontimize/plaf/images/table/savetablefilter.png";
+		ImageManager.TABLE_GROUP = "com/ontimize/plaf/images/table/groupicons.png";
 
 	}
 
@@ -4082,6 +4094,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		register(Region.LABEL, "\"ELabel\"");
 		register(Region.LABEL, "\"Tree.cellRenderer\"");
 		register(Region.LABEL, "\"PopupItem\"");
+		register(Region.LABEL, "\"PageFetcher.Label\"");
 
 		register(Region.TEXT_FIELD, "\"FormTitle\"");
 		register(Region.TEXT_FIELD, "Table:\"Table.QuickFilter\"");
