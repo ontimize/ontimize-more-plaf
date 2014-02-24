@@ -1,5 +1,6 @@
 package com.ontimize.plaf.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -907,7 +908,13 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
             int mnemIndex = tabPane.getDisplayedMnemonicIndexAt(tabIndex);
            FontMetrics    fm = SwingUtilities2.getFontMetrics(tabPane, g);
            title = SwingUtilities2.clipStringIfNecessary(tabPane, fm, title, textRect.width);                       
-            g.setColor(ss.getStyle().getColor(ss, ColorType.TEXT_FOREGROUND));
+           //ORIGINAL g.setColor(ss.getStyle().getColor(ss, ColorType.TEXT_FOREGROUND));
+           Color foregroundColor = tabPane.getForegroundAt(tabIndex);
+           if (foregroundColor == null){
+				g.setColor(ss.getStyle().getColor(ss, ColorType.TEXT_FOREGROUND));
+			}else {
+				g.setColor(foregroundColor);
+			}
             ss.getStyle().getGraphicsUtils(ss).paintText(ss, g, title, textRect, mnemIndex);
         }
     }
