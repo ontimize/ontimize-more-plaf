@@ -1017,6 +1017,17 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		BorderUIResource tBorder = new BorderUIResource(BorderFactory.createLineBorder(borderColor, 2));
 		BorderManager.putBorder(BorderManager.DEFAULT_TABLE_BORDER_KEY, tBorder);
 		d.put("Table.scrollPaneBorder", tBorder);
+		
+		
+		compName = "\"PageFetcher.Label\"";
+		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		
+		setColor(d, compName, "foreground", "#335971");
+		setColor(d, compName, "disabled", "#243b4aCC");
+		setColor(d, compName, "disabledText", "#243b4aCC");
 
 		// Buttons configuration...
 		ImageManager.TABLE_SUMROWSETUP = "com/ontimize/plaf/images/table/calc.png";
@@ -1035,6 +1046,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		ImageManager.TABLE_REMOVE = "com/ontimize/plaf/images/table/recycler.png";
 		ImageManager.TABLE_REFRESH = "com/ontimize/plaf/images/table/refresh.png";
 		ImageManager.TABLE_SAVE_TABLE_FILTER = "com/ontimize/plaf/images/table/savetablefilter.png";
+		ImageManager.TABLE_GROUP = "com/ontimize/plaf/images/table/groupicons.png";
 
 	}
 
@@ -4082,6 +4094,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		register(Region.LABEL, "\"ELabel\"");
 		register(Region.LABEL, "\"Tree.cellRenderer\"");
 		register(Region.LABEL, "\"PopupItem\"");
+		register(Region.LABEL, "\"PageFetcher.Label\"");
 
 		register(Region.TEXT_FIELD, "\"FormTitle\"");
 		register(Region.TEXT_FIELD, "Table:\"Table.QuickFilter\"");
