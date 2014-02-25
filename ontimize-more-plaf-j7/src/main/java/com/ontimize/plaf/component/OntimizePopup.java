@@ -1,6 +1,7 @@
 package com.ontimize.plaf.component;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JToolTip;
@@ -218,13 +220,20 @@ public class OntimizePopup extends Popup {
 		if (this.toFade) {
 			// mark the popup with 0% opacity
 			this.currOpacity = 0;
-			AWTUtilities.setWindowOpacity(popupWindow, 0.0f);
+			//AWTUtilities.setWindowOpacity(popupWindow, 0.0f);
+			popupWindow.setOpacity(0.0f);
 		}
 
 		this.component.setVisible(true);
 		_pack();
 		
-		AWTUtilities.setWindowOpaque(popupWindow, false);
+		//AWTUtilities.setWindowOpaque(popupWindow, false);
+		popupWindow.setBackground(new Color(0,0,0,1));
+		if(popupWindow.getContentPane() instanceof JPanel){
+			popupWindow.getRootPane().setBackground(new Color(0,0,0,1));
+			((JPanel)popupWindow.getContentPane()).setOpaque(false);
+			popupWindow.getContentPane().repaint();
+		}
 
 		if (this.toFade) {
 			// start fading in
@@ -232,7 +241,8 @@ public class OntimizePopup extends Popup {
 				public void actionPerformed(ActionEvent e) {
 					currOpacity += 20;
 					if (currOpacity <= 100) {
-						AWTUtilities.setWindowOpacity(popupWindow, currOpacity / 100.0f);
+						//AWTUtilities.setWindowOpacity(popupWindow, currOpacity / 100.0f);
+						popupWindow.setOpacity(currOpacity / 100.0f);
 						popupWindow.getContentPane().repaint();
 					} else {
 						currOpacity = 100;
@@ -242,6 +252,9 @@ public class OntimizePopup extends Popup {
 			});
 			this.fadeInTimer.setRepeats(true);
 			this.fadeInTimer.start();
+		}
+		else{
+			popupWindow.setBackground(new Color(0,0,0,1));
 		}
 
 	}
@@ -258,7 +271,8 @@ public class OntimizePopup extends Popup {
 				public void actionPerformed(ActionEvent e) {
 					currOpacity -= 10;
 					if (currOpacity >= 0) {
-						AWTUtilities.setWindowOpacity(popupWindow, currOpacity / 100.0f);
+						//AWTUtilities.setWindowOpacity(popupWindow, currOpacity / 100.0f);
+						popupWindow.setOpacity(currOpacity / 100.0f);
 						// workaround bug 6670649 - should call
 						// popupWindow.repaint() but that will not repaint the
 						// panel
@@ -390,6 +404,7 @@ public class OntimizePopup extends Popup {
 			super(parent);
 			setFocusableWindowState(false);
 			setName("###overrideRedirect###");
+			setType(Window.Type.POPUP);
 			// Popups are typically transient and most likely won't benefit
 			// from true double buffering. Turn it off here.
 			// getRootPane().setUseTrueDoubleBuffering(false);
