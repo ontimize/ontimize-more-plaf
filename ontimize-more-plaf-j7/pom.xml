@@ -10,7 +10,7 @@
   
   
   <properties>
-		<ontimize-version-number>5.3.8</ontimize-version-number>
+		<ontimize-version-number>5.3.9</ontimize-version-number>
   </properties>
   
   <build>
