@@ -248,6 +248,14 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
     			}
     			return OSynthConstants.REQUIRED;
     		}
+    	} else if(c.getParent() != null && c.getParent().getParent() instanceof DataField && c.isEnabled()){
+    		DataField dF = (DataField)c.getParent().getParent();
+    		if(dF.isRequired()){
+    			if (c.isFocusOwner()) {
+    				return OSynthConstants.REQUIRED | SynthUI.FOCUSED;
+    			}
+    			return OSynthConstants.REQUIRED;
+    		}
     	}
         return OntimizeLookAndFeel.getComponentState(c);
     }
