@@ -706,7 +706,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		
 
 		String pClass = "com.ontimize.plaf.painter.OReferenceExtFieldPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY,
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY,
 				Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_ENABLED, ctx));
@@ -746,7 +746,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		
 
 		pClass = "com.ontimize.plaf.painter.OReferenceExtCodeFieldPainter";
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY,
+		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY,
 				Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_ENABLED, ctx));
@@ -756,6 +756,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_ENABLED, ctx));
 		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_DISABLED, ctx));
 		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
 		
 	}
 
