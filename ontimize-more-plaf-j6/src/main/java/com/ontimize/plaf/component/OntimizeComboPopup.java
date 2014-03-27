@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 
 import javax.swing.JComboBox;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.ComboBoxUI;
@@ -33,6 +34,7 @@ public class OntimizeComboPopup  extends BasicComboPopup{
         list.setFont( comboBox.getFont() );
         list.setCellRenderer( comboBox.getRenderer() );
         list.setFocusable( false );
+        list.setBorder(null);
         list.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
         int selectedIndex = comboBox.getSelectedIndex();
         if ( selectedIndex == -1 ) {
@@ -48,7 +50,9 @@ public class OntimizeComboPopup  extends BasicComboPopup{
     @Override
     protected void configurePopup() {
     	super.configurePopup();
-    	setBorder(O_LIST_BORDER);
+    	Object o = UIManager.getLookAndFeel().getDefaults().get("\"ComboBox.scrollPane\".border");
+    	Border border = o!=null ? (Border)o : O_LIST_BORDER; 
+    	setBorder(border);
     }
     
     /**
