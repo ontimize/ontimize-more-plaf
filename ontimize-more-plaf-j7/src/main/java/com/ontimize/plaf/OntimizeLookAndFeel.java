@@ -1695,7 +1695,10 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		// *************ComboBox.scrollPane*************************
 		d.put("\"ComboBox.scrollPane\".contentMargins", new InsetsUIResource(0, 0, 0, 0));
-
+		ColorUIResource borderColor = StyleUtil.getColorUI( "\"ComboBox.scrollPane\"" , "border", "#8CA0AD");
+		Border cBorder = BorderFactory.createLineBorder(borderColor, 2);
+		d.put("\"ComboBox.scrollPane\".border", cBorder); 
+		
 	}
 
 	protected void defineMenu(UIDefaults d) {
@@ -1773,6 +1776,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String compName = "MenuItem";
 		d.put(compName + ".States", "Enabled,MouseOver,Disabled");
 		setInteger(d, compName, "textIconGap", "5");
+		setFontUIResource(d, compName, "font", null);
 
 		setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7F");
 		setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
@@ -4573,7 +4577,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		}
 	}
 
-	protected static class PainterBorder implements Border, UIResource {
+	public static class PainterBorder implements Border, UIResource {
 		protected Insets insets;
 		protected Painter painter;
 		protected String painterKey;
