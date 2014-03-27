@@ -250,7 +250,7 @@ public class OntimizePopup extends Popup {
 	public void hide() {
 		if (this.toFade && this.popupWindow!=null) {
 			// cancel fade-in if it's running.
-			if (this.fadeInTimer.isRunning())
+			if (this.fadeInTimer != null && this.fadeInTimer.isRunning())
 				this.fadeInTimer.stop();
 
 			// start fading out

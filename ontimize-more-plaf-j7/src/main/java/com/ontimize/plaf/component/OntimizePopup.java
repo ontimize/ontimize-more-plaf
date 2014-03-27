@@ -221,7 +221,11 @@ public class OntimizePopup extends Popup {
 			// mark the popup with 0% opacity
 			this.currOpacity = 0;
 			//AWTUtilities.setWindowOpacity(popupWindow, 0.0f);
-			popupWindow.setOpacity(0.0f);
+			try {
+				popupWindow.setOpacity(0.0f);
+			}
+			catch(Exception e) {
+			}
 		}
 
 		this.component.setVisible(true);
@@ -242,7 +246,11 @@ public class OntimizePopup extends Popup {
 					currOpacity += 20;
 					if (currOpacity <= 100) {
 						//AWTUtilities.setWindowOpacity(popupWindow, currOpacity / 100.0f);
-						popupWindow.setOpacity(currOpacity / 100.0f);
+						try {
+							popupWindow.setOpacity(currOpacity / 100.0f);
+						}
+						catch(Exception ex) {
+						}
 						popupWindow.getContentPane().repaint();
 					} else {
 						currOpacity = 100;
@@ -263,7 +271,7 @@ public class OntimizePopup extends Popup {
 	public void hide() {
 		if (this.toFade && this.popupWindow!=null) {
 			// cancel fade-in if it's running.
-			if (this.fadeInTimer.isRunning())
+			if (this.fadeInTimer != null && this.fadeInTimer.isRunning())
 				this.fadeInTimer.stop();
 
 			// start fading out
@@ -272,7 +280,11 @@ public class OntimizePopup extends Popup {
 					currOpacity -= 10;
 					if (currOpacity >= 0) {
 						//AWTUtilities.setWindowOpacity(popupWindow, currOpacity / 100.0f);
-						popupWindow.setOpacity(currOpacity / 100.0f);
+						try {
+							popupWindow.setOpacity(currOpacity / 100.0f);
+						}
+						catch(Exception ex) {
+						}
 						// workaround bug 6670649 - should call
 						// popupWindow.repaint() but that will not repaint the
 						// panel
