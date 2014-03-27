@@ -1068,6 +1068,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		CellRenderer.editableFontColor = StyleUtil.getColor(compName, "[Editable].foreground", "#3A5F77");
 		CellRenderer.evenEditableBackgroundColor = StyleUtil.getColor(compName, "[Editable].evenEditableBackground", "#c3d5dd");
 		CellRenderer.oddEditableBackgroundColor = StyleUtil.getColor(compName, "[Editable].oddEditableBackground", "#dae7ed");
+		
+		CellRenderer.requiredInsertColumns = StyleUtil.getColor(compName, "[Insertable].requiredBackground", "#b8bacb");
+		CellRenderer.noRequiredInsertColumns = StyleUtil.getColor(compName, "[Insertable].norequiredBackground", "#cdced9");
 
 		CellRenderer.selectedFontColor = StyleUtil.getColor(compName, "[Selected].foreground", "#2e8ecb");
 		CellRenderer.selectedEditableBackgroundColor = StyleUtil.getColor(compName, "[Selected+Editable].background", "#ffffff");
