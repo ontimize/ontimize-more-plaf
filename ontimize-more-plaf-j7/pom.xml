@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.ontimize</groupId>
     <artifactId>ontimize-more-plaf</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9-SNAPSHOT</version>
   </parent>
   <artifactId>ontimize-more-plaf-j7</artifactId>
   <name>ontimize-more-plaf-j7</name>
@@ -70,6 +70,45 @@
 	
   
   	<profiles>
+ 		<profile>
+			<id>generate_snapshot_version</id>
+			<build>
+				<plugins>
+					<!-- Manifest -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.4</version>
+						<configuration>
+							<archive>
+								<addMavenDescriptor>false</addMavenDescriptor>
+								<manifest>
+									<mainClass>com.ontimize.plaf.utils.jar.JarUtil</mainClass>
+								</manifest>
+								<manifestEntries>
+									<Built-By>${project.organization.name}</Built-By>
+									<Version-number>${project.version}</Version-number>
+									<Version-date>${maven.build.timestamp}</Version-date>
+								</manifestEntries>
+							</archive>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<version>2.8.1</version>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>generate_version</id>
 			<build>
