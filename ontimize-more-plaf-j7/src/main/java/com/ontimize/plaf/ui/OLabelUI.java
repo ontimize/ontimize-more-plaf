@@ -67,7 +67,10 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     	} else if("PageFetcher.Label".equals(c.getName())){
     		OntimizeLookAndFeel.installColorsAndFont(c, "\"PageFetcher.Label\".background", "\"PageFetcher.Label\".foreground", "\"PageFetcher.Label\".font");
     		LookAndFeel.installProperty(c, "opaque", Boolean.FALSE);
-    	}  else{
+    	} else if(c.getName()!=null && c.getName().length()>0){ 
+    		OntimizeLookAndFeel.installColorsAndFont(c, c.getName()+".background", c.getName()+".foreground", c.getName()+".font");
+    		LookAndFeel.installProperty(c, "opaque", Boolean.FALSE);
+    	} else{
     		super.installDefaults(c);
     	}
         updateStyle(c);
