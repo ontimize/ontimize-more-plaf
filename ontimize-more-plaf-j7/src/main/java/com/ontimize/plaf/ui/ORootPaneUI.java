@@ -37,10 +37,11 @@ import javax.swing.plaf.synth.SynthContext;
 import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
+import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.border.OntimizeBorder;
 import com.ontimize.plaf.component.OTitlePane;
+import com.ontimize.plaf.utils.ContextUtils;
 import com.ontimize.util.AWTUtilities;
 
 public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
@@ -78,6 +79,9 @@ public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
 	
 	@Override
 	protected void installDefaults(JRootPane c) {
+		if (this.style == null) {
+			this.style = OntimizeStyle.NULL_STYLE;
+		}
 		updateStyle(c);
 	}
 	
@@ -87,7 +91,7 @@ public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
      * @param c the component.
      */
     protected void updateStyle(JComponent c) {
-        OntimizeContext context  = getContext(c, ENABLED);
+        SynthContext context  = getContext(c, ENABLED);
         SynthStyle      oldStyle = style;
 
         style = OntimizeLookAndFeel.updateStyle(context, this);
@@ -98,7 +102,7 @@ public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
             }
         }
 
-        context.dispose();
+        
     }
 	
 
@@ -289,7 +293,7 @@ public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
 	/**
      * @see sun.swing.plaf.synth.SynthUI#getContext(javax.swing.JComponent)
      */
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
@@ -301,8 +305,8 @@ public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
      *
      * @return the SynthContext.
      */
-    protected OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c, OntimizeLookAndFeel.getRegion(c), style, state);
+    protected SynthContext getContext(JComponent c, int state) {
+    	return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
     /**
@@ -324,11 +328,11 @@ public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
      * @see javax.swing.plaf.ComponentUI#update(java.awt.Graphics, javax.swing.JComponent)
      */
     public void update(Graphics g, JComponent c) {
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
 
     	OntimizeLookAndFeel.update(context, g);
         if (((JRootPane) c).getWindowDecorationStyle() != JRootPane.NONE) {
-            context.getPainter().paintRootPaneBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+            ContextUtils.getPainter(context).paintRootPaneBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
         } 
 //        else if (PlatformUtils.isMac()) {
 //            // We may need to paint the rootpane on a Mac if the window is
@@ -353,17 +357,17 @@ public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
 //        }
 
         paint(context, g);
-        context.dispose();
+        
     }
 
     /**
      * @see javax.swing.plaf.ComponentUI#paint(java.awt.Graphics, javax.swing.JComponent)
      */
     public void paint(Graphics g, JComponent c) {
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
 
         paint(context, g);
-        context.dispose();
+        
     }
 
     /**
@@ -376,7 +380,7 @@ public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
     }
 
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-        ((OntimizeContext) context).getPainter().paintRootPaneBorder(context, g, x, y, w, h);
+        ContextUtils.getPainter(context).paintRootPaneBorder(context, g, x, y, w, h);
     }
     
     

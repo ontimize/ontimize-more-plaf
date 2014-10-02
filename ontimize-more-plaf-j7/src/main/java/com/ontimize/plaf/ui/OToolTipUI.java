@@ -21,8 +21,9 @@ import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 import javax.swing.text.View;
 
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
+import com.ontimize.plaf.OntimizeStyle;
+import com.ontimize.plaf.utils.ContextUtils;
 
 public class OToolTipUI extends BasicToolTipUI implements PropertyChangeListener, SynthUI {
 	protected SynthStyle style;
@@ -32,19 +33,22 @@ public class OToolTipUI extends BasicToolTipUI implements PropertyChangeListener
 	}
 
 	protected void installDefaults(JComponent c) {
+		if (this.style == null) {
+			this.style = OntimizeStyle.NULL_STYLE;
+		}
 		updateStyle(c);
 	}
 
 	protected void updateStyle(JComponent c) {
-		OntimizeContext context = getContext(c, ENABLED);
+		SynthContext context = getContext(c, ENABLED);
 		style = OntimizeLookAndFeel.updateStyle(context, this);
-		context.dispose();
+		
 	}
 
 	protected void uninstallDefaults(JComponent c) {
-		OntimizeContext context = getContext(c, ENABLED);
+		SynthContext context = getContext(c, ENABLED);
 		style.uninstallDefaults(context);
-		context.dispose();
+		
 		style = null;
 	}
 
@@ -56,12 +60,12 @@ public class OToolTipUI extends BasicToolTipUI implements PropertyChangeListener
 		c.removePropertyChangeListener(this);
 	}
 
-	public OntimizeContext getContext(JComponent c) {
+	public SynthContext getContext(JComponent c) {
 		return getContext(c, getComponentState(c));
 	}
 
-	protected OntimizeContext getContext(JComponent c, int state) {
-		return OntimizeContext.getContext(OntimizeContext.class, c, OntimizeLookAndFeel.getRegion(c), style,
+	protected SynthContext getContext(JComponent c, int state) {
+		return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style,
 				state);
 	}
 
@@ -79,14 +83,14 @@ public class OToolTipUI extends BasicToolTipUI implements PropertyChangeListener
 	}
 
 	public void update(Graphics g, JComponent c) {
-		OntimizeContext context = getContext(c);
+		SynthContext context = getContext(c);
 
 		
 		OntimizeLookAndFeel.update(context, g);
 		if(isEmpty(c)==false)
-			context.getPainter().paintToolTipBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+			ContextUtils.getPainter(context).paintToolTipBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
 		paint(context, g);
-		context.dispose();
+		
 	}
 	
 	protected boolean isEmpty(JComponent c){
@@ -100,17 +104,17 @@ public class OToolTipUI extends BasicToolTipUI implements PropertyChangeListener
 	}
 
 	public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		((OntimizeContext) context).getPainter().paintToolTipBorder(context, g, x, y, w, h);
+		ContextUtils.getPainter(context).paintToolTipBorder(context, g, x, y, w, h);
 	}
 
 	public void paint(Graphics g, JComponent c) {
-		OntimizeContext context = getContext(c);
+		SynthContext context = getContext(c);
 
 		paint(context, g);
-		context.dispose();
+		
 	}
 
-	protected void paint(OntimizeContext context, Graphics g) {
+	protected void paint(SynthContext context, Graphics g) {
 		JToolTip tip = (JToolTip) context.getComponent();
 		String tipText = tip.getToolTipText();
 
@@ -129,7 +133,7 @@ public class OToolTipUI extends BasicToolTipUI implements PropertyChangeListener
 	}
 
 	public Dimension getPreferredSize(JComponent c) {
-		OntimizeContext context = getContext(c);
+		SynthContext context = getContext(c);
 		Insets insets = c.getInsets();
 		Dimension prefSize = new Dimension(insets.left + insets.right, insets.top + insets.bottom);
 		String text = ((JToolTip) c).getTipText();
@@ -147,7 +151,7 @@ public class OToolTipUI extends BasicToolTipUI implements PropertyChangeListener
 				prefSize.height += fm.getHeight();
 			}
 		}
-		context.dispose();
+		
 		return prefSize;
 	}
 

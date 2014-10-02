@@ -82,6 +82,7 @@ public class OntimizeStyle extends SynthStyle {
                 return a.state - b.state;
             }
         };
+    public static final SynthStyle					NULL_STYLE			= new OntimizeStyle(null, null);
     /**
      * The prefix for the component or region that this NimbusStyle
      * represents. This prefix is used to lookup state in the UIManager.
@@ -145,10 +146,10 @@ public class OntimizeStyle extends SynthStyle {
      *                style, and the state.
      * @param ui      the UI delegate.
      */
-    public void installDefaults(OntimizeContext context, SynthUI ui) {
+    public void installDefaults(SynthContext context, SynthUI ui) {
         // Special case the Border as this will likely change when the LAF
         // can have more control over this.
-        if (!context.isSubregion()) {
+        if (!context.getRegion().isSubregion()) {
             JComponent c      = context.getComponent();
             Border     border = c.getBorder();
 
@@ -159,21 +160,6 @@ public class OntimizeStyle extends SynthStyle {
 
         installDefaults(context);
     }
-    
-//    @Override
-//    public void uninstallDefaults(SynthContext context) {
-//    	super.uninstallDefaults(context);
-//    	if (values!=null){
-//    		values.clear();
-//    	}
-//    	values = null;
-////    	tmpKey = null;
-//    	if (this.painter!=null && this.painter instanceof OntimizeSynthPainterImpl){
-//    		((OntimizeSynthPainterImpl)this.painter).setStyle(null);
-//    	}
-//    	this.painter = null;
-//    	
-//    };
     
     /**
      * @InheritDoc

@@ -35,9 +35,10 @@ import javax.swing.table.TableCellRenderer;
 import sun.swing.DefaultLookup;
 
 import com.ontimize.gui.table.Table;
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
+import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.border.OntimizeBorder;
+import com.ontimize.plaf.utils.ContextUtils;
 
 public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChangeListener, SynthUI {
 
@@ -64,7 +65,9 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
         if (prevRenderer instanceof UIResource) {
             header.setDefaultRenderer(new HeaderRenderer());
         }
-
+        if (this.style == null) {
+			this.style = OntimizeStyle.NULL_STYLE;
+		}
         updateStyle(header);
     }
 
@@ -74,7 +77,7 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
      * @param c DOCUMENT ME!
      */
     protected void updateStyle(JTableHeader c) {
-        OntimizeContext context  = getContext(c, ENABLED);
+        SynthContext context  = getContext(c, ENABLED);
         SynthStyle      oldStyle = style;
 
         style = OntimizeLookAndFeel.updateStyle(context, this);
@@ -85,7 +88,7 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
             }
         }
 
-        context.dispose();
+        
     }
 
     /**
@@ -104,10 +107,10 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
             header.setDefaultRenderer(prevRenderer);
         }
 
-        OntimizeContext context = getContext(header, ENABLED);
+        SynthContext context = getContext(header, ENABLED);
 
         style.uninstallDefaults(context);
-        context.dispose();
+        
         style = null;
     }
 
@@ -123,22 +126,22 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
      * @see javax.swing.plaf.ComponentUI#update(java.awt.Graphics, javax.swing.JComponent)
      */
     public void update(Graphics g, JComponent c) {
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
 
         OntimizeLookAndFeel.update(context, g);
-        context.getPainter().paintTableHeaderBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+        ContextUtils.getPainter(context).paintTableHeaderBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
         paint(context, g);
-        context.dispose();
+        
     }
 
     /**
      * @see javax.swing.plaf.basic.BasicTableHeaderUI#paint(java.awt.Graphics, javax.swing.JComponent)
      */
     public void paint(Graphics g, JComponent c) {
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
 
         paint(context, g);
-        context.dispose();
+        
     }
 
     /**
@@ -147,7 +150,7 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
      * @param context DOCUMENT ME!
      * @param g       DOCUMENT ME!
      */
-    protected void paint(OntimizeContext context, Graphics g) {
+    protected void paint(SynthContext context, Graphics g) {
         super.paint(g, context.getComponent());
     }
 
@@ -156,7 +159,7 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
      *      java.awt.Graphics, int, int, int, int)
      */
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-        ((OntimizeContext) context).getPainter().paintTableHeaderBorder(context, g, x, y, w, h);
+        ContextUtils.getPainter(context).paintTableHeaderBorder(context, g, x, y, w, h);
     }
 
     //
@@ -165,7 +168,7 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
     /**
      * @see sun.swing.plaf.synth.SynthUI#getContext(javax.swing.JComponent)
      */
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
@@ -177,8 +180,8 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
      *
      * @return DOCUMENT ME!
      */
-    protected OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c, SynthLookAndFeel.getRegion(c), style, state);
+    protected SynthContext getContext(JComponent c, int state) {
+    	return new SynthContext( c, SynthLookAndFeel.getRegion(c), this.style, state);
     }
 
     /**

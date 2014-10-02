@@ -11,10 +11,10 @@ import javax.swing.JToolBar;
 import javax.swing.border.AbstractBorder;
 import javax.swing.plaf.UIResource;
 import javax.swing.plaf.synth.Region;
+import javax.swing.plaf.synth.SynthContext;
 import javax.swing.plaf.synth.SynthUI;
 import javax.swing.text.JTextComponent;
 
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeStyle;
 
@@ -57,7 +57,7 @@ public class OntimizeBorder extends AbstractBorder implements UIResource {
      */
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
         JComponent      jc      = (JComponent) c;
-        OntimizeContext context = (OntimizeContext) ui.getContext(jc);
+        SynthContext context = (SynthContext) ui.getContext(jc);
         OntimizeStyle   style   = (OntimizeStyle) context.getStyle();
 
         if (style == null) {
@@ -67,7 +67,6 @@ public class OntimizeBorder extends AbstractBorder implements UIResource {
         }
 
         ui.paintBorder(context, g, x, y, width, height);
-        context.dispose();
     }
 
     /**

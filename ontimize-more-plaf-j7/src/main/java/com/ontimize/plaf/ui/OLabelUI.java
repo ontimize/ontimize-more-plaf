@@ -26,6 +26,7 @@ import javax.swing.plaf.basic.BasicLabelUI;
 import javax.swing.plaf.synth.ColorType;
 import javax.swing.plaf.synth.SynthConstants;
 import javax.swing.plaf.synth.SynthContext;
+import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 import javax.swing.text.View;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -33,11 +34,11 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import com.ontimize.gui.calendar.VisualCalendarComponent;
 import com.ontimize.gui.tree.BasicTreeCellRenderer;
 import com.ontimize.gui.tree.Tree;
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.painter.util.ShapeFactory;
 import com.ontimize.plaf.ui.OComboBoxUI.SynthComboBoxRenderer;
+import com.ontimize.plaf.utils.ContextUtils;
 import com.ontimize.util.swing.popuplist.PopupItem;
 
 /**
@@ -48,7 +49,7 @@ import com.ontimize.util.swing.popuplist.PopupItem;
  * @see javax.swing.plaf.synth.SynthLabelUI
  */
 public class OLabelUI extends BasicLabelUI implements SynthUI {
-    protected OntimizeStyle style;
+    protected SynthStyle style;
 
     /**
      * Returns the LabelUI implementation used for the skins look and feel.
@@ -73,12 +74,15 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     	} else{
     		super.installDefaults(c);
     	}
+    	if (this.style == null) {
+			this.style = OntimizeStyle.NULL_STYLE;
+		}
         updateStyle(c);
     }
 
     void updateStyle(JLabel c) {
     	
-        OntimizeContext context = getContext(c, ENABLED);
+        SynthContext context = getContext(c, ENABLED);
         
         style = (OntimizeStyle) OntimizeLookAndFeel.updateStyle(context, this);
         
@@ -87,22 +91,22 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
         	c.setIconTextGap((Integer)iconTextGap);
         }
         
-        context.dispose();
+        
     }
 
     protected void uninstallDefaults(JLabel c) {
-    	OntimizeContext context = getContext(c, ENABLED);
+    	SynthContext context = getContext(c, ENABLED);
         style.uninstallDefaults(context);
-        context.dispose();
+        
         style = null;
     }
 
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
-    protected OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c, OntimizeLookAndFeel.getRegion(c), style, state);
+    protected SynthContext getContext(JComponent c, int state) {
+    	return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
     protected int getComponentState(JComponent c) {
@@ -146,7 +150,7 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
         viewRect.height = height - (i.bottom + viewRect.y);
 
         // layout the text and icon
-        OntimizeContext context = getContext(label);
+        SynthContext context = getContext(label);
         FontMetrics fm = context.getComponent().getFontMetrics(context.getStyle().getFont(context));
         context.getStyle().getGraphicsUtils(context).layoutText(context, fm, label.getText(), label.getIcon(),
             label.getHorizontalAlignment(), label.getVerticalAlignment(), label.getHorizontalTextPosition(),
@@ -161,7 +165,7 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
         } else {
             baseline = textRect.y + fm.getAscent();
         }
-        context.dispose();
+        
         return baseline;
     }
 
@@ -171,22 +175,22 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
      * specified component is being painted.
      */
     public void update(Graphics g, JComponent c) {
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
 
         OntimizeLookAndFeel.update(context, g);
-        context.getPainter().paintLabelBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+        ContextUtils.getPainter(context).paintLabelBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
         paint(context, g);
-        context.dispose();
+        
     }
 
     public void paint(Graphics g, JComponent c) {
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
 
         paint(context, g);
-        context.dispose();
+        
     }
 
-    protected void paint(OntimizeContext context, Graphics g) {
+    protected void paint(SynthContext context, Graphics g) {
         JLabel label = (JLabel) context.getComponent();
         Icon icon = (label.isEnabled()) ? label.getIcon() : label.getDisabledIcon();
         
@@ -338,19 +342,19 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     }
 
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-        ((OntimizeContext) context).getPainter().paintLabelBorder(context, g, x, y, w, h);
+        ContextUtils.getPainter(context).paintLabelBorder(context, g, x, y, w, h);
     }
 
     public Dimension getPreferredSize(JComponent c) {
         JLabel label = (JLabel) c;
         Icon icon = (label.isEnabled()) ? label.getIcon() : label.getDisabledIcon();
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
         Dimension size = context.getStyle().getGraphicsUtils(context).getPreferredSize(context,
             context.getStyle().getFont(context), label.getText(), icon, label.getHorizontalAlignment(),
             label.getVerticalAlignment(), label.getHorizontalTextPosition(), label.getVerticalTextPosition(),
             label.getIconTextGap(), label.getDisplayedMnemonicIndex());
 
-        context.dispose();
+        
         if (c instanceof DefaultTreeCellRenderer){
         	size.height = size.height;
         	return size;
@@ -364,12 +368,12 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     public Dimension getMinimumSize(JComponent c) {
         JLabel label = (JLabel) c;
         Icon icon = (label.isEnabled()) ? label.getIcon() : label.getDisabledIcon();
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
         Dimension size = context.getStyle().getGraphicsUtils(context).getMinimumSize(context, context.getStyle().getFont(context),
             label.getText(), icon, label.getHorizontalAlignment(), label.getVerticalAlignment(), label.getHorizontalTextPosition(),
             label.getVerticalTextPosition(), label.getIconTextGap(), label.getDisplayedMnemonicIndex());
 
-        context.dispose();
+        
         if (c instanceof DefaultTreeCellRenderer){
         	return size;
         }
@@ -385,12 +389,12 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     public Dimension getMaximumSize(JComponent c) {
         JLabel label = (JLabel) c;
         Icon icon = (label.isEnabled()) ? label.getIcon() : label.getDisabledIcon();
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
         Dimension size = context.getStyle().getGraphicsUtils(context).getMaximumSize(context, context.getStyle().getFont(context),
             label.getText(), icon, label.getHorizontalAlignment(), label.getVerticalAlignment(), label.getHorizontalTextPosition(),
             label.getVerticalTextPosition(), label.getIconTextGap(), label.getDisplayedMnemonicIndex());
 
-        context.dispose();
+        
         return size;
     }
 

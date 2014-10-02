@@ -42,6 +42,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.LookAndFeel;
+import javax.swing.Painter;
 import javax.swing.PopupFactory;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
@@ -61,9 +62,9 @@ import javax.swing.plaf.synth.SynthContext;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthStyleFactory;
+import javax.swing.plaf.synth.SynthUI;
 
 import sun.swing.plaf.synth.DefaultSynthStyle;
-import javax.swing.plaf.synth.SynthUI;
 
 import com.ontimize.gui.ApToolBarNavigator;
 import com.ontimize.gui.ApToolBarPopupButton;
@@ -177,10 +178,10 @@ import com.ontimize.plaf.state.OToolBarSouthState;
 import com.ontimize.plaf.state.OToolBarWestState;
 import com.ontimize.plaf.utils.OntimizeLAFColorUtils;
 import com.ontimize.plaf.utils.OntimizeLAFParseUtils;
+import com.ontimize.plaf.utils.ReflectionUtils;
 import com.ontimize.plaf.utils.StyleUtil;
 import com.ontimize.util.swing.ButtonSelection;
 import com.ontimize.util.swing.CollapsibleButtonPanel;
-import javax.swing.Painter;
 
 /**
  * Ontimize Look And Feel development.
@@ -3746,7 +3747,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 * 
 	 * @return the new, updated style.
 	 */
-	public static SynthStyle updateStyle(OntimizeContext context, SynthUI ui) {
+	public static SynthStyle updateStyle(SynthContext context, SynthUI ui) {
 		SynthStyle newStyle = SynthLookAndFeel.getStyle(context.getComponent(), context.getRegion());
 		SynthStyle oldStyle = context.getStyle();
 
@@ -3756,8 +3757,12 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 				oldStyle.uninstallDefaults(context);
 			}
 
-			context.setStyle(newStyle);
-			((OntimizeStyle) newStyle).installDefaults(context, ui);
+			ReflectionUtils.invoke(context, "setStyle", newStyle);
+			if (newStyle instanceof OntimizeStyle) {
+				((OntimizeStyle) newStyle).installDefaults(context, ui);
+			} else {
+				newStyle.installDefaults(context);
+			}
 		}
 
 		return newStyle;
@@ -4566,7 +4571,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	}
 
 	public static void clearReferences() {
-		OntimizeContext.clearReferences();
+//		SynthContext.clearReferences();
 		OntimizeRegion.clearReferences();
 		OLoweredBorder.clearReferences();
 		ShapeFactory.clearReferences();

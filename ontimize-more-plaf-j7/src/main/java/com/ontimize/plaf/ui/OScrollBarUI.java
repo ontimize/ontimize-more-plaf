@@ -18,9 +18,10 @@ import javax.swing.plaf.synth.SynthContext;
 import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
+import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.component.OntimizeArrowButton;
+import com.ontimize.plaf.utils.ContextUtils;
 
 public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeListener, SynthUI{
 
@@ -53,6 +54,15 @@ public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeList
                      (scrollbar.getLayout() instanceof UIResource)) {
             scrollbar.setLayout(this);
         }
+        if (this.style == null) {
+			this.style = OntimizeStyle.NULL_STYLE;
+		}
+		if (this.thumbStyle == null) {
+			this.thumbStyle = OntimizeStyle.NULL_STYLE;
+		}
+		if (this.trackStyle == null) {
+			this.trackStyle = OntimizeStyle.NULL_STYLE;
+		}
         updateStyle(scrollbar);
     }
 
@@ -61,7 +71,7 @@ public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeList
 
     protected void updateStyle(JScrollBar c) {
         SynthStyle oldStyle = style;
-        OntimizeContext context = getContext(c, ENABLED);
+        SynthContext context = getContext(c, ENABLED);
         style = OntimizeLookAndFeel.updateStyle(context, this);
         if (style != oldStyle) {
             scrollBarWidth = style.getInt(context,"ScrollBar.thumbHeight", 14);
@@ -110,15 +120,15 @@ public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeList
                 installKeyboardActions();
             }
         }
-        context.dispose();
+        
 
         context = getContext(c, Region.SCROLL_BAR_TRACK, ENABLED);
         trackStyle = OntimizeLookAndFeel.updateStyle(context, this);
-        context.dispose();
+        
 
         context = getContext(c, Region.SCROLL_BAR_THUMB, ENABLED);
         thumbStyle = OntimizeLookAndFeel.updateStyle(context, this);
-        context.dispose();
+        
     }
 
     protected void installListeners() {
@@ -132,32 +142,32 @@ public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeList
     }
 
     protected void uninstallDefaults(){
-    	OntimizeContext context = getContext(scrollbar, ENABLED);
+    	SynthContext context = getContext(scrollbar, ENABLED);
         style.uninstallDefaults(context);
-        context.dispose();
+        
         style = null;
 
         context = getContext(scrollbar, Region.SCROLL_BAR_TRACK, ENABLED);
         trackStyle.uninstallDefaults(context);
-        context.dispose();
+        
         trackStyle = null;
 
         context = getContext(scrollbar, Region.SCROLL_BAR_THUMB, ENABLED);
         thumbStyle.uninstallDefaults(context);
-        context.dispose();
+        
         thumbStyle = null;
 
         super.uninstallDefaults();
     }
 
 
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
-    protected OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c,
-                    OntimizeLookAndFeel.getRegion(c), style, state);
+    protected SynthContext getContext(JComponent c, int state) {
+    	return new SynthContext( c,
+                OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
     protected Region getRegion(JComponent c) {
@@ -168,18 +178,17 @@ public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeList
         return OntimizeLookAndFeel.getComponentState(c);
     }
 
-    protected OntimizeContext getContext(JComponent c, Region region) {
+    protected SynthContext getContext(JComponent c, Region region) {
         return getContext(c, region, getComponentState(c, region));
     }
 
-    protected OntimizeContext getContext(JComponent c, Region region, int state) {
+    protected SynthContext getContext(JComponent c, Region region, int state) {
         SynthStyle style = trackStyle;
 
         if (region == Region.SCROLL_BAR_THUMB) {
             style = thumbStyle;
         }
-        return OntimizeContext.getContext(OntimizeContext.class, c, region, style,
-                                       state);
+        return new SynthContext( c, region, style, state);
     }
 
     protected int getComponentState(JComponent c, Region region) {
@@ -191,67 +200,65 @@ public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeList
     }
 
     public boolean getSupportsAbsolutePositioning() {
-    	OntimizeContext context = getContext(scrollbar);
+    	SynthContext context = getContext(scrollbar);
         boolean value = style.getBoolean(context,
                       "ScrollBar.allowsAbsolutePositioning", false);
-        context.dispose();
+        
         return value;
     }
 
     public void update(Graphics g, JComponent c) {
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
 
         OntimizeLookAndFeel.update(context, g);
-        context.getPainter().paintScrollBarBackground(context,
+        ContextUtils.getPainter(context).paintScrollBarBackground(context,
                           g, 0, 0, c.getWidth(), c.getHeight(),
                           scrollbar.getOrientation());
         paint(context, g);
-        context.dispose();
+        
     }
 
     public void paint(Graphics g, JComponent c) {
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
 
         paint(context, g);
-        context.dispose();
+        
     }
 
-    protected void paint(OntimizeContext context, Graphics g) {
-    	OntimizeContext subcontext = getContext(scrollbar,
+    protected void paint(SynthContext context, Graphics g) {
+    	SynthContext subcontext = getContext(scrollbar,
                                              Region.SCROLL_BAR_TRACK);
         paintTrack(subcontext, g, getTrackBounds());
-        subcontext.dispose();
 
         subcontext = getContext(scrollbar, Region.SCROLL_BAR_THUMB);
         paintThumb(subcontext, g, getThumbBounds());
-        subcontext.dispose();
     }
 
     public void paintBorder(SynthContext context, Graphics g, int x,
                             int y, int w, int h) {
-        ((OntimizeContext)context).getPainter().paintScrollBarBorder(context, g, x, y, w, h,
+        ContextUtils.getPainter(context).paintScrollBarBorder(context, g, x, y, w, h,
                                                   scrollbar.getOrientation());
     }
     
-    protected void paintTrack(OntimizeContext ss, Graphics g,
+    protected void paintTrack(SynthContext ss, Graphics g,
                               Rectangle trackBounds) {
         OntimizeLookAndFeel.updateSubregion(ss, g, trackBounds);
-        ss.getPainter().paintScrollBarTrackBackground(ss, g, trackBounds.x,
+        ContextUtils.getPainter(ss).paintScrollBarTrackBackground(ss, g, trackBounds.x,
                         trackBounds.y, trackBounds.width, trackBounds.height,
                         scrollbar.getOrientation());
-        ss.getPainter().paintScrollBarTrackBorder(ss, g, trackBounds.x,
+        ContextUtils.getPainter(ss).paintScrollBarTrackBorder(ss, g, trackBounds.x,
                         trackBounds.y, trackBounds.width, trackBounds.height,
                         scrollbar.getOrientation());
     }
 
-    protected void paintThumb(OntimizeContext ss, Graphics g,
+    protected void paintThumb(SynthContext ss, Graphics g,
                               Rectangle thumbBounds) {
         OntimizeLookAndFeel.updateSubregion(ss, g, thumbBounds);
         int orientation = scrollbar.getOrientation();
-        ss.getPainter().paintScrollBarThumbBackground(ss, g, thumbBounds.x,
+        ContextUtils.getPainter(ss).paintScrollBarThumbBackground(ss, g, thumbBounds.x,
                         thumbBounds.y, thumbBounds.width, thumbBounds.height,
                         orientation);
-        ss.getPainter().paintScrollBarThumbBorder(ss, g, thumbBounds.x,
+        ContextUtils.getPainter(ss).paintScrollBarThumbBorder(ss, g, thumbBounds.x,
                         thumbBounds.y, thumbBounds.width, thumbBounds.height,
                         orientation);
     }

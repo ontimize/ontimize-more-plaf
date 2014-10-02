@@ -17,9 +17,9 @@ import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
 import com.ontimize.gui.container.Tab;
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeStyle;
+import com.ontimize.plaf.utils.ContextUtils;
 
 public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, SynthUI {
 	protected SynthStyle style;
@@ -51,19 +51,22 @@ public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, Sy
 	}
 
 	protected void installDefaults(JPanel p) {
+		if (this.style == null) {
+			this.style = OntimizeStyle.NULL_STYLE;
+		}
 		updateStyle(p);
 	}
 
 	protected void uninstallDefaults(JPanel p) {
-		OntimizeContext context = getContext(p, ENABLED);
+		SynthContext context = getContext(p, ENABLED);
 
 		style.uninstallDefaults(context);
-		context.dispose();
+		
 		style = null;
 	}
 
 	protected void updateStyle(JPanel c) {
-		OntimizeContext context = getContext(c, ENABLED);
+		SynthContext context = getContext(c, ENABLED);
 		SynthStyle      oldStyle = style;
 		
 //		style = OntimizeLookAndFeel.updateStyle(context, this);
@@ -76,14 +79,14 @@ public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, Sy
 //		
 //		
 //		
-//		context.dispose();
+//		
 		
         style = OntimizeLookAndFeel.updateStyle(context, this);
 
         if (style != oldStyle) {
             updateStyle(c, context, getPropertyPrefix(c));
         }
-        context.dispose();
+        
 	}
 	
 	/**
@@ -100,7 +103,7 @@ public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, Sy
     	return "Panel";
     }
 	
-	protected void updateStyle(JComponent c, OntimizeContext context, String prefix){
+	protected void updateStyle(JComponent c, SynthContext context, String prefix){
 		OntimizeStyle style = (OntimizeStyle) context.getStyle();
 		
 		 Color bg = c.getBackground();
@@ -109,12 +112,12 @@ public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, Sy
         }
 	}
 
-	public OntimizeContext getContext(JComponent c) {
+	public SynthContext getContext(JComponent c) {
 		return getContext(c, getComponentState(c));
 	}
 
-	protected OntimizeContext getContext(JComponent c, int state) {
-		return OntimizeContext.getContext(OntimizeContext.class, c, OntimizeLookAndFeel.getRegion(c), style, state);
+	protected SynthContext getContext(JComponent c, int state) {
+		return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style, state);
 	}
 
 	protected Region getRegion(JComponent c) {
@@ -126,27 +129,27 @@ public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, Sy
 	}
 
 	public void update(Graphics g, JComponent c) {
-		OntimizeContext context = getContext(c);
+		SynthContext context = getContext(c);
 
 		OntimizeLookAndFeel.update(context, g);
-		context.getPainter().paintPanelBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+		ContextUtils.getPainter(context).paintPanelBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
 		paint(context, g);
-		context.dispose();
+		
 	}
 
 	public void paint(Graphics g, JComponent c) {
-		OntimizeContext context = getContext(c);
+		SynthContext context = getContext(c);
 
 		paint(context, g);
-		context.dispose();
+		
 	}
 
-	protected void paint(OntimizeContext context, Graphics g) {
+	protected void paint(SynthContext context, Graphics g) {
 		// do actual painting
 	}
 
 	public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		((OntimizeContext)context).getPainter().paintPanelBorder(context, g, x, y, w, h);
+		ContextUtils.getPainter(context).paintPanelBorder(context, g, x, y, w, h);
 	}
 
 	public void propertyChange(PropertyChangeEvent pce) {

@@ -61,8 +61,9 @@ import javax.swing.plaf.synth.SynthUI;
 import javax.swing.text.JTextComponent;
 
 import com.ontimize.gui.table.EJTable;
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
+import com.ontimize.plaf.OntimizeStyle;
+import com.ontimize.plaf.utils.ContextUtils;
 
 /**
  * OntimizeScrollPaneUI implementation.
@@ -119,14 +120,17 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
         }
 
         LookAndFeel.installProperty(scrollpane, "opaque", Boolean.FALSE);
+        if (this.style == null) {
+			this.style = OntimizeStyle.NULL_STYLE;
+		}
         updateStyle(scrollpane);
     }
 
     protected void uninstallDefaults(JScrollPane c) {
-        OntimizeContext context = getContext(c, ENABLED);
+        SynthContext context = getContext(c, ENABLED);
 
         style.uninstallDefaults(context);
-        context.dispose();
+        
         style = null;
         if (scrollpane.getViewportBorder() instanceof UIResource) {
             scrollpane.setViewportBorder(null);
@@ -134,7 +138,7 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     }
 
     protected void updateStyle(JScrollPane c) {
-    	OntimizeContext context = getContext(c, ENABLED);
+    	SynthContext context = getContext(c, ENABLED);
         SynthStyle oldStyle = style;
 
         style = OntimizeLookAndFeel.updateStyle(context, this);
@@ -148,7 +152,7 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
                 installKeyboardActions(c);
             }
         }
-        context.dispose();
+        
     }
 
     protected void installListeners(JScrollPane c) {
@@ -233,12 +237,12 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
         }
     }
 
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
-    protected OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c, SynthLookAndFeel.getRegion(c), style, state);
+    protected SynthContext getContext(JComponent c, int state) {
+    	return new SynthContext( c, SynthLookAndFeel.getRegion(c), this.style, state);
     }
 
     protected int getComponentState(JComponent c) {
@@ -256,17 +260,17 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     }
 
     public void update(Graphics g, JComponent c) {
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
     	
     	OntimizeLookAndFeel.update(context, g);
     	if(! (containsTextComponent(context.getComponent()) || containsTableComponent(context.getComponent()))   ){
     		((JComponent)c).setBorder(BorderFactory.createEmptyBorder());
     	}
     	
-        context.getPainter().paintScrollPaneBackground(context, g, 0, 0, context.getComponent().getWidth(), context.getComponent().getHeight());
+        ContextUtils.getPainter(context).paintScrollPaneBackground(context, g, 0, 0, context.getComponent().getWidth(), context.getComponent().getHeight());
         paintScrollPaneCorner(g, c);
         paint(context, g);
-        context.dispose();
+        
     }
 
     /**
@@ -304,10 +308,10 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     
 
     public void paint(Graphics g, JComponent c) {
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
 
         paint(context, g);
-        context.dispose();
+        
     }
 
     protected void paint(SynthContext context, Graphics g) {
@@ -321,10 +325,10 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
     	JComponent c = context.getComponent();
     	if(containsTextComponent(c)){
-    		((OntimizeContext) context).getPainter().paintScrollPaneBorder(context, g, x, y, w, h);
+    		ContextUtils.getPainter(context).paintScrollPaneBorder(context, g, x, y, w, h);
     	}else{
     		((JComponent)c).setBorder(BorderFactory.createEmptyBorder());
-    		((OntimizeContext) context).getPainter().paintScrollPaneBorder(context, g, x, y, w, h);
+    		ContextUtils.getPainter(context).paintScrollPaneBorder(context, g, x, y, w, h);
     	}
     }
     
@@ -1009,7 +1013,7 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     protected class ViewportBorder extends AbstractBorder implements UIResource {
         protected Insets insets;
 
-        ViewportBorder(OntimizeContext context) {
+        ViewportBorder(SynthContext context) {
             this.insets = (Insets) context.getStyle().get(context, "ScrollPane.viewportBorderInsets");
             if (this.insets == null) {
                 this.insets = OntimizeLookAndFeel.EMPTY_UIRESOURCE_INSETS;
@@ -1018,14 +1022,14 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
 
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             JComponent jc = (JComponent) c;
-            OntimizeContext context = getContext(jc);
+            SynthContext context = getContext(jc);
             SynthStyle style = context.getStyle();
             if (style == null) {
                 assert false : "SynthBorder is being used outside after the " + " UI has been uninstalled";
                 return;
             }
-            context.getPainter().paintViewportBorder(context, g, x, y, width, height);
-            context.dispose();
+            ContextUtils.getPainter(context).paintViewportBorder(context, g, x, y, width, height);
+            
         }
 
         public Insets getBorderInsets(Component c) {
