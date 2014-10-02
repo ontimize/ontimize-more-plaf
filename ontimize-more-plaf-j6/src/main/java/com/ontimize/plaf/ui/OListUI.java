@@ -6,9 +6,11 @@ import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JViewport;
 import javax.swing.border.Border;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.UIResource;
@@ -34,6 +36,12 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
     }
 
     public void update(Graphics g, JComponent c) {
+    	
+    	if (c.getParent() instanceof JViewport) {
+			if (!BorderFactory.createEmptyBorder().equals(c.getBorder())) {
+				c.setBorder(BorderFactory.createEmptyBorder());
+			}
+		}
     	
         OntimizeContext context = getContext(c);
 

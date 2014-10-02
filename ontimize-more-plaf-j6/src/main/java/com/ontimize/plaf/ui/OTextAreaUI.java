@@ -6,7 +6,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.UIResource;
@@ -120,6 +122,14 @@ public class OTextAreaUI extends BasicTextAreaUI implements SynthUI, FocusListen
     }
 
     public void update(Graphics g, JComponent c) {
+    	
+    	if (c.getParent() instanceof JViewport) {
+			// el emptyborder es estático, no se crea al llamar al createemptyborder
+			if (!c.getBorder().equals(BorderFactory.createEmptyBorder())) {
+				c.setBorder(BorderFactory.createEmptyBorder());
+			}
+		}
+    	
     	OntimizeContext context = getContext(c);
 
         OntimizeLookAndFeel.update(context, g);

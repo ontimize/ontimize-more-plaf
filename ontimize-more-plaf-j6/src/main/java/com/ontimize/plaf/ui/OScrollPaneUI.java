@@ -141,7 +141,7 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
         if (style != oldStyle) {
             Border vpBorder = scrollpane.getViewportBorder();
             if ((vpBorder == null) || (vpBorder instanceof UIResource)) {
-                scrollpane.setViewportBorder(new ViewportBorder(context));
+               // scrollpane.setViewportBorder(new ViewportBorder(context));
             }
             if (oldStyle != null) {
                 uninstallKeyboardActions(c);
@@ -182,14 +182,14 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
 
         // From SynthScrollPaneUI.
         c.addPropertyChangeListener(this);
-        if (UIManager.getBoolean("ScrollPane.useChildTextComponentFocus")) {
+//        if (UIManager.getBoolean("ScrollPane.useChildTextComponentFocus")) {
             viewportViewFocusHandler = new ViewportViewFocusHandler();
             c.getViewport().addContainerListener(viewportViewFocusHandler);
             Component view = c.getViewport().getView();
-            if (view instanceof JTextComponent) {
+//            if (view instanceof JTextComponent) {
                 view.addFocusListener(viewportViewFocusHandler);
-            }
-        }
+//            }
+//        }
     }
 
     protected void uninstallListeners(JComponent c) {
@@ -258,10 +258,10 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     public void update(Graphics g, JComponent c) {
     	OntimizeContext context = getContext(c);
     	
-    	OntimizeLookAndFeel.update(context, g);
-    	if(! (containsTextComponent(context.getComponent()) || containsTableComponent(context.getComponent()))   ){
-    		((JComponent)c).setBorder(BorderFactory.createEmptyBorder());
-    	}
+//    	OntimizeLookAndFeel.update(context, g);
+//    	if(! (containsTextComponent(context.getComponent()) || containsTableComponent(context.getComponent()))   ){
+//    		((JComponent)c).setBorder(BorderFactory.createEmptyBorder());
+//    	}
     	
         context.getPainter().paintScrollPaneBackground(context, g, 0, 0, context.getComponent().getWidth(), context.getComponent().getHeight());
         paintScrollPaneCorner(g, c);
@@ -322,7 +322,7 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     	if(containsTextComponent(c)){
     		((OntimizeContext) context).getPainter().paintScrollPaneBorder(context, g, x, y, w, h);
     	}else{
-    		((JComponent)c).setBorder(BorderFactory.createEmptyBorder());
+//    		((JComponent)c).setBorder(BorderFactory.createEmptyBorder());
     		((OntimizeContext) context).getPainter().paintScrollPaneBorder(context, g, x, y, w, h);
     	}
     }
