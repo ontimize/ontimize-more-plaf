@@ -106,7 +106,7 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     protected void installDefaults(JScrollPane scrollpane) {
         LookAndFeel.installBorder(scrollpane, "ScrollPane.border");
         LookAndFeel.installColorsAndFont(scrollpane, "ScrollPane.background", "ScrollPane.foreground", "ScrollPane.font");
-
+        
         Border vpBorder = scrollpane.getViewportBorder();
         if ((vpBorder == null) || (vpBorder instanceof UIResource)) {
             vpBorder = UIManager.getBorder("ScrollPane.viewportBorder");
@@ -453,6 +453,7 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
                 p.y = 0;
                 colHead.setViewPosition(p);
             }
+            scrollpane.repaint();
         }
     }
 
