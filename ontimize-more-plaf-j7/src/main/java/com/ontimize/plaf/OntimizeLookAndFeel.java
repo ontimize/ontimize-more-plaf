@@ -869,7 +869,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		// Initialize ScrollPane
 		String compName = "ScrollPane";
 		String painterClass = "com.ontimize.plaf.painter.OScrollPanePainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(4, 4, 4, 4), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(4, 4, 4, 4), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + ".contentMargins", new InsetsUIResource(4, 4, 4, 4));
 		setBoolean(d, compName, "opaque", "true");
 		setBoolean(d, compName, "useChildTextComponentFocus", "true");
