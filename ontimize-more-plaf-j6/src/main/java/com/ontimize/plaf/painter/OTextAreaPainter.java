@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.UIManager;
 
+import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.painter.util.ShapeFactory;
 
 
@@ -46,6 +47,10 @@ public class OTextAreaPainter extends AbstractRegionPainter{
     public static final int BORDER_FOCUSED_NOTINSCROLLPANE = 10;
     public static final int BORDER_ENABLED_NOTINSCROLLPANE = 11;
 
+	/**
+	 * The number of pixels that compounds the border width of the component.
+	 */
+	public static int numBorders = 4;
 
     protected int state; //refers to one of the static ints above
     protected PaintContext ctx;
@@ -78,6 +83,8 @@ public class OTextAreaPainter extends AbstractRegionPainter{
 
     //Array of current component colors, updated in each paint call
     protected Object[] componentColors;
+    
+    protected double radius;
 
     public OTextAreaPainter( int state, PaintContext ctx) {
         super();
@@ -147,6 +154,13 @@ public class OTextAreaPainter extends AbstractRegionPainter{
 	}
     
     protected void init (){
+    	
+    	Object oRadius = UIManager.getLookAndFeelDefaults().get("Application.radius");
+		if(oRadius instanceof Double){
+			radius = ((Double)oRadius).doubleValue();
+		}else{
+			radius = OntimizeLookAndFeel.defaultRadius;
+		}
 
 		// disable:
 		Object obj = UIManager.getLookAndFeelDefaults().get(getComponentKeyName() + "[Disabled].background");
@@ -281,7 +295,7 @@ public class OTextAreaPainter extends AbstractRegionPainter{
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		Shape s = ShapeFactory.getInstace().createRectangle( x-1, y, width+2, height);
+		Shape s = ShapeFactory.getInstace().createRectangle( x, y, width, height);
 		g.setPaint( getBackgroundColor(c, s, color));
 		g.fill(s);
 		
@@ -308,13 +322,16 @@ public class OTextAreaPainter extends AbstractRegionPainter{
 			defineBorderFillers(g, c, x, y);
 //		}
 		
-		for (int i = 0; i < colors.length ; i++) {
-			double xx = x + 2 - i;
-			double yy = y + 2 - i;
-			double w = width + (2*i) - 5;
-			double h = height + (2*i) - 5;
-			Shape s = createRoundRect( xx, yy, w, h,c.getInsets());
-			g.setPaint(colors[i]);
+		double xx = getLeftX();
+		double yy = decodeY(0.0f)+numBorders;
+		double h = height - 2*numBorders;
+		double w = getRightX();
+		
+		for (int i = 1; i <= colors.length ; i++) {
+			double yyy = yy - i;
+			double hh = h + 2*i-1;
+			Shape s = decodeBorderPath(xx, yyy, w, hh, i-1);
+			g.setPaint(colors[i-1]);
 			g.draw(s);
 		}
 
@@ -343,7 +360,6 @@ public class OTextAreaPainter extends AbstractRegionPainter{
 
     	Rectangle bounds = c.getBounds();
     	Insets insets = c.getInsets();
-    	int numBorders = 4;
     	
     	//Drawing rounded corners...
     	Shape s = ShapeFactory.getInstace().createRoundCorner( x+numBorders, y+numBorders, c.getInsets().left-numBorders, c.getInsets().top-numBorders, ShapeFactory.TOP_LEFT_CORNER, false);
@@ -394,10 +410,9 @@ public class OTextAreaPainter extends AbstractRegionPainter{
     	
     	Rectangle bounds = c.getBounds();
     	Insets insets = c.getInsets();
-    	int numBorders = 4;
     	
     	//Drawing corners...
-    	Shape s = ShapeFactory.getInstace().createRoundCorner( x+numBorders, y+numBorders, c.getInsets().left-numBorders-1, c.getInsets().top-numBorders, ShapeFactory.TOP_LEFT_CORNER, false);
+    	Shape s = createTopLeftCorner(x+c.getInsets().left, y, c.getInsets().left, c.getInsets().top);
 		g.setPaint(getPaintForFiller(c,s));
     	g.fill(s);
     	
@@ -407,10 +422,10 @@ public class OTextAreaPainter extends AbstractRegionPainter{
     	
     	//Top right corner...
     	if(vScrollBar!=null && vScrollBar.isVisible()){
-			s = ShapeFactory.getInstace().createRectangle( bounds.width-insets.right, y+numBorders, c.getInsets().right, c.getInsets().top-numBorders);
+			s = ShapeFactory.getInstace().createRectangle( bounds.width-insets.right, y, insets.right, insets.top);
 	    	g.fill(s);
     	}else{
-    		s = ShapeFactory.getInstace().createRoundCorner( c.getBounds().width-numBorders, y+numBorders, c.getInsets().right-numBorders-1, c.getInsets().top-numBorders, ShapeFactory.TOP_RIGHT_CORNER, false);
+    		s = createTopRightCorner(bounds.width-insets.right, y, insets.right, insets.top);
         	g.fill(s);
     	}
     	
@@ -419,52 +434,43 @@ public class OTextAreaPainter extends AbstractRegionPainter{
 	    	s = ShapeFactory.getInstace().createRectangle( bounds.width-insets.right, bounds.height-insets.bottom, insets.right, insets.bottom);
 	    	g.fill(s);
     	}else if( !(vScrollBar!=null && vScrollBar.isVisible()) &&  (hScrollBar!=null && hScrollBar.isVisible())){
-    		s = ShapeFactory.getInstace().createRectangle( bounds.width-insets.right, bounds.height-insets.bottom, insets.right-numBorders, insets.bottom);
+    		s = ShapeFactory.getInstace().createRectangle( bounds.width-insets.right, bounds.height-insets.bottom, insets.right, insets.bottom);
 	    	g.fill(s);
     	} else if((vScrollBar!=null && vScrollBar.isVisible()) &&  !(hScrollBar!=null && hScrollBar.isVisible())){
-    		s = ShapeFactory.getInstace().createRectangle( bounds.width-insets.right, bounds.height-insets.bottom, insets.right, insets.bottom-numBorders);
+    		s = ShapeFactory.getInstace().createRectangle( bounds.width-insets.right, bounds.height-insets.bottom, insets.right, insets.bottom);
 	    	g.fill(s);
     	} else{
-	    	s = ShapeFactory.getInstace().createRoundCorner( c.getBounds().width-numBorders, c.getBounds().height-numBorders, c.getInsets().right-numBorders-1, c.getInsets().bottom-numBorders, ShapeFactory.BOTTOM_RIGHT_CORNER, false);
+	    	s = createBottomRightCorner(bounds.width-insets.right, c.getBounds().height, c.getInsets().right, c.getInsets().bottom);
 	    	g.fill(s);
     	}
     	
     	//Bottom left corner...
     	if(hScrollBar!=null && hScrollBar.isVisible()){
-    		s = ShapeFactory.getInstace().createRectangle( x+numBorders, c.getBounds().height-insets.bottom, c.getInsets().left-numBorders, insets.bottom);
+    		s = ShapeFactory.getInstace().createRectangle( x, bounds.height-insets.bottom, insets.left, insets.bottom);
 	    	g.fill(s);
     	}else{
-    		s = ShapeFactory.getInstace().createRoundCorner( x+numBorders, c.getBounds().height-numBorders, c.getInsets().left-numBorders-1, c.getInsets().bottom-numBorders, ShapeFactory.BOTTOM_LEFT_CORNER, false);
+    		s = createBottomLeftCorner(x+insets.left, bounds.height, insets.left, insets.bottom);
         	g.fill(s);
     	}
     	
     	
     	//Drawing rectangle zones...
     	//top
-    	s = ShapeFactory.getInstace().createRectangle( insets.left-1, y+numBorders, bounds.width-insets.left-insets.right+2, insets.top-numBorders);
+    	s = ShapeFactory.getInstace().createRectangle( insets.left, y, bounds.width-insets.left-insets.right, insets.top);
 		g.fill(s);
 		//bottom
-		int bottomMargin = 0;
 		if(hScrollBar!=null && hScrollBar.isVisible()){
-			bottomMargin = insets.bottom;
+			s = ShapeFactory.getInstace().createRectangle(insets.left , y+bounds.height-insets.bottom, bounds.width-insets.left-insets.right, insets.bottom);
 		}else{
-			bottomMargin = insets.bottom-numBorders;
+			s = ShapeFactory.getInstace().createRectangle(insets.left , y+bounds.height-insets.bottom, bounds.width-insets.left-insets.right, insets.bottom);
 		}
-		s = ShapeFactory.getInstace().createRectangle( insets.left-1, y+bounds.height-insets.bottom, bounds.width-insets.left-insets.right+2, bottomMargin);
 		g.fill(s);
 		//left
-		s = ShapeFactory.getInstace().createRectangle( x+numBorders, insets.top, insets.right-numBorders-1, bounds.height-insets.top-insets.bottom);
+		s = ShapeFactory.getInstace().createRectangle( x, insets.top, insets.left, bounds.height-insets.top-insets.bottom);
 		g.fill(s);
 		//right
-		int rightMargin = 0;
-		if(vScrollBar!=null && vScrollBar.isVisible()){
-			rightMargin = insets.right-1;
-		}else{
-			rightMargin = insets.right-numBorders-1;
-		}
-		s = ShapeFactory.getInstace().createRectangle( x+bounds.width-insets.right+1,insets.top, rightMargin, bounds.height-insets.top-insets.bottom);
+		s = ShapeFactory.getInstace().createRectangle( x+bounds.width-insets.right,insets.top, insets.right, bounds.height-insets.top-insets.bottom);
 		g.fill(s);
-		
 		
 		g.setPaint(previousPaint);
     }
@@ -485,6 +491,84 @@ public class OTextAreaPainter extends AbstractRegionPainter{
 		}
 		return null;
 	}
+    
+    protected Shape createTopLeftCorner(double x, double y, double w, double h){
+    	double radius = getRadius();
+		double x_arc = x-w+radius;
+		if(x_arc>x){
+			x_arc = x;
+			radius = w;
+		}
+		
+		path.reset();
+		path.moveTo(intValue(x), y);
+		path.lineTo(x_arc, y);
+		path.curveTo(x_arc - radius/2.0, y, x_arc -radius, y + radius/ 2.0, x_arc -radius, y+ radius);
+		path.lineTo(x_arc-radius, y + h);
+		path.lineTo(x_arc, y+h);
+		path.lineTo(x, y+h);
+		path.closePath();
+    	return path;
+    }
+    
+    
+    protected Shape createTopRightCorner(double x, double y, double w, double h){
+    	double radius = getRadius();
+		double x_arc = decodeX(3.0f) - radius;
+		if(x_arc<x){
+			x_arc = x;
+			radius = decodeX(3.0f) - decodeX(2.0f);
+		}
+		
+    	path.reset();
+    	path.moveTo(intValue(x), y);
+		path.lineTo(x_arc, y);
+		path.curveTo(x_arc + radius/2.0, y, x_arc +radius, y + radius/ 2.0, x_arc +radius, y+ radius);
+		path.lineTo(x_arc+radius, y + h);
+		path.lineTo(x_arc, y+h);
+		path.lineTo(x, y+h);
+    	path.closePath();
+    	return path;
+    }
+    
+    protected Shape createBottomRightCorner(double x, double y, double w, double h){
+    	double radius = getRadius();
+		double x_arc = decodeX(3.0f) - radius;
+		if(x_arc<x){
+			x_arc = x;
+			radius = decodeX(3.0f) - decodeX(2.0f);
+		}
+		
+    	path.reset();
+    	path.moveTo(intValue(x), y);
+		path.lineTo(x_arc, y);
+		path.curveTo(x_arc + radius/2.0, y, x_arc +radius, y - radius/ 2.0, x_arc +radius, y- radius);
+		path.lineTo(x_arc+radius, y - h);
+		path.lineTo(x_arc, y-h);
+		path.lineTo(x, y-h);
+    	path.closePath();
+    	return path;
+    }
+    
+    protected Shape createBottomLeftCorner(double x, double y, double w, double h){
+    	double radius = getRadius();
+		double x_arc = x-w+radius;
+		if(x_arc>x){
+			x_arc = x;
+			radius = w;
+		}
+		
+		path.reset();
+		path.moveTo(intValue(x), y);
+		path.lineTo(x_arc, y);
+		path.curveTo(x_arc - radius/2.0, y, x_arc -radius, y - radius/ 2.0, x_arc -radius, y- radius);
+		path.lineTo(x_arc-radius, y - h);
+		path.lineTo(x_arc, y-h);
+		path.lineTo(x, y-h);
+		path.closePath();
+    	return path;
+    }
+    
     
     protected Shape createRoundRect( double x, double y, double w, double h, Insets insets) {
 		
@@ -510,5 +594,88 @@ public class OTextAreaPainter extends AbstractRegionPainter{
 		return path;
 	}
     
+    /**
+	 * Decodes the border component path.
+	 * @param x The x coordinate where starts the semicircle of the left
+	 * @param y The y coordinate of the top.
+	 * @param w The x coordinate where starts the semicircle of the right.
+	 * @param h The height of the field.
+	 * @param borderIndex the index of the border.
+	 * @return
+	 */
+	protected Shape decodeBorderPath(double x, double y, double w, double h, int borderIndex){
+		double radius = getRadius();
+		double x_arc = decodeX(0.0f)+ numBorders + radius;
+		if(x_arc>x){
+			x_arc = x;
+			radius = getMaximumRadius();
+		}
+		
+		path.reset();
+		path.moveTo(intValue(x), y);
+		path.lineTo(x_arc, y);
+		path.curveTo(x_arc - radius/2.0, y, x_arc -radius, y + radius/ 2.0, x_arc -radius-borderIndex, y+ radius);
+		path.lineTo(x_arc-radius-borderIndex, y + h-radius);
+		path.curveTo(x_arc - radius -borderIndex,y+ h- radius/2.0, x_arc-radius/2.0, y+h, x_arc, y+h);
+		path.lineTo(intValue(x), y+h);
+		
+		path.lineTo(intValue(w), y+h);
+		
+		x_arc = decodeX(3.0f)-1-numBorders-radius;
+		if(x_arc<w){
+			x_arc = w;
+			radius = getMaximumRadius();
+		}
+		
+		path.lineTo(x_arc, y+h);
+		path.curveTo(x_arc+radius/2.0,y+h, x_arc+radius, y+h-radius/2.0, x_arc+radius+borderIndex, y+h-radius);
+		path.lineTo(x_arc+radius+borderIndex, y+radius);
+		path.curveTo(x_arc+radius+borderIndex,y+radius/2.0, x_arc+radius/2.0, y, x_arc, y);
+		
+		path.lineTo(intValue(x), y);
+		path.closePath();
+		
+		
+    	return path;
+    }
+	
+
+    /**
+	 * This method returns, if it is configured by the user, the value for corner radius.
+	 * @return
+	 */
+	protected double getRadius(){
+		return radius;
+	}
+	
+	/**
+	 * This method returns the maximum radius available for the component. The maximum radius is calculated from the height of the component
+	 * and it provokes that the field corners looks like a semicircle. 
+	 * @return
+	 */
+	protected double getMaximumRadius(){
+		return  (decodeY(3.0f)-1 - 2*numBorders)/2.0;
+	}
+	
+	/**
+	 * Returns the x coordinate where starts the semicircle of the left of the component.
+	 * @return
+	 */
+	protected double getLeftX(){
+		double d = decodeX(0.0f) + getMaximumRadius() + numBorders;
+		d = Math.round(d);
+		return d;
+	}
+	
+	/**
+	 * Returns the x coordinate where starts the semicircle of the right of the component.
+	 * @return
+	 */
+	protected double getRightX(){
+		double d = decodeX(3.0f) - getMaximumRadius() - numBorders;
+		d = Math.round(d);
+		return d;
+	}
+	
 
 }
