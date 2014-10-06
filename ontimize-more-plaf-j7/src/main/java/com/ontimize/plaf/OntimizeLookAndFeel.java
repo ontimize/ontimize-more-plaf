@@ -216,7 +216,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	/**
 	 * The radius of component corners.
 	 */
-	public static double defaultRadius = Double.MAX_VALUE;
+	public static double defaultRadius = new Double(7);// Double.MAX_VALUE;
 
 	/**
 	 * The map of SynthStyles. This map is keyed by Region. Each Region maps to
@@ -538,6 +538,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
 		
 		setDouble(d, "Application", "radius", ((Double)defaultRadius).toString());
+		
+		setColorUIResource(d, compName, "textBackground", "#39698a");//Background of the selected text
 
 		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
 		setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");//	//oldvalue 3359718F
@@ -591,7 +593,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		compName = "TextArea";
 
 		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setInsetsUIResource(d, compName, "contentMargins", "10 10 10 10");
+		setInsetsUIResource(d, compName, "contentMargins", "6 6 6 6");
+		
+		setColorUIResource(d, compName, "textBackground", "#39698a");//Background of the selected text
 		
 		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
 		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
@@ -615,7 +619,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		
 		// TextArea in scroll pane
 		pClass = "com.ontimize.plaf.painter.OTextAreaPainter";
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(10, 10, 10, 10), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "6 6 6 6"), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Selected,Disabled,Focused,NotInScrollPane");
 		d.put(compName + ".NotInScrollPane", new OTextAreaNotInScrollPaneState());
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_DISABLED, ctx));
@@ -865,8 +869,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		// Initialize ScrollPane
 		String compName = "ScrollPane";
 		String painterClass = "com.ontimize.plaf.painter.OScrollPanePainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 0, 0, 0), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + ".contentMargins", new InsetsUIResource(0, 0, 0, 0));
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(4, 4, 4, 4), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + ".contentMargins", new InsetsUIResource(4, 4, 4, 4));
 		setBoolean(d, compName, "opaque", "true");
 		setBoolean(d, compName, "useChildTextComponentFocus", "true");
 
@@ -3112,7 +3116,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		d.put(compName + ".States", "Enabled,Disabled");
 		setInsetsUIResource(d, compName, "contentMargins", "8 12 12 12");
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
+		FontUIResource font = StyleUtil.getFontUIResource(compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
+		d.put("TabbedPane.font", font);
 		setBoolean(d, compName, "opaque", "false");
 		setInteger(d, compName, "textIconGap", "3");
 		
@@ -3145,6 +3150,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		pClass = "com.ontimize.plaf.painter.OTabbedPaneTabPainter";
 		
 		setInsetsUIResource(d, compName, "contentMargins", "1 1 1 1");
+		d.put("TabbedPane:TabbedPaneTab.font", font);//It must be the same font that TabbedPane!
 		
 		setColorUIResource(d, compName, "[Enabled].textForeground", "#263945");
 		setColorUIResource(d, compName, "[Disabled].textForeground", "#263945");
