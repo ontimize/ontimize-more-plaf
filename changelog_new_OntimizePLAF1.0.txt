@@ -1,3 +1,18 @@
+-----------------------------------------%1.0.10%
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+TextField and TextArea. Fixed bug on setting background text selection color (Property 'textBackground' into CSS).
+\\
+Tab. Fixed bug on changing font of the component. To set the font it is necessary to set CSS parameter 'font' into the component TabbedPane.
+\\
+TextArea. Fixed bug on corner radius configuration.
+\\
+
 -----------------------------------------%1.0.9%
 ======== Warning ======
 
