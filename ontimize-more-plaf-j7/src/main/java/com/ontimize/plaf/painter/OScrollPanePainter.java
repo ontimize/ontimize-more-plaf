@@ -3,7 +3,6 @@ package com.ontimize.plaf.painter;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -16,6 +15,7 @@ import javax.swing.JViewport;
 import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
 
+import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.painter.util.ShapeFactory;
 
 public class OScrollPanePainter extends AbstractRegionPainter {
@@ -35,7 +35,10 @@ public class OScrollPanePainter extends AbstractRegionPainter {
     protected int state; //refers to one of the static ints above
     protected PaintContext ctx;
     
-	protected int numBorders=4;
+	/**
+	 * The number of pixels that compounds the border width of the component.
+	 */
+	public static int numBorders = 4;
 
     //the following 4 variables are reused during the painting code of the layers
     protected Path2D path = new Path2D.Float();
@@ -57,6 +60,8 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 
     //Array of current component colors, updated in each paint call
     protected Object[] componentColors;
+    
+    protected double radius;
 
     public OScrollPanePainter(int state, PaintContext ctx) {
         super();
@@ -89,6 +94,13 @@ public class OScrollPanePainter extends AbstractRegionPainter {
         
 
     protected void init (){
+    	
+    	Object oRadius = UIManager.getLookAndFeelDefaults().get("Application.radius");
+		if(oRadius instanceof Double){
+			radius = ((Double)oRadius).doubleValue();
+		}else{
+			radius = OntimizeLookAndFeel.defaultRadius;
+		}
 
 		// BORDER COLORS
 		// enable:
@@ -124,7 +136,7 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 		scrollBarCornerColor = (Color)UIManager.getLookAndFeelDefaults().get( "ScrollBar[Enabled].border");
 		if (scrollBarCornerColor==null ) scrollBarCornerColor =  new Color(255,255,255);
 		
-		numBorders = Math.max(degradatedBorderColorFocused.length, Math.max(degradatedBorderColorEnabled.length, degradatedBorderColorDisabled.length))-1;
+		numBorders = Math.max(degradatedBorderColorFocused.length, Math.max(degradatedBorderColorEnabled.length, degradatedBorderColorDisabled.length));//-1;
 		
     }
 
@@ -217,31 +229,44 @@ public class OScrollPanePainter extends AbstractRegionPainter {
     		JScrollBar hScrollBar = ((JScrollPane)c).getHorizontalScrollBar();
     		JScrollBar vScrollBar = ((JScrollPane)c).getVerticalScrollBar();
     		
+    		double xx = decodeX(1.0f)-1;
+    		double yy = decodeY(0.0f)+numBorders;
+    		double h = height - 2*numBorders;
+    		double w = decodeX(2.0f);
+    		
     		if(vScrollBar!=null && vScrollBar.isVisible() && hScrollBar!=null && !hScrollBar.isVisible()){
     			//Painting border just with vertical scrollbar...
-    			for (int i = colors.length-1; i >=0 ; i--) {
-        			Shape s = decodeBorderPathWithVerticalScrollBar(c, numBorders-i, numBorders-i);
-        			g.setPaint(colors[i]);
-        			g.draw(s);
-        		}
+    			for (int i = 1; i <= colors.length ; i++) {
+	    			double yyy = yy - i;
+	    			double hh = h + 2*i-1;
+	    			Shape s = decodeBorderPathWithVerticalScrollBar(c,xx, yyy, w, hh, i-1);
+	    			g.setPaint(colors[i-1]);
+	    			g.draw(s);
+	    		}
     		}else if(vScrollBar!=null && !vScrollBar.isVisible() && hScrollBar!=null && hScrollBar.isVisible()){
     			//Painting border just with horizontal scrollbar...
-    			for (int i = colors.length-1; i >=0 ; i--) {
-        			Shape s = decodeBorderPathWithHorizontalScrollBar(c, numBorders-i, numBorders-i);
-        			g.setPaint(colors[i]);
-        			g.draw(s);
-        		}
+    			for (int i = 1; i <= colors.length ; i++) {
+	    			double yyy = yy - i;
+	    			double hh = h + 2*i-1;
+	    			Shape s = decodeBorderPathWithHorizontalScrollBar(c,xx, yyy, w, hh, i-1);
+	    			g.setPaint(colors[i-1]);
+	    			g.draw(s);
+	    		}
     		}else if(vScrollBar!=null && vScrollBar.isVisible() && hScrollBar!=null && hScrollBar.isVisible()){
     			//Painting border with both scrollbar...
-    			for (int i = colors.length-1; i >=0 ; i--) {
-        			Shape s = decodeBorderPathWithBothScrollBar(c, numBorders-i, numBorders-i);
-        			g.setPaint(colors[i]);
-        			g.draw(s);
-        		}
+    			for (int i = 1; i <= colors.length ; i++) {
+	    			double yyy = yy - i;
+	    			double hh = h + 2*i-1;
+	    			Shape s = decodeBorderPathWithBothScrollBar(c,xx, yyy, w, hh, i-1);
+	    			g.setPaint(colors[i-1]);
+	    			g.draw(s);
+	    		}
     		}else{
-	    		for (int i = colors.length-1; i >=0  ; i--) {
-	    			Shape s = decodeBorderPath(c, numBorders-i, numBorders-i);
-	    			g.setPaint(colors[i]);
+	    		for (int i = 1; i <= colors.length ; i++) {
+	    			double yyy = yy - i;
+	    			double hh = h + 2*i-1;
+	    			Shape s = decodeBorderPath(c,xx, yyy, w, hh, i-1);
+	    			g.setPaint(colors[i-1]);
 	    			g.draw(s);
 	    		}
     		}
@@ -252,151 +277,144 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 		g.setRenderingHints(rh);
 	}
     
-    protected Shape decodeBorderPath(JComponent c, int x, int y){
-		path.reset();
-		
-		JTextComponent textComp = getTextComponent(c);
+    protected Shape decodeBorderPath(JComponent c,double x, double y, double w, double h, int borderIndex){
+    	path.reset();
+    	JTextComponent textComp = getTextComponent(c);
 		if(textComp !=null){
-			Insets insets = textComp.getInsets();
-			Insets tInsets = (Insets) insets.clone();
-			tInsets.top = (int) (decodeY(1.0f)+insets.top);
-			tInsets.bottom = (int) (decodeY(3.0f)-decodeY(2.0f))+insets.bottom;
-			tInsets.right = (int) (decodeX(3.0f)-decodeX(2.0f))+insets.right;
-			tInsets.left = (int) decodeX(1.0f)+insets.left;
+			double radius = getRadius();
+			double x_arc = x + radius;
+			if(x_arc>x+textComp.getInsets().left){
+				x_arc = x+textComp.getInsets().left;
+				radius = textComp.getInsets().left;
+			}
 			
-			path.moveTo(decodeX(0.0f)+tInsets.left-1, decodeY(0.0f)+y);
+			path.moveTo(intValue(x_arc), y);
+			path.lineTo(x_arc, y);
+			path.curveTo(x_arc - radius/2.0, y, x_arc -radius, y + radius/ 2.0, x_arc-radius-borderIndex, y+ radius);
+			path.lineTo(x_arc-radius-borderIndex, y + h-radius);
+			path.curveTo(x_arc - radius -borderIndex,y+ h- radius/2.0, x_arc-radius/2.0, y+h, x_arc, y+h);
+			path.lineTo(intValue(x_arc), y+h);
 			
-			path.lineTo(decodeX(3.0f)-tInsets.right, decodeY(0.0f)+y);
-			//Top right corner...
-			path.curveTo(decodeX(3.0f)-x-tInsets.right+tInsets.right/2.0, 	decodeY(0.0f)+y, 
-						decodeX(3.0f)-x-1, 					decodeY(0.0f)+tInsets.top/2.0, 
-						decodeX(3.0f)-x-1, 					decodeY(0.0f)+tInsets.top);
+			x_arc = w-radius;
+			if(x_arc<w-textComp.getInsets().right){
+				x_arc = w-textComp.getInsets().right;
+				radius = textComp.getInsets().right;
+			}
 			
-			path.lineTo(decodeX(3.0f)-x-1, decodeY(3.0f)-tInsets.bottom-1);
-			//Bottom right corner...
-			path.curveTo(decodeX(3.0f)-x-1, 			decodeY(3.0f)-y-tInsets.bottom+tInsets.bottom/2.0, 
-						decodeX(3.0f)-1-tInsets.right/2.0, 	decodeY(3.0f)-y-1, 
-						decodeX(3.0f)-1-tInsets.right, 		decodeY(3.0f)-y-1);
+			path.lineTo(x_arc, y+h);
+			path.curveTo(x_arc+radius/2.0,y+h, x_arc+radius, y+h-radius/2.0, x_arc+radius+borderIndex, y+h-radius);
+			path.lineTo(x_arc+radius+borderIndex, y+radius);
+			path.curveTo(x_arc+radius+borderIndex,y+radius/2.0, x_arc+radius/2.0, y, x_arc, y);
 			
-			path.lineTo(decodeX(0.0f)-1+tInsets.left, decodeY(3.0f)-y-1);
-			//Bottom left corner...
-			path.curveTo(decodeX(0.0f)+tInsets.left-tInsets.left/2.0, 					decodeY(3.0f)-y-1, 
-						decodeX(0.0f)+x, 					decodeY(3.0f)-2-tInsets.bottom+tInsets.bottom/2.0, 
-						decodeX(0.0f)+x,  					decodeY(3.0f)-2-tInsets.bottom);
-			
-			path.lineTo(decodeX(0.0f)+x, decodeY(0.0f)+tInsets.top);
-			//Top left corner...
-			path.curveTo(decodeX(0.0f)+x,	 			decodeY(0.0f)+y+tInsets.bottom-tInsets.bottom/2.0, 
-					decodeX(0.0f)+tInsets.right/2.0, 	decodeY(0.0f)+y, 
-					decodeX(0.0f)+tInsets.right, 		decodeY(0.0f)+y);
+			path.lineTo(intValue(x_arc), y);
+			path.closePath();
 		
 		}
-		return path;
-	}
+    	return path;
+    }
     
-    
-    protected Shape decodeBorderPathWithVerticalScrollBar(JComponent c, int x, int y){
-		path.reset();
-		
-		JTextComponent textComp = getTextComponent(c);
+    protected Shape decodeBorderPathWithVerticalScrollBar(JComponent c,double x, double y, double w, double h, int borderIndex){
+    	path.reset();
+    	JTextComponent textComp = getTextComponent(c);
 		if(textComp !=null){
-			Insets insets = textComp.getInsets();
-			Insets tInsets = (Insets) insets.clone();
-			tInsets.top = (int) (decodeY(1.0f)+insets.top);
-			tInsets.bottom = (int) (decodeY(3.0f)-decodeY(2.0f))+insets.bottom;
-			tInsets.right = (int) (decodeX(3.0f)-decodeX(2.0f))+insets.right;
-			tInsets.left = (int) decodeX(1.0f)+insets.left;
+			double radius = getRadius();
+			double x_arc = x + radius;
+			if(x_arc>x+textComp.getInsets().left){
+				x_arc = x+textComp.getInsets().left;
+				radius = textComp.getInsets().left;
+			}
 			
-			path.moveTo(decodeX(0.0f)+tInsets.left, decodeY(0.0f)+y);
+			path.moveTo(intValue(x_arc), y);
+			path.lineTo(x_arc, y);
+			path.curveTo(x_arc - radius/2.0, y, x_arc -radius, y + radius/ 2.0, x_arc -radius-borderIndex, y+ radius);
+			path.lineTo(x_arc-radius-borderIndex, y + h-radius);
+			path.curveTo(x_arc - radius -borderIndex,y+ h- radius/2.0, x_arc-radius/2.0, y+h, x_arc, y+h);
+			path.lineTo(intValue(x_arc), y+h);
 			
-			path.lineTo(decodeX(3.0f)-x-1, decodeY(0.0f)+y);
-			//Top right corner...
-			path.lineTo(decodeX(3.0f)-x-1, decodeY(3.0f)-y-1);
-			//Bottom right corner...
-			path.lineTo(decodeX(0.0f)+tInsets.left, decodeY(3.0f)-y-1);
-			//Bottom left corner...
-			path.curveTo(decodeX(0.0f)+tInsets.left-tInsets.left/2.0, 					decodeY(3.0f)-y-1, 
-						decodeX(0.0f)+x, 					decodeY(3.0f)-2-tInsets.bottom+tInsets.bottom/2.0, 
-						decodeX(0.0f)+x,  					decodeY(3.0f)-2-tInsets.bottom);
+			path.lineTo(intValue(w), y+h);
 			
-			path.lineTo(decodeX(0.0f)+x, decodeY(0.0f)+tInsets.top);
-			//Top left corner...
-			path.curveTo(decodeX(0.0f)+x,	 			decodeY(0.0f)+y+tInsets.bottom-tInsets.bottom/2.0, 
-					decodeX(0.0f)+tInsets.right/2.0, 	decodeY(0.0f)+y, 
-					decodeX(0.0f)+tInsets.right, 		decodeY(0.0f)+y);
+			x_arc = decodeX(3.0f)-numBorders;
+			
+			path.lineTo(x_arc+borderIndex, y+h);
+			path.lineTo(x_arc+borderIndex, y);
+			
+			path.lineTo(intValue(x_arc), y);
+			path.closePath();
 		
 		}
-		return path;
-	}
+    	return path;
+    }
     
-    protected Shape decodeBorderPathWithHorizontalScrollBar(JComponent c, int x, int y){
-		path.reset();
-		
-		JTextComponent textComp = getTextComponent(c);
+    protected Shape decodeBorderPathWithHorizontalScrollBar(JComponent c,double x, double y, double w, double h, int borderIndex){
+    	path.reset();
+    	JTextComponent textComp = getTextComponent(c);
 		if(textComp !=null){
-			Insets insets = textComp.getInsets();
-			Insets tInsets = (Insets) insets.clone();
-			tInsets.top = (int) (decodeY(1.0f)+insets.top);
-			tInsets.bottom = (int) (decodeY(3.0f)-decodeY(2.0f))+insets.bottom;
-			tInsets.right = (int) (decodeX(3.0f)-decodeX(2.0f))+insets.right;
-			tInsets.left = (int) decodeX(1.0f)+insets.left;
+			double radius = getRadius();
+			double x_arc = x + radius;
+			if(x_arc>x+textComp.getInsets().left){
+				x_arc = x+textComp.getInsets().left;
+				radius = textComp.getInsets().left;
+			}
 			
-			path.moveTo(decodeX(0.0f)+tInsets.left, decodeY(0.0f)+y);
+			path.moveTo(intValue(x_arc), y);
+			path.lineTo(x_arc, y);
+			path.curveTo(x_arc - radius/2.0, y, x_arc -radius, y + radius/ 2.0, x_arc -radius-borderIndex, y+ radius);
+			path.lineTo(x_arc -radius-borderIndex, y+h);
 			
-			path.lineTo(decodeX(3.0f)-tInsets.right, decodeY(0.0f)+y);
-			//Top right corner...
-			path.curveTo(decodeX(3.0f)-tInsets.right+tInsets.right/2.0, 	decodeY(0.0f)+y, 
-						decodeX(3.0f)-x-1, 					decodeY(0.0f)+tInsets.top/2.0, 
-						decodeX(3.0f)-x-1, 					decodeY(0.0f)+tInsets.top);
+			path.lineTo(intValue(w), y+h);
 			
-			path.lineTo(decodeX(3.0f)-x-1, decodeY(3.0f)-y-1);
-			//Bottom right corner...
-			path.lineTo(decodeX(0.0f)+x, decodeY(3.0f)-y-1);
-			//Bottom left corner...
+			x_arc = w-radius;
+			if(x_arc<w-textComp.getInsets().right){
+				x_arc = w-textComp.getInsets().right;
+				radius = textComp.getInsets().right;
+			}
 			
-			path.lineTo(decodeX(0.0f)+x, decodeY(0.0f)+tInsets.top);
-			//Top left corner...
-			path.curveTo(decodeX(0.0f)+x,	 			decodeY(0.0f)+y+tInsets.bottom-tInsets.bottom/2.0, 
-					decodeX(0.0f)+tInsets.right/2.0, 	decodeY(0.0f)+y, 
-					decodeX(0.0f)+tInsets.right, 		decodeY(0.0f)+y);
+			path.lineTo(x_arc+radius+borderIndex, y+h);
+			path.lineTo(x_arc+radius+borderIndex, y+radius);
+			path.curveTo(x_arc+radius+borderIndex,y+radius/2.0, x_arc+radius/2.0, y, x_arc, y);
+			
+			path.lineTo(intValue(x_arc), y);
+			path.closePath();
 		
 		}
-		return path;
-	}
+    	return path;
+    }
     
-    protected Shape decodeBorderPathWithBothScrollBar(JComponent c, int x, int y){
-		path.reset();
-		
-		JTextComponent textComp = getTextComponent(c);
+    protected Shape decodeBorderPathWithBothScrollBar(JComponent c,double x, double y, double w, double h, int borderIndex){
+    	path.reset();
+    	JTextComponent textComp = getTextComponent(c);
 		if(textComp !=null){
-			Insets insets = textComp.getInsets();
-			Insets tInsets = (Insets) insets.clone();
-			tInsets.top = (int) (decodeY(1.0f)+insets.top);
-			tInsets.bottom = (int) (decodeY(3.0f)-decodeY(2.0f))+insets.bottom;
-			tInsets.right = (int) (decodeX(3.0f)-decodeX(2.0f))+insets.right;
-			tInsets.left = (int) decodeX(1.0f)+insets.left;
+			double radius = getRadius();
+			double x_arc = x + radius;
+			if(x_arc>x+textComp.getInsets().left){
+				x_arc = x+textComp.getInsets().left;
+				radius = textComp.getInsets().left;
+			}
 			
-			path.moveTo(decodeX(0.0f)+tInsets.left, decodeY(0.0f)+y);
+			path.moveTo(intValue(x_arc), y);
+			path.lineTo(x_arc, y);
+			path.curveTo(x_arc - radius/2.0, y, x_arc -radius, y + radius/ 2.0, x_arc -radius-borderIndex, y+ radius);
+			path.lineTo(x_arc -radius-borderIndex, y+h);
 			
-			path.lineTo(decodeX(3.0f)-x-1, decodeY(0.0f)+y);
-			//Top right corner...
+			path.lineTo(intValue(w), y+h);
 			
-			path.lineTo(decodeX(3.0f)-x-1, decodeY(3.0f)-y-1);
-			//Bottom right corner...
-			
-			path.lineTo(decodeX(0.0f)+x, decodeY(3.0f)-y-1);
-			//Bottom left corner...
-			
-			path.lineTo(decodeX(0.0f)+x, decodeY(0.0f)+tInsets.top);
-			//Top left corner...
-			path.curveTo(decodeX(0.0f)+x,	 			decodeY(0.0f)+y+tInsets.bottom-tInsets.bottom/2.0, 
-					decodeX(0.0f)+tInsets.right/2.0, 	decodeY(0.0f)+y, 
-					decodeX(0.0f)+tInsets.right, 		decodeY(0.0f)+y);
+			x_arc = decodeX(3.0f)-numBorders;
+			path.lineTo(x_arc+borderIndex, y+h);
+			path.lineTo(x_arc+borderIndex, y);
+			path.lineTo(intValue(x_arc), y);
+			path.closePath();
 		
 		}
-		return path;
+    	return path;
+    }
+    
+	/**
+	 * This method returns, if it is configured by the user, the value for corner radius.
+	 * @return
+	 */
+	protected double getRadius(){
+		return radius;
 	}
-    
-    
+	
 
 }

@@ -127,26 +127,6 @@ public class OScrollBarPainter extends AbstractRegionPainter {
 		g.setPaint(color);
 		
 		//Drawing rectangle zones...
-		if(containsTextComponent(c)){
-			// top
-			Shape s = createRect(insets.left, y, width - insets.left - insets.right, insets.top);
-			g.fill(s);
-			// bottom
-			s = createRect(insets.left, y + height - insets.bottom, width - insets.left - insets.right,
-					insets.bottom-numBorders);
-			g.fill(s);
-			// left
-			s = createRect( numBorders, y, insets.left-numBorders, height-numBorders);
-			 g.fill(s);
-			// right
-			 if(areBothScrollBarsVisibles(c)){
-				 s = createRect(x + width - insets.right, y, insets.right, height-numBorders);
-			 }else{
-				 s = createRect(x + width - insets.right, y, insets.right-numBorders, height-numBorders);
-			 }
-			 g.fill(s);
-			
-		} else {
 			// top
 			Shape s = createRect(insets.left, y, width - insets.left - insets.right, insets.top);
 			g.fill(s);
@@ -160,7 +140,6 @@ public class OScrollBarPainter extends AbstractRegionPainter {
 			// right
 			s = createRect(x + width - insets.right, y, insets.right, height);
 			 g.fill(s);
-		}
 		
 		
 		g.setPaint(previousPaint);

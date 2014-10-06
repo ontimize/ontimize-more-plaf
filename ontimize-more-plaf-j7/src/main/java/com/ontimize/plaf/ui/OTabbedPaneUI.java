@@ -31,6 +31,7 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.UIResource;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.plaf.synth.ColorType;
 import javax.swing.plaf.synth.Region;
@@ -898,11 +899,11 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
            title = SwingUtilities2.clipStringIfNecessary(tabPane, fm, title, textRect.width);                       
            //ORIGINAL g.setColor(ss.getStyle().getColor(ss, ColorType.TEXT_FOREGROUND));
            Color foregroundColor = tabPane.getForegroundAt(tabIndex);
-           if (foregroundColor == null){
-				g.setColor(ss.getStyle().getColor(ss, ColorType.TEXT_FOREGROUND));
-			}else {
-				g.setColor(foregroundColor);
-			}
+           if (foregroundColor != null && !(foregroundColor instanceof UIResource)) {
+        	   g.setColor(foregroundColor);
+           } else{
+        	   g.setColor(ss.getStyle().getColor(ss, ColorType.TEXT_FOREGROUND));
+           }
             ss.getStyle().getGraphicsUtils(ss).paintText(ss, g, title, textRect, mnemIndex);
         }
     }
