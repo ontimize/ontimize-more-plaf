@@ -457,6 +457,7 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
                 p.y = 0;
                 colHead.setViewPosition(p);
             }
+            scrollpane.repaint();
         }
     }
 
