@@ -21,7 +21,7 @@ package com.ontimize.plaf.state;
 
 import javax.swing.JComponent;
 import javax.swing.JProgressBar;
-
+import com.sun.java.swing.plaf.nimbus.State;
 /**
  * Is progress bar indeterminate?
  */

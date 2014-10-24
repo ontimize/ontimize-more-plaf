@@ -20,9 +20,9 @@ import javax.swing.plaf.synth.SynthStyle;
 
 import sun.swing.plaf.synth.SynthUI;
 
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.painter.ViewportPainter;
+import com.ontimize.plaf.utils.ContextUtils;
 
 /**
  * OViewportUI implementation.
@@ -55,7 +55,7 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
     }
 
     protected void updateStyle(JComponent c) {
-        OntimizeContext context = getContext(c, ENABLED);
+        SynthContext context = getContext(c, ENABLED);
         
 		if(c.getComponents().length>0){
 			int length = c.getComponents().length;
@@ -78,11 +78,11 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
             if (oldStyle != null) {
                 oldStyle.uninstallDefaults(context);
             }
-            context.setStyle(newStyle);
+            ContextUtils.setComponentStyle(context, newStyle);
             newStyle.installDefaults(context);
         }
         this.style = newStyle;
-        context.dispose();
+        
     }
 
     protected void installListeners(JComponent c) {
@@ -94,18 +94,21 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
     }
 
     protected void uninstallDefaults(JComponent c) {
-    	OntimizeContext context = getContext(c, ENABLED);
+    	SynthContext context = getContext(c, ENABLED);
         style.uninstallDefaults(context);
-        context.dispose();
+        
         style = null;
     }
 
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
-    protected OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c, getRegion(c), style, state);
+    protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
+    	return new SynthContext( c, this.getRegion(c), this.style, state);
     }
 
     protected Region getRegion(JComponent c) {
@@ -117,12 +120,12 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
     }
 
     public void update(Graphics g, JComponent c) {
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
 
     	OntimizeLookAndFeel.update(context, g);
-        context.getPainter().paintViewportBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+        ContextUtils.getPainter(context).paintViewportBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
         paint(context, g);
-        context.dispose();
+        
     }
 
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
@@ -131,13 +134,13 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
     }
 
     public void paint(Graphics g, JComponent c) {
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
 
         paint(context, g);
-        context.dispose();
+        
     }
 
-    protected void paint(OntimizeContext context, Graphics g) {
+    protected void paint(SynthContext context, Graphics g) {
         JComponent c = context.getComponent();
         JViewport viewport = (JViewport) c;
         if (c.isOpaque()) {

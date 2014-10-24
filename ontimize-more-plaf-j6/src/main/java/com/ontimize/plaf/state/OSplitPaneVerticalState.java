@@ -2,6 +2,7 @@ package com.ontimize.plaf.state;
 
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
+import com.sun.java.swing.plaf.nimbus.State;
 
 public class OSplitPaneVerticalState extends State {
 	public OSplitPaneVerticalState() {

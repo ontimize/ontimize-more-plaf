@@ -25,6 +25,7 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 
 import javax.swing.JComponent;
+import javax.swing.JViewport;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.plaf.UIResource;
@@ -47,7 +48,7 @@ import com.sun.java.swing.plaf.nimbus.NimbusStyle;
  *
  * @see javax.swing.plaf.synth.SynthStyle
  */
-public class OntimizeStyleWrapper extends OntimizeStyle {
+public class OntimizeStyleWrapper extends SynthStyle implements OntimizeStyle {
 
     /** Shared SynthGraphics. */
     protected static final SynthGraphicsUtils SYNTH_GRAPHICS = new SynthGraphicsUtils();
@@ -73,7 +74,6 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
      *              ComboBox."ComboBox.arrowButton"
      */
     OntimizeStyleWrapper(SynthStyle style) {
-        super(null, null);
         this.style   = style;
         this.painter = new OntimizeSynthPainterImpl(this);
     }
@@ -90,43 +90,45 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
     }
 
     /**
-     * Re-implements SynthStyle.installDefaults(SynthContext, SynthUI) because
-     * it's package local.
-     *
-     * @param context the context.
-     * @param ui      the UI delegate.
-     */
-    public void installDefaults(OntimizeContext context, SynthUI ui) {
-        // Special case the Border as this will likely change when the LAF
-        // can have more control over this.
-        if (!context.isSubregion()) {
-            JComponent c      = context.getComponent();
-            Border     border = c.getBorder();
-
-            if (border == null || border instanceof UIResource) {
-                c.setBorder(new OntimizeBorder(ui, getInsets(context, null)));
-            }
-        }
-
-        installDefaults(context);
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public void installDefaults(SynthContext ctx) {
         // delegate to the superclass to install defaults such as background,
         // foreground, font, and opaque onto the swing component.
-        style.installDefaults(ctx);
+        this.style.installDefaults(ctx);
     }
 
+    /**
+     * Re-implements SynthStyle.installDefaults(SynthContext, SynthUI) because
+     * it's package local.
+     *
+     * @param context the context.
+     * @param ui      the UI delegate.
+     */
+    public void installDefaults(SynthContext context, SynthUI ui) {
+        // Special case the Border as this will likely change when the LAF
+        // can have more control over this.
+        if (!context.getRegion().isSubregion()) {
+            JComponent c      = context.getComponent();
+            Border     border = c.getBorder();
+
+            if (border == null || border instanceof UIResource) {
+            	if( !(c instanceof JViewport) ){
+            		c.setBorder(new OntimizeBorder(ui, getInsets(context, null)));
+            	}
+            }
+        }
+
+        installDefaults(context);
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public Insets getInsets(SynthContext ctx, Insets in) {
-        return style.getInsets(ctx, in);
+        return this.style.getInsets(ctx, in);
     }
 
     /**
@@ -134,7 +136,7 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
      */
     @Override
     public Color getColorForState(SynthContext ctx, ColorType type) {
-        return style.getColor(ctx, type);
+        return this.style.getColor(ctx, type);
     }
 
     /**
@@ -179,7 +181,7 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
      */
     @Override
     public boolean isOpaque(SynthContext ctx) {
-        return style.isOpaque(ctx);
+        return this.style.isOpaque(ctx);
     }
 
     /**
@@ -187,7 +189,7 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
      */
     @Override
     public Object get(SynthContext ctx, Object key) {
-        return style.get(ctx, key);
+        return this.style.get(ctx, key);
     }
 
     /**
@@ -202,11 +204,11 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
      */
     @SuppressWarnings("unchecked")
     public Painter getBackgroundPainter(SynthContext ctx) {
-        if (!(style instanceof NimbusStyle)) {
+        if (!(this.style instanceof NimbusStyle)) {
             return null;
         }
 
-        return new PainterWrapper(((NimbusStyle) style).getBackgroundPainter(ctx));
+        return new PainterWrapper(((NimbusStyle) this.style).getBackgroundPainter(ctx));
     }
 
     /**
@@ -221,11 +223,11 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
      */
     @SuppressWarnings("unchecked")
     public Painter getForegroundPainter(SynthContext ctx) {
-        if (!(style instanceof NimbusStyle)) {
+        if (!(this.style instanceof NimbusStyle)) {
             return null;
         }
 
-        return new PainterWrapper(((NimbusStyle) style).getForegroundPainter(ctx));
+        return new PainterWrapper(((NimbusStyle) this.style).getForegroundPainter(ctx));
     }
 
     /**
@@ -240,11 +242,11 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
      */
     @SuppressWarnings("unchecked")
     public Painter getBorderPainter(SynthContext ctx) {
-        if (!(style instanceof NimbusStyle)) {
+        if (!(this.style instanceof NimbusStyle)) {
             return null;
         }
 
-        return new PainterWrapper(((NimbusStyle) style).getBorderPainter(ctx));
+        return new PainterWrapper(((NimbusStyle) this.style).getBorderPainter(ctx));
     }
 
     /**
@@ -267,7 +269,9 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
          *      java.lang.Object, int, int)
          */
         public void paint(Graphics2D g, Object object, int width, int height) {
-            painter.paint(g, object, width, height);
+        	if(painter!=null){
+        		painter.paint(g, object, width, height);
+        	}
         }
     }
 }

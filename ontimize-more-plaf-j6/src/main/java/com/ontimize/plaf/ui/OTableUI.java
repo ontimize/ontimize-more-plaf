@@ -26,7 +26,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.LookAndFeel;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.plaf.BorderUIResource;
@@ -46,12 +45,11 @@ import javax.swing.table.TableColumnModel;
 
 import sun.swing.plaf.synth.SynthUI;
 
-import com.ontimize.gui.table.CellRenderer;
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeLookAndFeel.TableCellEditorBorder;
 import com.ontimize.plaf.border.OntimizeBorder;
 import com.ontimize.plaf.painter.ViewportPainter;
+import com.ontimize.plaf.utils.ContextUtils;
 import com.ontimize.plaf.utils.OntimizeLAFColorUtils;
 
 public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeListener, ViewportPainter {
@@ -121,7 +119,7 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 	}
 
 	protected void updateStyle(JTable c) {
-		OntimizeContext context = getContext(c, ENABLED);
+		SynthContext context = getContext(c, ENABLED);
 		SynthStyle oldStyle = style;
 		style = OntimizeLookAndFeel.updateStyle(context, this);
 		
@@ -132,7 +130,7 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
             rendererPane = createCustomCellRendererPane();
             table.add(rendererPane);
 	            
-			context.setComponentState(ENABLED | SELECTED);
+			ContextUtils.setComponentState(context, ENABLED | SELECTED);
 
 			Color sbg = table.getSelectionBackground();
 			if (sbg == null || sbg instanceof UIResource) {
@@ -144,7 +142,7 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 				table.setSelectionForeground(style.getColor(context, ColorType.TEXT_FOREGROUND));
 			}
 
-			context.setComponentState(ENABLED);
+			ContextUtils.setComponentState(context, ENABLED);
 
 			Color gridColor = table.getGridColor();
 			if (gridColor == null || gridColor instanceof UIResource) {
@@ -195,7 +193,7 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 				installKeyboardActions();
 			}
 		}
-		context.dispose();
+		
 	}
 
 	/**
@@ -219,9 +217,9 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 		if (table.getTransferHandler() instanceof UIResource) {
 			table.setTransferHandler(null);
 		}
-		OntimizeContext context = getContext(table, ENABLED);
+		SynthContext context = getContext(table, ENABLED);
 		style.uninstallDefaults(context);
-		context.dispose();
+		
 		style = null;
 		
 		super.uninstallDefaults();
@@ -235,12 +233,15 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 	//
 	// SynthUI
 	//
-	public OntimizeContext getContext(JComponent c) {
+	public SynthContext getContext(JComponent c) {
 		return getContext(c, getComponentState(c));
 	}
 
-	protected OntimizeContext getContext(JComponent c, int state) {
-		return OntimizeContext.getContext(OntimizeContext.class, c, OntimizeLookAndFeel.getRegion(c), style,
+	protected SynthContext getContext(JComponent c, int state) {
+		if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
+		return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style,
 				state);
 	}
 
@@ -257,26 +258,26 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 	//
 
 	public void update(Graphics g, JComponent c) {
-		OntimizeContext context = getContext(c);
+		SynthContext context = getContext(c);
 
 		OntimizeLookAndFeel.update(context, g);
-		context.getPainter().paintTableBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+		ContextUtils.getPainter(context).paintTableBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
 		paint(context, g);
-		context.dispose();
+		
 	}
 
 	public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		((OntimizeContext) context).getPainter().paintTableBorder(context, g, x, y, w, h);
+		ContextUtils.getPainter(context).paintTableBorder(context, g, x, y, w, h);
 	}
 
 	public void paint(Graphics g, JComponent c) {
-		OntimizeContext context = getContext(c);
+		SynthContext context = getContext(c);
 
 		paint(context, g);
-		context.dispose();
+		
 	}
 
-	protected void paint(OntimizeContext context, Graphics g) {
+	protected void paint(SynthContext context, Graphics g) {
 		Rectangle clip = g.getClipBounds();
 
 		Rectangle bounds = table.getBounds();
@@ -349,18 +350,18 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 		
 	}
 	
-    public void paintViewport(OntimizeContext context, Graphics g, JViewport c) {
+    public void paintViewport(SynthContext context, Graphics g, JViewport c) {
         paintViewportBackground(context, g, c, c.getWidth(), c.getHeight(), table.getLocation().y);
     }
     
-    public void paintViewportBackground(OntimizeContext context, Graphics g, JComponent c, int width, int height, int top) {
+    public void paintViewportBackground(SynthContext context, Graphics g, JComponent c, int width, int height, int top) {
     	 // Fill the viewport with the background color of the table
         g.setColor(table.getBackground());
         g.fillRect(0, 0, c.getWidth(), c.getHeight());
         
     }
 
-	protected void paintDropLines(OntimizeContext context, Graphics g) {
+	protected void paintDropLines(SynthContext context, Graphics g) {
 		JTable.DropLocation loc = table.getDropLocation();
 		if (loc == null) {
 			return;
@@ -493,7 +494,7 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 	 * <code>getShowVerticalLines()</code> returns true and paints horizontal
 	 * lines if <code>getShowHorizontalLines()</code> returns true.
 	 */
-	protected void paintGrid(OntimizeContext context, Graphics g, int rMin, int rMax, int cMin, int cMax) {
+	protected void paintGrid(SynthContext context, Graphics g, int rMin, int rMax, int cMin, int cMax) {
 		g.setColor(table.getGridColor());
 
 		Rectangle minCell = table.getCellRect(rMin, cMin, true);
@@ -541,7 +542,7 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 		return -1;
 	}
 
-	protected void paintCells(OntimizeContext context, Graphics g, int rMin, int rMax, int cMin, int cMax) {
+	protected void paintCells(SynthContext context, Graphics g, int rMin, int rMax, int cMin, int cMax) {
 		JTableHeader header = table.getTableHeader();
 		TableColumn draggedColumn = (header == null) ? null : header.getDraggedColumn();
 
@@ -594,7 +595,7 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 		rendererPane.removeAll();
 	}
 
-	protected void paintDraggedArea(OntimizeContext context, Graphics g, int rMin, int rMax,
+	protected void paintDraggedArea(SynthContext context, Graphics g, int rMin, int rMax,
 			TableColumn draggedColumn, int distance) {
 		int draggedColumnIndex = viewIndexForColumn(draggedColumn);
 
@@ -651,7 +652,7 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 		}
 	}
 
-	protected void paintCell(OntimizeContext context, Graphics g, Rectangle cellRect, int row, int column) {
+	protected void paintCell(SynthContext context, Graphics g, Rectangle cellRect, int row, int column) {
 		if (table.isEditing() && table.getEditingRow() == row && table.getEditingColumn() == column) {
 			Component component = table.getEditorComponent();
 			

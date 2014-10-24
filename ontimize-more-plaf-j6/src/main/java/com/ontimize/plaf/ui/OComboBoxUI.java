@@ -42,10 +42,10 @@ import javax.swing.plaf.synth.SynthStyle;
 import sun.swing.plaf.synth.SynthUI;
 
 import com.ontimize.gui.field.DataField;
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.component.OntimizeArrowButton;
 import com.ontimize.plaf.component.OntimizeComboPopup;
+import com.ontimize.plaf.utils.ContextUtils;
 
 public class OComboBoxUI extends BasicComboBoxUI implements PropertyChangeListener, SynthUI{
     protected SynthStyle style;
@@ -118,6 +118,8 @@ public class OComboBoxUI extends BasicComboBoxUI implements PropertyChangeListen
     @Override
     public void installUI(JComponent c) {
         buttonHandler = new ButtonHandler();
+        comboBox = (JComboBox)c;
+        popup = createPopup();
         super.installUI(c);
     }
 
@@ -148,13 +150,12 @@ public class OComboBoxUI extends BasicComboBoxUI implements PropertyChangeListen
 				((DataField) dataField).setFontColor(comboBox.getForeground());
 			}
 		}
-        
         updateStyle(comboBox);
     }
 
     protected void updateStyle(JComboBox comboBox) {
         SynthStyle oldStyle = style;
-        OntimizeContext context = getContext(comboBox, ENABLED);
+        SynthContext context = getContext(comboBox, ENABLED);
 
         style = OntimizeLookAndFeel.updateStyle(context, this);
         if (style != oldStyle) {
@@ -172,7 +173,7 @@ public class OComboBoxUI extends BasicComboBoxUI implements PropertyChangeListen
             forceOpaque = style.getBoolean(context,
                     "ComboBox.forceOpaque", false);
         }
-        context.dispose();
+        
     }
 
     @Override
@@ -194,10 +195,10 @@ public class OComboBoxUI extends BasicComboBoxUI implements PropertyChangeListen
 
     @Override
     protected void uninstallDefaults() {
-        OntimizeContext context = getContext(comboBox, ENABLED);
+        SynthContext context = getContext(comboBox, ENABLED);
 
         style.uninstallDefaults(context);
-        context.dispose();
+        
         style = null;
     }
 
@@ -212,13 +213,16 @@ public class OComboBoxUI extends BasicComboBoxUI implements PropertyChangeListen
     }
 
     @Override
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
-    protected OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c,
-                    OntimizeLookAndFeel.getRegion(c), style, state);
+    protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
+        return new SynthContext( c,
+                OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
     protected Region getRegion(JComponent c) {
@@ -331,24 +335,24 @@ public class OComboBoxUI extends BasicComboBoxUI implements PropertyChangeListen
 
     @Override
     public void update(Graphics g, JComponent c) {
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
 
         OntimizeLookAndFeel.update(context, g);
-        context.getPainter().paintComboBoxBackground(context, g, 0, 0,
+        ContextUtils.getPainter(context).paintComboBoxBackground(context, g, 0, 0,
                                                   c.getWidth(), c.getHeight());
         paint(context, g);
-        context.dispose();
+        
     }
 
     @Override
     public void paint(Graphics g, JComponent c) {
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
 
         paint(context, g);
-        context.dispose();
+        
     }
 
-    protected void paint(OntimizeContext context, Graphics g) {
+    protected void paint(SynthContext context, Graphics g) {
         hasFocus = comboBox.hasFocus();
         if ( !comboBox.isEditable() ) {
             Rectangle r = rectangleForCurrentValue();
@@ -359,7 +363,7 @@ public class OComboBoxUI extends BasicComboBoxUI implements PropertyChangeListen
     @Override
     public void paintBorder(SynthContext context, Graphics g, int x,
                             int y, int w, int h) {
-        ((OntimizeContext)context).getPainter().paintComboBoxBorder(context, g, x, y, w, h);
+    	ContextUtils.getPainter(context).paintComboBoxBorder(context, g, x, y, w, h);
     }
 
     /**

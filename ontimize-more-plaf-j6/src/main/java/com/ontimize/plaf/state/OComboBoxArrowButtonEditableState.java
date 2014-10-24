@@ -5,6 +5,9 @@ import java.awt.Component;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
+import com.sun.java.swing.plaf.nimbus.State;
+
+@SuppressWarnings("restriction")
 public class OComboBoxArrowButtonEditableState extends State {
 	public OComboBoxArrowButtonEditableState() {
 		super("Editable");

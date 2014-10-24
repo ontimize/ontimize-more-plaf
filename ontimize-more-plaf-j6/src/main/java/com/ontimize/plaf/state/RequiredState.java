@@ -15,29 +15,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: OProgressBarFinishedState.java,v 1.2 2013/06/25 06:27:06 daniel.grana Exp $
+ * $Id: OToolBarNorthState.java,v 1.3 2013/06/25 06:27:06 daniel.grana Exp $
  */
 package com.ontimize.plaf.state;
 
 import javax.swing.JComponent;
-import javax.swing.JProgressBar;
+
+import com.ontimize.gui.field.DataField;
 import com.sun.java.swing.plaf.nimbus.State;
 /**
- * Is progress bar in finished state?
+ * Is the toolbar on the (top) north?
  */
-public class OProgressBarFinishedState extends State {
+public class RequiredState extends State {
 
     /**
-     * Creates a new ProgressBarFinishedState object.
+     * Creates a new RequiredStare object.
      */
-    public OProgressBarFinishedState() {
-        super("Finished");
+    public RequiredState() {
+        super("Required");
     }
+    
 
     /**
      * {@inheritDoc}
      */
     public boolean isInState(JComponent c) {
-        return ((JProgressBar) c).getPercentComplete() == 1.0;
+    	if(c.getParent() instanceof DataField && c.isEnabled()){
+    		DataField dF = (DataField)c.getParent();
+    		if(dF.isRequired()){
+    			return true;
+    		}
+    	} else if(c.getParent() != null && c.getParent().getParent() instanceof DataField && c.isEnabled()){
+    		DataField dF = (DataField)c.getParent().getParent();
+    		if(dF.isRequired()){
+    			return true;
+    		}
+    	}
+        return false;
     }
 }

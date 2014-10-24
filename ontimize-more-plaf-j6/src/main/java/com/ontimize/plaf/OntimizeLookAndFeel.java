@@ -21,16 +21,10 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -38,7 +32,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.LookAndFeel;
@@ -175,8 +168,10 @@ import com.ontimize.plaf.state.OToolBarEastState;
 import com.ontimize.plaf.state.OToolBarNorthState;
 import com.ontimize.plaf.state.OToolBarSouthState;
 import com.ontimize.plaf.state.OToolBarWestState;
+import com.ontimize.plaf.state.RequiredState;
 import com.ontimize.plaf.utils.OntimizeLAFColorUtils;
 import com.ontimize.plaf.utils.OntimizeLAFParseUtils;
+import com.ontimize.plaf.utils.ReflectionUtils;
 import com.ontimize.plaf.utils.StyleUtil;
 import com.ontimize.util.swing.ButtonSelection;
 import com.ontimize.util.swing.CollapsibleButtonPanel;
@@ -199,7 +194,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 
 	protected boolean decorated = false;
 
-	public UIDefaults uidefaults = null;
+	protected boolean initialized = false;
 
 	/** Refer to setSelectedUI */
 	public static ComponentUI selectedUI;
@@ -216,28 +211,6 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 	 * The radius of component corners.
 	 */
 	public static double defaultRadius = new Double(7);// Double.MAX_VALUE;
-
-	/**
-	 * The map of SynthStyles. This map is keyed by Region. Each Region maps to
-	 * a List of LazyStyles. Each LazyStyle has a reference to the prefix that
-	 * was registered with it. This reference can then be inspected to see if it
-	 * is the proper lazy style.
-	 * 
-	 * <p>
-	 * There can be more than one LazyStyle for a single Region if there is more
-	 * than one prefix defined for a given region. For example, both Button and
-	 * "MyButton" might be prefixes assigned to the Region.Button region.
-	 * </p>
-	 */
-	protected Map<Region, List<LazyStyle>> styleMap = new HashMap<Region, List<LazyStyle>>();
-
-	/**
-	 * A map of regions which have been registered. This mapping is maintained
-	 * so that the Region can be found based on prefix in a very fast manner.
-	 * This is used in the "matches" method of LazyStyle.
-	 */
-
-	protected Map<String, Region> registeredRegions = new HashMap<String, Region>();
 
 	/**
 	 * Our fallback style to avoid NPEs if the proper style cannot be found in
@@ -533,6 +506,9 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 
 		// TextField: 
 		String compName = "TextField";
+		d.put(compName+".States", "Enabled,Disabled,Focused,Selected,Required");
+		d.put(compName+".Required", new RequiredState());
+		
 		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
 		setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
 		
@@ -868,7 +844,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		// Initialize ScrollPane
 		String compName = "ScrollPane";
 		String painterClass = "com.ontimize.plaf.painter.OScrollPanePainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(4, 4, 4, 4), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(4, 4, 4, 4), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + ".contentMargins", new InsetsUIResource(4, 4, 4, 4));
 		setBoolean(d, compName, "opaque", "true");
 		setBoolean(d, compName, "useChildTextComponentFocus", "true");
@@ -2253,8 +2229,9 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		
 
 		// OTreeCellRendererPainter
-		compName = "\"Tree.cellRenderer\"";
+		compName = "Tree:\"Tree.cellRenderer\"";
 
+		setBoolean(d, compName, "opaque", "true");
 		setInsetsUIResource(d, compName, "contentMargins", "0 2 0 30");
 		setInteger(d, compName, "iconTextGap", "10");
 		Font tCRFont = getDefaultFont();
@@ -2585,7 +2562,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 	}
 	
 	protected void defineCardPanel(UIDefaults d) {
-		String prefix = "CardPanel";
+		String prefix = "\"CardPanel\"";
 
 		setColorUIResource(d, prefix, "background", "#FFFFFF14");
 		setBoolean(d, prefix, "opaque", "false");
@@ -3426,7 +3403,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		// OntimizeLAFColorUtils.colorHexToColor("#E7EFF1"));
 		// uidefaults.put("RootPane.border.arc", new Integer(8));
 		//
-		uidefaults.put("RootPane.titlePane.background", OntimizeLAFColorUtils.colorHexToColor("#05A9C4"));
+		d.put("RootPane.titlePane.background", OntimizeLAFColorUtils.colorHexToColor("#05A9C4"));
 		// uidefaults.put("RootPane.titlePane.height", new Integer(25));
 		// uidefaults.put("RootPane.titlePane.line.background",
 		// OntimizeLAFColorUtils.colorHexToColor("#FFFFFF", 102));
@@ -3441,10 +3418,12 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 	 * UIDefaults Object by using the put(key, value) method.
 	 * 
 	 */
+	@SuppressWarnings("restriction")
 	@Override
 	public UIDefaults getDefaults() {
-		if (uidefaults == null) {
-			uidefaults = super.getDefaults();
+		if (!initialized) {
+			initialized = true;
+			UIDefaults uidefaults = super.getDefaults();
 
 			// Define customized UI's...
 			defineUI(uidefaults, "ComboBox");
@@ -3610,22 +3589,13 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 			JDialog.setDefaultLookAndFeelDecorated(decorated);
 
 		}
-		return uidefaults;
+		return super.getDefaults();
 	}
 
 	protected void defineUI(UIDefaults d, String uiName) {
 		uiName = uiName + "UI";
 		d.put(uiName, UI_PACKAGE_PREFIX + uiName);
 	}
-
-	// @Override
-	// protected void initClassDefaults(UIDefaults table) {
-	// super.initClassDefaults(table);
-	// Object[] objects = new Object[]{
-	// "RootPaneUI", "com.ontimize.plaf.OntimizeRootPaneUI",
-	// };
-	// table.putDefaults(objects) ;
-	// }
 
 	/**
 	 * Registers the given region and prefix. The prefix, if it contains quoted
@@ -3647,34 +3617,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 	 *            ToolBar:"MyComboBox":"ComboBox.arrowButton"
 	 */
 	public void register(Region region, String prefix) {
-		// validate the method arguments
-		if (region == null || prefix == null) {
-			throw new IllegalArgumentException("Neither Region nor Prefix may be null");
-		}
-
-		// Add a LazyStyle for this region/prefix to styleMap.
-		List<LazyStyle> styles = styleMap.get(region);
-
-		if (styles == null) {
-			styles = new LinkedList<LazyStyle>();
-			styles.add(new LazyStyle(prefix));
-			styleMap.put(region, styles);
-		} else {
-
-			// iterate over all the current styles and see if this prefix has
-			// already been registered. If not, then register it.
-			for (LazyStyle s : styles) {
-
-				if (prefix.equals(s.prefix)) {
-					return;
-				}
-			}
-
-			styles.add(new LazyStyle(prefix));
-		}
-
-		// add this region to the map of registered regions
-		registeredRegions.put(region.getName(), region);
+		super.register(region, prefix);
 	}
 
 	/**
@@ -3702,44 +3645,10 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 	 * 
 	 * @return the style associated with the given region and component.
 	 */
-	SynthStyle getOntimizeStyle(JComponent c, Region r) {
-		// validate method arguments
-		if (c == null || r == null) {
-			throw new IllegalArgumentException("Neither comp nor r may be null");
-		}
-
-		// if there are no lazy styles registered for the region r, then return
-		// the default style
-		List<LazyStyle> styles = styleMap.get(r);
-
-		if (styles == null || styles.size() == 0) {
-			return defaultStyle;
-		}
-
-		// Look for the best SynthStyle for this component/region pair.
-		LazyStyle foundStyle = null;
-
-		for (LazyStyle s : styles) {
-
-			if (s.matches(c)) {
-
-				/*
-				 * Replace the foundStyle if foundStyle is null, or if the new
-				 * style "s" is more specific (ie, its path was longer), or if
-				 * the foundStyle was "simple" and the new style was not (ie:
-				 * the foundStyle was for something like Button and the new
-				 * style was for something like "MyButton", hence, being more
-				 * specific). In all cases, favor the most specific style found.
-				 */
-				if (foundStyle == null || (foundStyle.parts.length < s.parts.length) || (foundStyle.parts.length == s.parts.length && foundStyle.simple && !s.simple)) {
-					foundStyle = s;
-				}
-			}
-		}
-
-		// return the style, if found, or the default style if not found
-		return foundStyle == null ? defaultStyle : foundStyle.getStyle(c);
+	public static SynthStyle getOntimizeStyle(JComponent c, Region r) {
+		return  SynthLookAndFeel.getStyle(c, r);
 	}
+	
 
 	/**
 	 * A convience method that will reset the Style of StyleContext if
@@ -3752,7 +3661,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 	 * 
 	 * @return the new, updated style.
 	 */
-	public static SynthStyle updateStyle(OntimizeContext context, SynthUI ui) {
+	public static SynthStyle updateStyle(SynthContext context, SynthUI ui) {
 		SynthStyle newStyle = SynthLookAndFeel.getStyle(context.getComponent(), context.getRegion());
 		SynthStyle oldStyle = context.getStyle();
 
@@ -3762,8 +3671,12 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 				oldStyle.uninstallDefaults(context);
 			}
 
-			context.setStyle(newStyle);
-			((OntimizeStyle) newStyle).installDefaults(context, ui);
+			ReflectionUtils.invoke(context, "setStyle", newStyle);
+			if (newStyle instanceof OntimizeStyle) {
+				((OntimizeStyle) newStyle).installDefaults(context, ui);
+			} else {
+				newStyle.installDefaults(context);
+			}
 		}
 
 		return newStyle;
@@ -3941,12 +3854,12 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 	@Override
 	public void initialize() {
 		super.initialize();
-
+		final SynthStyleFactory styleFactory = SynthLookAndFeel.getStyleFactory();
 		// create synth style factory
 		setStyleFactory(new SynthStyleFactory() {
 			@Override
 			public SynthStyle getStyle(JComponent c, Region r) {
-				SynthStyle style = getOntimizeStyle(c, r);
+				SynthStyle style = styleFactory.getStyle(c, r);
 
 				if (!(style instanceof OntimizeStyle)) {
 					style = new OntimizeStyleWrapper(style);
@@ -3966,11 +3879,11 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 	@Override
 	public void uninitialize() {
 		super.uninitialize();
-		uidefaults.clear();
-		OntimizeStyle.uninitialize();
+//		uidefaults.clear();
+//		OntimizeStyle.uninitialize();
 		com.ontimize.plaf.utils.ImageCache.getInstance().flush();
-		styleMap.clear();
-		registeredRegions.clear();
+//		styleMap.clear();
+//		registeredRegions.clear();
 		setStyleFactory(null);
 	}
 
@@ -4069,9 +3982,6 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		register(Region.TOOL_TIP, "ToolTip");
 		register(Region.TREE, "Tree");
 		register(Region.TREE_CELL, "Tree:TreeCell");
-
-		// register(Region.LABEL, "\"Tree.cellRenderer\"");
-
 		register(Region.ROOT_PANE, "RootPane");
 
 		// ********************************************************************
@@ -4096,7 +4006,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		register(Region.PANEL, "\"FormExt\"");
 		register(Region.PANEL, "\"Row\"");
 		register(Region.PANEL, "\"Column\"");
-		register(Region.PANEL, "CardPanel");
+		register(Region.PANEL, "\"CardPanel\"");
 		register(Region.PANEL, "\"Row\"");
 		register(Region.PANEL, "\"Grid\"");
 		register(Region.PANEL, "\"TableButtonPanel\"");
@@ -4246,323 +4156,8 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		selectedUI = null;
 	}
 
-	/**
-	 * A class which creates the OntimizeStyle associated with it lazily, but
-	 * also manages a lot more information about the style. It is less of a
-	 * LazyValue type of class, and more of an Entry or Item type of class, as
-	 * it represents an entry in the list of LazyStyles in the map styleMap.
-	 * 
-	 * <p>
-	 * The primary responsibilities of this class include:
-	 * </p>
-	 * 
-	 * <ul>
-	 * <li>Determining whether a given component/region pair matches this style</li>
-	 * <li>Splitting the prefix specified in the constructor into its
-	 * constituent parts to facilitate quicker matching</li>
-	 * <li>Creating and vending a OntimizeStyle lazily.</li>
-	 * </ul>
-	 */
-	protected class LazyStyle {
-
-		/**
-		 * The prefix this LazyStyle was registered with. Something like Button
-		 * or ComboBox:"ComboBox.arrowButton"
-		 */
-		protected String prefix;
-
-		/** Whether or not this LazyStyle represents an unnamed component */
-		protected boolean simple = true;
-
-		/**
-		 * The various parts, or sections, of the prefix. For example, the
-		 * prefix: ComboBox:"ComboBox.arrowButton" will be broken into two
-		 * parts, ComboBox and "ComboBox.arrowButton"
-		 */
-		protected Part[] parts;
-
-		/** Cached shared style. */
-		protected OntimizeStyle style;
-
-		/**
-		 * A weakly referenced hash map such that if the reference JComponent
-		 * key is garbage collected then the entry is removed from the map. This
-		 * cache exists so that when a JComponent has overrides in its client
-		 * map, a unique style will be created and returned for that JComponent
-		 * instance, always. In such a situation each JComponent instance must
-		 * have its own instance of OntimizeStyle.
-		 */
-		protected WeakHashMap<JComponent, WeakReference<OntimizeStyle>> overridesCache;
-
-		/**
-		 * Create a new LazyStyle.
-		 * 
-		 * @param prefix
-		 *            The prefix associated with this style. Cannot be null.
-		 */
-		protected LazyStyle(String prefix) {
-			if (prefix == null) {
-				throw new IllegalArgumentException("The prefix must not be null");
-			}
-
-			this.prefix = prefix;
-
-			/*
-			 * There is one odd case that needs to be supported here: cell
-			 * renderers. A cell renderer is defined as a named internal
-			 * component, so for example: List."List.cellRenderer" The problem
-			 * is that the component named List.cellRenderer is not a child of a
-			 * JList. Rather, it is treated more as a direct component.
-			 * 
-			 * Thus, if the prefix ends with "cellRenderer", then remove all the
-			 * previous dotted parts of the prefix name so that it becomes, for
-			 * example: "List.cellRenderer" Likewise, we have a hacked work
-			 * around for cellRenderer, renderer, and listRenderer.
-			 */
-			String temp = prefix;
-
-			if (temp.endsWith("cellRenderer\"") || temp.endsWith("renderer\"") || temp.endsWith("listRenderer\"")) {
-				temp = temp.substring(temp.lastIndexOf(":\"") + 1);
-			} else if (temp.endsWith("QuickFilter\"")) {
-				temp = temp.substring(temp.lastIndexOf(":\"") + 1);
-			} else if (temp.endsWith("ReferenceExtCode\"")) {
-				temp = temp.substring(temp.lastIndexOf(":\"") + 1);
-			} else if (temp.endsWith("ReferenceExt\"")) {
-				temp = temp.substring(temp.lastIndexOf(":\"") + 1);
-			}
-
-			// Otherwise, normal code path.
-			List<String> sparts = split(temp);
-
-			parts = new Part[sparts.size()];
-
-			for (int i = 0; i < parts.length; i++) {
-				parts[i] = new Part(sparts.get(i));
-
-				if (parts[i].named) {
-					simple = false;
-				}
-			}
-		}
-
-		/**
-		 * Gets the style. Creates it if necessary.
-		 * 
-		 * @param c
-		 *            the component for which to get the style.
-		 * 
-		 * @return the style
-		 */
-		SynthStyle getStyle(JComponent c) {
-			// If the component has overrides, it gets its own unique style
-			// instead of the shared style.
-			if (c.getClientProperty("Ontimize.Overrides") != null) {
-
-				if (overridesCache == null) {
-					overridesCache = new WeakHashMap<JComponent, WeakReference<OntimizeStyle>>();
-				}
-
-				WeakReference<OntimizeStyle> ref = overridesCache.get(c);
-				OntimizeStyle s = ref == null ? null : ref.get();
-
-				if (s == null) {
-					s = new OntimizeStyle(prefix, c);
-					overridesCache.put(c, new WeakReference<OntimizeStyle>(s));
-				}
-
-				return s;
-			}
-
-			// Lazily create the style if necessary.
-			if (style == null) {
-				style = new OntimizeStyle(prefix, null);
-			}
-
-			// Return the style.
-			return style;
-		}
-
-		/**
-		 * This LazyStyle is a match for the given component if, and only if,
-		 * for each part of the prefix the component hierarchy matches exactly.
-		 * That is, if given "a":something:"b", then: c.getName() must equals
-		 * "b" c.getParent() can be anything c.getParent().getParent().getName()
-		 * must equal "a".
-		 * 
-		 * @param c
-		 *            the component to test againts the current style hierarchy.
-		 * 
-		 * @return {@code true} if the component matches the style,
-		 *         {@code false} otherwise.
-		 */
-		boolean matches(JComponent c) {
-			return matches(c, parts.length - 1);
-		}
-
-		/**
-		 * Internal method to determine whether a component matches a part of a
-		 * style. Recurses to do the work.
-		 * 
-		 * @param c
-		 *            the component to test against the current style hierarchy.
-		 * @param partIndex
-		 *            the index of the part of the hierarchy.
-		 * 
-		 * @return {@code true} if the component matches the style,
-		 *         {@code false} otherwise.
-		 */
-		protected boolean matches(Component c, int partIndex) {
-			if (partIndex < 0)
-				return true;
-
-			if (c == null)
-				return false;
-			// only get here if partIndex > 0 and c == null
-
-			String name = c.getName();
-
-			if (parts[partIndex].named && parts[partIndex].s.equals(name)) {
-
-				// so far so good, recurse
-				return matches(c.getParent(), partIndex - 1);
-			} else if (!parts[partIndex].named) {
-
-				// If c is not named, and parts[partIndex] has an expected class
-				// type registered, then check to make sure c is of the right
-				// type;
-				Class clazz = parts[partIndex].c;
-
-				if (clazz != null && clazz.isAssignableFrom(c.getClass())) {
-
-					// so far so good, recurse
-					return matches(c.getParent(), partIndex - 1);
-				} else if (clazz == null && registeredRegions.containsKey(parts[partIndex].s)) {
-					Region r = registeredRegions.get(parts[partIndex].s);
-					Component parent = r.isSubregion() ? c : c.getParent();
-
-					// special case the JInternalFrameTitlePane, because it
-					// doesn't fit the mold. very, very funky.
-					if (r == Region.INTERNAL_FRAME_TITLE_PANE && parent != null && parent instanceof JInternalFrame.JDesktopIcon) {
-						JInternalFrame.JDesktopIcon icon = (JInternalFrame.JDesktopIcon) parent;
-
-						parent = icon.getInternalFrame();
-					}
-					// else if (r == Region.INTERNAL_FRAME_TITLE_PANE && c
-					// instanceof OntimizeTitlePane) {
-					//
-					// // Also special case the title pane. Its parent is the
-					// // layered pane and hasn't yet been assigned, but we
-					// // want it to behave as if its parent is an internal
-					// // frame.
-					// if (partIndex <= 0
-					// || (parts[partIndex - 1].c != null && parts[partIndex -
-					// 1].c.isAssignableFrom(JInternalFrame.class))) {
-					// return true;
-					// }
-					// }
-
-					// it was the name of a region. So far, so good. Recurse.
-					return matches(parent, partIndex - 1);
-				}
-			}
-
-			return false;
-		}
-
-		/**
-		 * Given some dot separated prefix, split on the colons that are not
-		 * within quotes, and not within brackets.
-		 * 
-		 * @param prefix
-		 *            the style prefix.
-		 * 
-		 * @return a list of colon-separated elements.
-		 */
-		protected List<String> split(String prefix) {
-			List<String> parts = new ArrayList<String>();
-			int bracketCount = 0;
-			boolean inquotes = false;
-			int lastIndex = 0;
-
-			for (int i = 0; i < prefix.length(); i++) {
-				char c = prefix.charAt(i);
-
-				if (c == '[') {
-					bracketCount++;
-
-					continue;
-				} else if (c == '"') {
-					inquotes = !inquotes;
-
-					continue;
-				} else if (c == ']') {
-					bracketCount--;
-
-					if (bracketCount < 0) {
-						throw new RuntimeException("Malformed prefix: " + prefix);
-					}
-
-					continue;
-				}
-
-				if (c == ':' && !inquotes && bracketCount == 0) {
-
-					// found a character to split on.
-					parts.add(prefix.substring(lastIndex, i));
-					lastIndex = i + 1;
-				}
-			}
-
-			if (lastIndex < prefix.length() - 1 && !inquotes && bracketCount == 0) {
-				parts.add(prefix.substring(lastIndex));
-			}
-
-			return parts;
-
-		}
-
-		/**
-		 * A protected class representing the parts of a style name.
-		 */
-		protected class Part {
-			protected String s;
-
-			// true if this part represents a component name
-			protected boolean named;
-			protected Class c;
-
-			/**
-			 * Creates a new Part object.
-			 * 
-			 * @param s
-			 *            the element of the style name representing this part.
-			 */
-			Part(String s) {
-				named = s.charAt(0) == '"' && s.charAt(s.length() - 1) == '"';
-
-				if (named) {
-					this.s = s.substring(1, s.length() - 1);
-				} else {
-					this.s = s;
-
-					// TODO use a map of known regions for Synth and Swing, and
-					// then use [classname] instead of org_class_name style
-					try {
-						c = Class.forName("javax.swing.J" + s);
-					} catch (Exception e) {
-					}
-
-					try {
-						c = Class.forName(s.replace("_", "."));
-					} catch (Exception e) {
-					}
-				}
-			}
-		}
-	}
-
 	public Image getImage(String key) {
-		String path = (String) uidefaults.get(key);
+		String path = (String) super.getDefaults().get(key);
 
 		if (path != null) {
 			URL url = OntimizeLookAndFeel.class.getClassLoader().getResource(path);
@@ -4572,7 +4167,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 	}
 
 	public static void clearReferences() {
-		OntimizeContext.clearReferences();
+//		SynthContext.clearReferences();
 		OntimizeRegion.clearReferences();
 		OLoweredBorder.clearReferences();
 		ShapeFactory.clearReferences();

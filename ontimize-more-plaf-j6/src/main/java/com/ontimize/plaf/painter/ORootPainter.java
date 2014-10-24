@@ -16,15 +16,14 @@ import javax.swing.JToolBar;
 
 import com.ontimize.plaf.state.OToolBarNorthState;
 import com.ontimize.plaf.state.OToolBarSouthState;
-import com.ontimize.plaf.state.State;
 
 
 public class ORootPainter extends AbstractRegionPainter {
 
     protected static final int TITLE_BAR_HEIGHT = 25;
 
-    protected static final State toolBarNorthState = new OToolBarNorthState();
-    protected static final State toolBarSouthState = new OToolBarSouthState();
+    protected static final OToolBarNorthState toolBarNorthState = new OToolBarNorthState();
+    protected static final OToolBarSouthState toolBarSouthState = new OToolBarSouthState();
 
     /**
      * Control state.

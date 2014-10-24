@@ -13,7 +13,7 @@ import javax.swing.text.Element;
 import javax.swing.text.PasswordView;
 import javax.swing.text.View;
 
-import com.ontimize.plaf.OntimizeContext;
+import com.ontimize.plaf.utils.ContextUtils;
 
 /**
  * Sea Glass PasswordField UI delegate.
@@ -56,12 +56,12 @@ public class OPasswordFieldUI extends OTextFieldUI {
     }
 
   
-    void paintBackground(OntimizeContext context, Graphics g, JComponent c) {
-        context.getPainter().paintPasswordFieldBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+    void paintBackground(SynthContext context, Graphics g, JComponent c) {
+        ContextUtils.getPainter(context).paintPasswordFieldBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
     }
 
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-        ((OntimizeContext) context).getPainter().paintPasswordFieldBorder(context, g, x, y, w, h);
+    	ContextUtils.getPainter(context).paintPasswordFieldBorder(context, g, x, y, w, h);
     }
 
     /**

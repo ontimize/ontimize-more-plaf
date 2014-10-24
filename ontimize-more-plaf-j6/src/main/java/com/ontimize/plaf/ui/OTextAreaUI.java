@@ -6,9 +6,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.UIResource;
@@ -20,8 +18,8 @@ import javax.swing.text.JTextComponent;
 import sun.swing.plaf.synth.SynthUI;
 
 import com.ontimize.gui.field.DataField;
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
+import com.ontimize.plaf.utils.ContextUtils;
 
 public class OTextAreaUI extends BasicTextAreaUI implements SynthUI, FocusListener {
     protected SynthStyle style;
@@ -66,13 +64,13 @@ public class OTextAreaUI extends BasicTextAreaUI implements SynthUI, FocusListen
 	}
 
     protected void uninstallDefaults() {
-        OntimizeContext context = getContext(getComponent(), ENABLED);
+        SynthContext context = getContext(getComponent(), ENABLED);
 
         getComponent().putClientProperty("caretAspectRatio", null);
         getComponent().removeFocusListener(this);
 
         style.uninstallDefaults(context);
-        context.dispose();
+        
         style = null;
         super.uninstallDefaults();
         
@@ -92,7 +90,7 @@ public class OTextAreaUI extends BasicTextAreaUI implements SynthUI, FocusListen
     }
 
     protected void updateStyle(JTextComponent comp) {
-    	OntimizeContext context = getContext(comp, ENABLED);
+    	SynthContext context = getContext(comp, ENABLED);
         SynthStyle oldStyle = style;
 
         style = OntimizeLookAndFeel.updateStyle(context, this);
@@ -105,16 +103,18 @@ public class OTextAreaUI extends BasicTextAreaUI implements SynthUI, FocusListen
                 installKeyboardActions();
             }
         }
-        context.dispose();
+        
     }
 
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
-    protected OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c,
-                    OntimizeLookAndFeel.getRegion(c), style, state);
+    protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
+    	return new SynthContext(c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
     protected int getComponentState(JComponent c) {
@@ -122,24 +122,16 @@ public class OTextAreaUI extends BasicTextAreaUI implements SynthUI, FocusListen
     }
 
     public void update(Graphics g, JComponent c) {
-    	
-    	if (c.getParent() instanceof JViewport) {
-			// el emptyborder es estático, no se crea al llamar al createemptyborder
-			if (!c.getBorder().equals(BorderFactory.createEmptyBorder())) {
-				c.setBorder(BorderFactory.createEmptyBorder());
-			}
-		}
-    	
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
 
         OntimizeLookAndFeel.update(context, g);
-        context.getPainter().paintTextAreaBackground(context,
+        ContextUtils.getPainter(context).paintTextAreaBackground(context,
                           g, 0, 0, c.getWidth(), c.getHeight());
         paint(context, g);
-        context.dispose();
+        
     }
 
-    protected void paint(OntimizeContext context, Graphics g) {
+    protected void paint(SynthContext context, Graphics g) {
         super.paint(g, getComponent());
     }
     
@@ -150,7 +142,7 @@ public class OTextAreaUI extends BasicTextAreaUI implements SynthUI, FocusListen
 
     public void paintBorder(SynthContext context, Graphics g, int x,
                             int y, int w, int h) {
-        ((OntimizeContext)context).getPainter().paintTextAreaBorder(context, g, x, y, w, h);
+        ContextUtils.getPainter(context).paintTextAreaBorder(context, g, x, y, w, h);
     }
 
     /**

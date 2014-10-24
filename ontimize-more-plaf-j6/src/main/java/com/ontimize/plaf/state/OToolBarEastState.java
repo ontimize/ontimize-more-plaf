@@ -25,6 +25,8 @@ import javax.swing.JComponent;
 import javax.swing.JToolBar;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
+import com.sun.java.swing.plaf.nimbus.State;
+
 /**
  * Is the toolbar on the east (left) side?
  */

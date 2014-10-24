@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.Window;
 
 import javax.swing.JComponent;
-
+import com.sun.java.swing.plaf.nimbus.State;
 /**
  * Is root pane's window in focused state?
  */

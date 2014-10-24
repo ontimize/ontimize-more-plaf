@@ -31,10 +31,9 @@ import sun.swing.plaf.synth.SynthUI;
 
 import com.ontimize.gui.Form.StatusBar;
 import com.ontimize.gui.field.DataField;
-import com.ontimize.plaf.OSynthConstants;
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
+import com.ontimize.plaf.utils.ContextUtils;
+import com.ontimize.plaf.utils.ReflectionUtils;
 
 public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusListener {
 	
@@ -64,7 +63,7 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
      * @param c DOCUMENT ME!
      */
     protected void updateStyle(JTextComponent c) {
-        OntimizeContext context  = getContext(c, ENABLED);
+        SynthContext context  = getContext(c, ENABLED);
         SynthStyle      oldStyle = style;
 
         style = OntimizeLookAndFeel.updateStyle(context, this);
@@ -78,7 +77,7 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
             }
         }
 
-        context.dispose();
+        
 
     }
     
@@ -86,12 +85,12 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
      * protected method to update styles.
      *
      * @param c       the JTextField component.
-     * @param context the OntimizeContext.
+     * @param context the SynthContext.
      * @param prefix  the control prefix, e.g. "TextField",
      *                "FormattedTextField", or "PasswordField".
      */
-    static void updateStyle(JTextComponent c, OntimizeContext context, String prefix) {
-    	OntimizeStyle style = (OntimizeStyle) context.getStyle();
+    static void updateStyle(JTextComponent c, SynthContext context, String prefix) {
+    	SynthStyle style = context.getStyle();
 
     	if (c instanceof StatusBar){
     	    ((StatusBar)c).setLFConfiguration(true);
@@ -106,7 +105,8 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
         Color fg = c.getForeground();
 
         if (fg == null || fg instanceof UIResource) {
-            fg = style.getColorForState(context, ColorType.TEXT_FOREGROUND);
+//            fg = style.getColorForState(context, ColorType.TEXT_FOREGROUND);
+        	fg = (Color)ReflectionUtils.invoke(style, "getColorForState", new Object[]{context, ColorType.TEXT_FOREGROUND});
             if (fg != null) {
                 c.setForeground(fg);
             }
@@ -118,7 +118,7 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
             c.putClientProperty("caretAspectRatio", ar);
         }
 
-        context.setComponentState(SELECTED | FOCUSED);
+        ContextUtils.setComponentState(context, SELECTED | FOCUSED);
 
         Color s = c.getSelectionColor();
 
@@ -132,7 +132,7 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
             c.setSelectedTextColor(style.getColor(context, ColorType.TEXT_FOREGROUND));
         }
 
-        context.setComponentState(DISABLED);
+        ContextUtils.setComponentState(context, DISABLED);
 
         Color dfg = c.getDisabledTextColor();
 
@@ -171,7 +171,7 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
      */
     public void update(Graphics g, JComponent c) {
     	
-    	OntimizeContext context = getContext(c);
+    	SynthContext context = getContext(c);
 
     	OntimizeLookAndFeel.update(context, g);
         paintBackground(context, g, c);
@@ -184,7 +184,7 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
         }
         
         paint(context, g);
-        context.dispose();
+        
     	
     }
     
@@ -200,7 +200,7 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
      * @param context DOCUMENT ME!
      * @param g       DOCUMENT ME!
      */
-    protected void paint(OntimizeContext context, Graphics g) {
+    protected void paint(SynthContext context, Graphics g) {
         JTextComponent c = getComponent();
         
         if (c instanceof StatusBar){
@@ -230,33 +230,18 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
     	}
     }
     
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
-    protected OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c,
-        		OntimizeLookAndFeel.getRegion(c), style, state);
+    protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
+    	return new SynthContext(c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
     protected int getComponentState(JComponent c) {
-    	if(c.getParent() instanceof DataField && c.isEnabled()){
-    		DataField dF = (DataField)c.getParent();
-    		if(dF.isRequired()){
-    			if (c.isFocusOwner()) {
-    				return OSynthConstants.REQUIRED | SynthUI.FOCUSED;
-    			}
-    			return OSynthConstants.REQUIRED;
-    		}
-    	} else if(c.getParent() != null && c.getParent().getParent() instanceof DataField && c.isEnabled()){
-    		DataField dF = (DataField)c.getParent().getParent();
-    		if(dF.isRequired()){
-    			if (c.isFocusOwner()) {
-    				return OSynthConstants.REQUIRED | SynthUI.FOCUSED;
-    			}
-    			return OSynthConstants.REQUIRED;
-    		}
-    	}
         return OntimizeLookAndFeel.getComponentState(c);
     }
 
@@ -304,13 +289,13 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
     
     @Override
     protected void uninstallDefaults() {
-    	OntimizeContext context = getContext(getComponent(), ENABLED);
+    	SynthContext context = getContext(getComponent(), ENABLED);
 
         getComponent().putClientProperty("caretAspectRatio", null);
         getComponent().removeFocusListener(this);
 
         style.uninstallDefaults(context);
-        context.dispose();
+        
         style = null;
     	super.uninstallDefaults();
     	
@@ -341,8 +326,8 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
      * @param g       DOCUMENT ME!
      * @param c       DOCUMENT ME!
      */
-    void paintBackground(OntimizeContext context, Graphics g, JComponent c) {
-        context.getPainter().paintTextFieldBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+    void paintBackground(SynthContext context, Graphics g, JComponent c) {
+        ContextUtils.getPainter(context).paintTextFieldBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
         // If necessary, paint the placeholder text.
 //        if (placeholderText != null && ((JTextComponent) c).getText().length() == 0 && !c.hasFocus()) {
 //            paintPlaceholderText(context, g, c);
@@ -354,7 +339,7 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
      *      java.awt.Graphics, int, int, int, int)
      */
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-        ((OntimizeContext)context).getPainter().paintTextFieldBorder(context, g, x, y, w, h);
+        ContextUtils.getPainter(context).paintTextFieldBorder(context, g, x, y, w, h);
     }
 
     /**
@@ -371,7 +356,7 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
      * @param g       DOCUMENT ME!
      * @param c       DOCUMENT ME!
      */
-    protected void paintPlaceholderText(OntimizeContext context, Graphics g, JComponent c) {
+    protected void paintPlaceholderText(SynthContext context, Graphics g, JComponent c) {
         g.setColor(placeholderColor);
         g.setFont(c.getFont());
         Rectangle innerArea    = SwingUtilities.calculateInnerArea(c, null);

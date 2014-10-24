@@ -25,13 +25,14 @@ import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JRootPane;
 import javax.swing.JToolBar;
+import com.sun.java.swing.plaf.nimbus.State;
 
 /**
  * Is the window for this toolbar active?
  */
 public class OToolBarHasNorthToolBarState extends State {
 
-    protected static final State isNorthState = new OToolBarNorthState();
+    protected static final OToolBarNorthState isNorthState = new OToolBarNorthState();
 
     /**
      * Creates a new ToolBarHasNorthToolBarState object.

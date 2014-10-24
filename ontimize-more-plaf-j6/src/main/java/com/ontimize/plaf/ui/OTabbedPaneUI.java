@@ -43,12 +43,13 @@ import javax.swing.text.View;
 
 import sun.swing.SwingUtilities2;
 import sun.swing.plaf.synth.SynthUI;
+import sun.swing.plaf.synth.DefaultSynthStyle;
 
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeRegion;
 import com.ontimize.plaf.OntimizeSynthPainterImpl;
 import com.ontimize.plaf.component.OntimizeArrowButton;
+import com.ontimize.plaf.utils.ContextUtils;
 import com.ontimize.plaf.utils.ControlOrientation;
 import com.ontimize.plaf.utils.OTabCloseListener;
 
@@ -58,11 +59,6 @@ import com.ontimize.plaf.utils.OTabCloseListener;
  * <p>Based on SynthTabbedPaneUI.</p>
  */
 public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, PropertyChangeListener {
-
-    protected OntimizeContext tabAreaContext;
-    protected OntimizeContext tabContext;
-    protected OntimizeContext tabCloseContext;
-    protected OntimizeContext tabContentContext;
 
     protected SynthStyle style;
     protected SynthStyle tabStyle;
@@ -199,8 +195,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
     protected void installDefaults() {
         leadingTabIndex  = 0;
         trailingTabIndex = 0;
-
-        updateStyle(tabPane);
+        this.updateStyle(this.tabPane);
     }
 
     /**
@@ -209,7 +204,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @param c the component.
      */
     protected void updateStyle(JTabbedPane c) {
-        OntimizeContext context  = getContext(c, ENABLED);
+        SynthContext context  = getContext(c, ENABLED);
         SynthStyle      oldStyle = style;
 
         style = OntimizeLookAndFeel.updateStyle(context, this);
@@ -265,36 +260,19 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
             }
         }
 
-        context.dispose();
 
-        if (tabContext != null) {
-            tabContext.dispose();
-        }
-
-        tabContext    = getContext(c, Region.TABBED_PANE_TAB, ENABLED);
+        SynthContext tabContext    = getContext(c, Region.TABBED_PANE_TAB, ENABLED);
         this.tabStyle = OntimizeLookAndFeel.updateStyle(tabContext, this);
         tabInsets     = tabStyle.getInsets(tabContext, null);
 
-        if (tabCloseContext != null) {
-            tabCloseContext.dispose();
-        }
-
-        tabCloseContext    = getContext(c, OntimizeRegion.TABBED_PANE_TAB_CLOSE_BUTTON, ENABLED);
+        SynthContext tabCloseContext    = getContext(c, OntimizeRegion.TABBED_PANE_TAB_CLOSE_BUTTON, ENABLED);
         this.tabCloseStyle = OntimizeLookAndFeel.updateStyle(tabCloseContext, this);
 
-        if (tabAreaContext != null) {
-            tabAreaContext.dispose();
-        }
-
-        tabAreaContext    = getContext(c, Region.TABBED_PANE_TAB_AREA, ENABLED);
+        SynthContext tabAreaContext    = getContext(c, Region.TABBED_PANE_TAB_AREA, ENABLED);
         this.tabAreaStyle = OntimizeLookAndFeel.updateStyle(tabAreaContext, this);
         tabAreaInsets     = tabAreaStyle.getInsets(tabAreaContext, null);
 
-        if (tabContentContext != null) {
-            tabContentContext.dispose();
-        }
-
-        tabContentContext    = getContext(c, Region.TABBED_PANE_CONTENT, ENABLED);
+        SynthContext tabContentContext    = getContext(c, Region.TABBED_PANE_CONTENT, ENABLED);
         this.tabContentStyle = OntimizeLookAndFeel.updateStyle(tabContentContext, this);
         contentBorderInsets  = tabContentStyle.getInsets(tabContentContext, null);
     }
@@ -366,25 +344,13 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @see javax.swing.plaf.basic.BasicTabbedPaneUI#uninstallDefaults()
      */
     protected void uninstallDefaults() {
-        OntimizeContext context = getContext(tabPane, ENABLED);
+        SynthContext context = getContext(tabPane, ENABLED);
 
         style.uninstallDefaults(context);
-        context.dispose();
+        
         style = null;
-
-        tabStyle.uninstallDefaults(tabContext);
-        tabContext.dispose();
-        tabContext = null;
         tabStyle   = null;
-
-        tabAreaStyle.uninstallDefaults(tabAreaContext);
-        tabAreaContext.dispose();
-        tabAreaContext = null;
         tabAreaStyle   = null;
-
-        tabContentStyle.uninstallDefaults(tabContentContext);
-        tabContentContext.dispose();
-        tabContentContext = null;
         tabContentStyle   = null;
     }
     
@@ -392,7 +358,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
     /**
      * @see sun.swing.plaf.synth.SynthUI#getContext(javax.swing.JComponent)
      */
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
@@ -405,8 +371,11 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      *
      * @return the newly created SynthContext.
      */
-    public OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c, OntimizeLookAndFeel.getRegion(c), style, state);
+    public SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
+    	return new SynthContext(c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
     /**
@@ -418,7 +387,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      *
      * @return the newly created SynthContext.
      */
-    public OntimizeContext getContext(JComponent c, Region subregion) {
+    public SynthContext getContext(JComponent c, Region subregion) {
         return getContext(c, subregion, getComponentState(c));
     }
 
@@ -431,21 +400,32 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      *
      * @return the newly created SynthContext.
      */
-    protected OntimizeContext getContext(JComponent c, Region subregion, int state) {
-        SynthStyle style = null;
-        Class      klass = OntimizeContext.class;
+    protected SynthContext getContext(JComponent c, Region subregion, int state) {
+        SynthStyle style = this.style;
 
         if (subregion == Region.TABBED_PANE_TAB) {
+        	if(this.tabStyle == null){
+        		this.tabStyle = new DefaultSynthStyle();//OntimizeLookAndFeel.getOntimizeStyle(c, subregion);
+        	}
             style = tabStyle;
         } else if (subregion == Region.TABBED_PANE_TAB_AREA) {
+        	if(this.tabAreaStyle == null){
+        		this.tabAreaStyle = new DefaultSynthStyle();// OntimizeLookAndFeel.getOntimizeStyle(c, subregion);
+        	}
             style = tabAreaStyle;
         } else if (subregion == Region.TABBED_PANE_CONTENT) {
+        	if(this.tabContentStyle == null){
+        		this.tabContentStyle = new DefaultSynthStyle();//OntimizeLookAndFeel.getOntimizeStyle(c, subregion);
+        	}
             style = tabContentStyle;
         } else if (subregion == OntimizeRegion.TABBED_PANE_TAB_CLOSE_BUTTON) {
+        	if(this.tabCloseStyle == null){
+        		this.tabCloseStyle = new DefaultSynthStyle();//OntimizeLookAndFeel.getOntimizeStyle(c, subregion);
+        	}
             style = tabCloseStyle;
         }
 
-        return OntimizeContext.getContext(klass, c, subregion, style, state);
+        return new SynthContext(c, subregion, style, state);
     }
 
     /**
@@ -550,12 +530,12 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @see javax.swing.plaf.ComponentUI#update(java.awt.Graphics, javax.swing.JComponent)
      */
     public void update(Graphics g, JComponent c) {
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
 
         OntimizeLookAndFeel.update(context, g);
-        context.getPainter().paintTabbedPaneBackground(context, g, tabAreaRect.x, tabAreaRect.y, tabAreaRect.width, tabAreaRect.height);
+        ContextUtils.getPainter(context).paintTabbedPaneBackground(context, g, tabAreaRect.x, tabAreaRect.y, tabAreaRect.width, tabAreaRect.height);
         paint(context, g);
-        context.dispose();
+        
     }
 
     /**
@@ -565,7 +545,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
         if (tabPane.getTabComponentAt(tab) != null || getTextViewForTab(tab) != null) {
             return super.getBaseline(tab);
         }
-
+        SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
         String      title   = tabPane.getTitleAt(tab);
         Font        font    = tabContext.getStyle().getFont(tabContext);
         FontMetrics metrics = getFontMetrics(font);
@@ -587,7 +567,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      */
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
         
-        SynthPainter painter = ((OntimizeContext) context).getPainter();
+        SynthPainter painter = ContextUtils.getPainter(context);
         if(painter instanceof OntimizeSynthPainterImpl){
             ((OntimizeSynthPainterImpl)painter).paintTabbedPaneBorder(context, g, x, y, w, h,tabPlacement);
         }else{
@@ -599,10 +579,10 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @see javax.swing.plaf.basic.BasicTabbedPaneUI#paint(java.awt.Graphics, javax.swing.JComponent)
      */
     public void paint(Graphics g, JComponent c) {
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
 
         paint(context, g);
-        context.dispose();
+        
     }
 
     /**
@@ -611,11 +591,11 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @param context the SynthContext describing the control.
      * @param g       the Graphics context to paint with.
      */
-    protected void paint(OntimizeContext context, Graphics g) {
+    protected void paint(SynthContext context, Graphics g) {
         int selectedIndex = tabPane.getSelectedIndex();
 
         ensureCurrentLayout();
-
+        SynthContext tabContentContext = this.getContext(this.tabPane, Region.TABBED_PANE_CONTENT, SynthConstants.ENABLED);
         // Paint content border.
         paintContentBorder(tabContentContext, g, tabPlacement, selectedIndex);
         paintTabArea(g, tabPlacement, selectedIndex);
@@ -626,6 +606,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      *      int, int)
      */
     protected void paintTabArea(Graphics g, int tabPlacement, int selectedIndex) {
+    	SynthContext tabAreaContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB_AREA, SynthConstants.ENABLED);
         paintTabArea(tabAreaContext, g, tabPlacement, selectedIndex, tabAreaRect);
     }
 
@@ -638,16 +619,16 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @param selectedIndex the current selected tab index.
      * @param tabAreaBounds the bounds of the tab area.
      */
-    protected void paintTabArea(OntimizeContext ss, Graphics g, int tabPlacement, int selectedIndex, Rectangle tabAreaBounds) {
+    protected void paintTabArea(SynthContext ss, Graphics g, int tabPlacement, int selectedIndex, Rectangle tabAreaBounds) {
         Rectangle clipRect = g.getClipBounds();
 
-        ss.setComponentState(SynthConstants.ENABLED);
+        ContextUtils.setComponentState(ss, SynthConstants.ENABLED);
 
         // Paint the tab area.
         OntimizeLookAndFeel.updateSubregion(ss, g, tabAreaBounds);
-        ss.getPainter().paintTabbedPaneTabAreaBackground(ss, g, tabAreaBounds.x, tabAreaBounds.y, tabAreaBounds.width,
+        ContextUtils.getPainter(ss).paintTabbedPaneTabAreaBackground(ss, g, tabAreaBounds.x, tabAreaBounds.y, tabAreaBounds.width,
                                                          tabAreaBounds.height, tabPlacement);
-        ss.getPainter().paintTabbedPaneTabAreaBorder(ss, g, tabAreaBounds.x, tabAreaBounds.y, tabAreaBounds.width, tabAreaBounds.height,
+        ContextUtils.getPainter(ss).paintTabbedPaneTabAreaBorder(ss, g, tabAreaBounds.x, tabAreaBounds.y, tabAreaBounds.width, tabAreaBounds.height,
                                                      tabPlacement);
 
         iconRect.setBounds(0, 0, 0, 0);
@@ -665,6 +646,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
             paintScrollButtonBackground(ss, g, scrollForwardButton);
         }
 
+        SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
         for (int i = leadingTabIndex; i <= trailingTabIndex; i++) {
             if (rects[i].intersects(clipRect) && selectedIndex != i) {
                 paintTab(tabContext, g, rects, i, iconRect, textRect);
@@ -708,18 +690,18 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
     /**
      * Paint a tab.
      *
-     * @param ss       the SynthContext.
+     * @param tabContext       the SynthContext.
      * @param g        the Graphics context.
      * @param rects    the array containing the bounds for the tabs.
      * @param tabIndex the tab index to paint.
      * @param iconRect the bounds in which to paint the tab icon, if any.
      * @param textRect the bounds in which to paint the tab text, if any.
      */
-    protected void paintTab(OntimizeContext ss, Graphics g, Rectangle[] rects, int tabIndex, Rectangle iconRect, Rectangle textRect) {
+    protected void paintTab(SynthContext tabContext, Graphics g, Rectangle[] rects, int tabIndex, Rectangle iconRect, Rectangle textRect) {
         Rectangle  tabRect       = rects[tabIndex];
         int        selectedIndex = tabPane.getSelectedIndex();
         boolean    isSelected    = selectedIndex == tabIndex;
-        JComponent b             = ss.getComponent();
+        JComponent b             = tabContext.getComponent();
 
         boolean flipSegments    = (orientation == ControlOrientation.HORIZONTAL && !tabPane.getComponentOrientation().isLeftToRight());
         String  segmentPosition = "only";
@@ -735,18 +717,18 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
         }
 
         b.putClientProperty("JTabbedPane.Tab.segmentPosition", segmentPosition);
-        updateTabContext(tabIndex, isSelected, isSelected && selectedTabIsPressed, getRolloverTab() == tabIndex,
+        tabContext = getTabContext(tabIndex, isSelected, isSelected && selectedTabIsPressed, getRolloverTab() == tabIndex,
                          getFocusIndex() == tabIndex);
 
-        OntimizeLookAndFeel.updateSubregion(ss, g, tabRect);
+        OntimizeLookAndFeel.updateSubregion(tabContext, g, tabRect);
 
         int x      = tabRect.x;
         int y      = tabRect.y;
         int height = tabRect.height;
         int width  = tabRect.width;
 
-        tabContext.getPainter().paintTabbedPaneTabBackground(tabContext, g, x, y, width, height, tabIndex, tabPlacement);
-        tabContext.getPainter().paintTabbedPaneTabBorder(tabContext, g, x, y, width, height, tabIndex, tabPlacement);
+        ContextUtils.getPainter(tabContext).paintTabbedPaneTabBackground(tabContext, g, x, y, width, height, tabIndex, tabPlacement);
+        ContextUtils.getPainter(tabContext).paintTabbedPaneTabBorder(tabContext, g, x, y, width, height, tabIndex, tabPlacement);
 
         if (tabCloseButtonPlacement != CENTER) {
             tabRect = paintCloseButton(g, tabContext, tabIndex);
@@ -754,12 +736,12 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 
         if (tabPane.getTabComponentAt(tabIndex) == null) {
             String      title   = tabPane.getTitleAt(tabIndex);
-            Font        font    = ss.getStyle().getFont(ss);
+            Font        font    = tabContext.getStyle().getFont(tabContext);
             FontMetrics metrics = SwingUtilities2.getFontMetrics(tabPane, g, font);
             Icon        icon    = getIconForTab(tabIndex);
 
-            layoutLabel(ss, tabPlacement, metrics, tabIndex, title, icon, tabRect, iconRect, textRect, isSelected);
-            paintText(ss, g, tabPlacement, font, metrics, tabIndex, title, textRect, isSelected);
+            layoutLabel(tabContext, tabPlacement, metrics, tabIndex, title, icon, tabRect, iconRect, textRect, isSelected);
+            paintText(tabContext, g, tabPlacement, font, metrics, tabIndex, title, textRect, isSelected);
             paintIcon(g, tabPlacement, tabIndex, icon, iconRect, isSelected);
         }
     }
@@ -787,16 +769,14 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
             tabRect.width -= offset;
         }
 
-        OntimizeContext subcontext = getContext(tabPane, OntimizeRegion.TABBED_PANE_TAB_CLOSE_BUTTON,
+        SynthContext subcontext = getContext(tabPane, OntimizeRegion.TABBED_PANE_TAB_CLOSE_BUTTON,
                                                 getCloseButtonState(tabPane, tabIndex, (tabContext.getComponentState() & MOUSE_OVER) != 0));
 
         OntimizeLookAndFeel.updateSubregion(subcontext, g, bounds);
 
-        OntimizeSynthPainterImpl painter = (OntimizeSynthPainterImpl) subcontext.getPainter();
+        OntimizeSynthPainterImpl painter = (OntimizeSynthPainterImpl) ContextUtils.getPainter(subcontext);
 
         painter.paintSearchButtonForeground(subcontext, g, bounds.x, bounds.y, bounds.width, bounds.height);
-
-        subcontext.dispose();
 
         return tabRect;
     }
@@ -808,7 +788,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @param g            the Graphics context.
      * @param scrollButton the button to paint.
      */
-    protected void paintScrollButtonBackground(OntimizeContext ss, Graphics g, JButton scrollButton) {
+    protected void paintScrollButtonBackground(SynthContext ss, Graphics g, JButton scrollButton) {
         Rectangle tabRect = scrollButton.getBounds();
         int       x       = tabRect.x;
         int       y       = tabRect.y;
@@ -822,6 +802,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
         tabPane.putClientProperty("JTabbedPane.Tab.segmentPosition",
                                   ((scrollButton == scrollBackwardButton) ^ flipSegments) ? "first" : "last");
 
+        SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
         int         oldState    = tabContext.getComponentState();
         ButtonModel model       = scrollButton.getModel();
         int         isPressed   = model.isPressed() && model.isArmed() ? PRESSED : 0;
@@ -830,10 +811,10 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
             buttonState |= (SynthConstants.ENABLED | SynthConstants.MOUSE_OVER);
         }
 
-        tabContext.setComponentState(buttonState);
-        tabContext.getPainter().paintTabbedPaneTabBackground(tabContext, g, x, y, width, height, -1, tabPlacement);
-        tabContext.getPainter().paintTabbedPaneTabBorder(tabContext, g, x, y, width, height, -1, tabPlacement);
-        tabContext.setComponentState(oldState);
+        ContextUtils.setComponentState(tabContext, buttonState);
+        ContextUtils.getPainter(tabContext).paintTabbedPaneTabBackground(tabContext, g, x, y, width, height, -1, tabPlacement);
+        ContextUtils.getPainter(tabContext).paintTabbedPaneTabBorder(tabContext, g, x, y, width, height, -1, tabPlacement);
+        ContextUtils.setComponentState(tabContext, oldState);
     }
 
     /**
@@ -850,7 +831,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @param textRect     Rectangle to place text in
      * @param isSelected   is the tab selected?
      */
-    protected void layoutLabel(OntimizeContext ss, int tabPlacement, FontMetrics metrics, int tabIndex, String title, Icon icon,
+    protected void layoutLabel(SynthContext ss, int tabPlacement, FontMetrics metrics, int tabIndex, String title, Icon icon,
             Rectangle tabRect, Rectangle iconRect, Rectangle textRect, boolean isSelected) {
         View v = getTextViewForTab(tabIndex);
 
@@ -895,7 +876,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @param textRect     Rectangle to place text in
      * @param isSelected   is the tab selected?
      */
-    protected void paintText(OntimizeContext ss, Graphics g, int tabPlacement, Font font, FontMetrics metrics, int tabIndex, String title,
+    protected void paintText(SynthContext ss, Graphics g, int tabPlacement, Font font, FontMetrics metrics, int tabIndex, String title,
             Rectangle textRect, boolean isSelected) {
         g.setFont(font);
 
@@ -928,7 +909,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @param tabPlacement  the side the tabs are on.
      * @param selectedIndex the current selected tab index.
      */
-    protected void paintContentBorder(OntimizeContext ss, Graphics g, int tabPlacement, int selectedIndex) {
+    protected void paintContentBorder(SynthContext ss, Graphics g, int tabPlacement, int selectedIndex) {
         int    width  = tabPane.getWidth();
         int    height = tabPane.getHeight();
         Insets insets = tabPane.getInsets();
@@ -960,8 +941,8 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
         }
 
         OntimizeLookAndFeel.updateSubregion(ss, g, new Rectangle(x, y, w, h));
-        ss.getPainter().paintTabbedPaneContentBackground(ss, g, x, y, w, h);
-        ss.getPainter().paintTabbedPaneContentBorder(ss, g, x, y, w, h);
+        ContextUtils.getPainter(ss).paintTabbedPaneContentBackground(ss, g, x, y, w, h);
+        ContextUtils.getPainter(ss).paintTabbedPaneContentBorder(ss, g, x, y, w, h);
     }
 
     /**
@@ -988,6 +969,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @see javax.swing.plaf.basic.BasicTabbedPaneUI#calculateMaxTabHeight(int)
      */
     public int calculateMaxTabHeight(int tabPlacement) {
+    	SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
         FontMetrics metrics    = getFontMetrics(tabContext.getStyle().getFont(tabContext));
         int         tabCount   = tabPane.getTabCount();
         int         result     = 0;
@@ -1032,6 +1014,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
                 // html
                 width += (int) v.getPreferredSpan(View.X_AXIS);
             } else {
+            	SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
                 // plain text
                 String title = tabPane.getTitleAt(tabIndex);
 
@@ -1049,6 +1032,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @see javax.swing.plaf.basic.BasicTabbedPaneUI#calculateMaxTabWidth(int)
      */
     public int calculateMaxTabWidth(int tabPlacement) {
+    	SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
         FontMetrics metrics  = getFontMetrics(tabContext.getStyle().getFont(tabContext));
         int         tabCount = tabPane.getTabCount();
         int         result   = 0;
@@ -1064,8 +1048,6 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @see javax.swing.plaf.basic.BasicTabbedPaneUI#getTabInsets(int, int)
      */
     protected Insets getTabInsets(int tabPlacement, int tabIndex) {
-        updateTabContext(tabIndex, false, false, false, (getFocusIndex() == tabIndex));
-
         return tabInsets;
     }
     
@@ -1101,6 +1083,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @see javax.swing.plaf.basic.BasicTabbedPaneUI#getFontMetrics()
      */
     protected FontMetrics getFontMetrics() {
+    	SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
         return getFontMetrics(tabContext.getStyle().getFont(tabContext));
     }
 
@@ -1124,7 +1107,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @param isMouseOver is the mouse over the tab?
      * @param hasFocus    do we have focus?
      */
-    protected void updateTabContext(int index, boolean selected, boolean isMouseDown, boolean isMouseOver, boolean hasFocus) {
+    protected SynthContext getTabContext(int index, boolean selected, boolean isMouseDown, boolean isMouseOver, boolean hasFocus) {
         int state = 0;
 
         if (!tabPane.isEnabled() || !tabPane.isEnabledAt(index)) {
@@ -1154,7 +1137,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
             state |= SynthConstants.PRESSED;
         }
 
-        tabContext.setComponentState(state);
+        return getContext(tabPane, Region.TABBED_PANE_TAB, state);
     }
 
     /**

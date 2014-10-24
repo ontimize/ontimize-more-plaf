@@ -6,11 +6,9 @@ import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.JViewport;
 import javax.swing.border.Border;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.UIResource;
@@ -18,16 +16,16 @@ import javax.swing.plaf.basic.BasicListUI;
 import javax.swing.plaf.synth.ColorType;
 import javax.swing.plaf.synth.Region;
 import javax.swing.plaf.synth.SynthContext;
+import javax.swing.plaf.synth.SynthStyle;
 
 import sun.swing.plaf.synth.SynthUI;
 
-import com.ontimize.plaf.OntimizeContext;
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.border.OntimizeBorder;
+import com.ontimize.plaf.utils.ContextUtils;
 
 public class OListUI  extends BasicListUI implements PropertyChangeListener, SynthUI{
-    protected OntimizeStyle style;
+    protected SynthStyle style;
     protected boolean useListColors;
     protected boolean useUIBorder;
 
@@ -37,17 +35,11 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
 
     public void update(Graphics g, JComponent c) {
     	
-    	if (c.getParent() instanceof JViewport) {
-			if (!BorderFactory.createEmptyBorder().equals(c.getBorder())) {
-				c.setBorder(BorderFactory.createEmptyBorder());
-			}
-		}
-    	
-        OntimizeContext context = getContext(c);
+        SynthContext context = getContext(c);
 
         OntimizeLookAndFeel.update(context, g);
-        context.getPainter().paintListBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
-        context.dispose();
+        ContextUtils.getPainter(context).paintListBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+        
         paint(g, c);
     }
     
@@ -58,7 +50,7 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
 
     public void paintBorder(SynthContext context, Graphics g, int x,
                             int y, int w, int h) {
-        ((OntimizeContext)context).getPainter().paintListBorder(context, g, x, y, w, h);
+        ContextUtils.getPainter(context).paintListBorder(context, g, x, y, w, h);
     }
     
 
@@ -87,13 +79,13 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
     }
 
     protected void updateStyle(JComponent c) {
-    	OntimizeContext context = getContext(list, ENABLED);
-        OntimizeStyle oldStyle = style;
+    	SynthContext context = getContext(list, ENABLED);
+        SynthStyle oldStyle = style;
 
-        style = (OntimizeStyle) OntimizeLookAndFeel.updateStyle(context, this);
+        style = OntimizeLookAndFeel.updateStyle(context, this);
 
         if (style != oldStyle) {
-            context.setComponentState(SELECTED);
+            ContextUtils.setComponentState(context, SELECTED);
             Color sbg = list.getSelectionBackground();
             if (sbg == null || sbg instanceof UIResource) {
                 list.setSelectionBackground(style.getColor(
@@ -120,26 +112,29 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
                 installKeyboardActions();
             }
         }
-        context.dispose();
+        
     }
 
     protected void uninstallDefaults() {
         super.uninstallDefaults();
 
-        OntimizeContext context = getContext(list, ENABLED);
+        SynthContext context = getContext(list, ENABLED);
 
         style.uninstallDefaults(context);
-        context.dispose();
+        
         style = null;
     }
 
-    public OntimizeContext getContext(JComponent c) {
+    public SynthContext getContext(JComponent c) {
         return getContext(c, getComponentState(c));
     }
 
-    protected OntimizeContext getContext(JComponent c, int state) {
-        return OntimizeContext.getContext(OntimizeContext.class, c,
-                    OntimizeLookAndFeel.getRegion(c), style, state);
+    protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
+    	return new SynthContext( c,
+                OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
     protected Region getRegion(JComponent c) {
