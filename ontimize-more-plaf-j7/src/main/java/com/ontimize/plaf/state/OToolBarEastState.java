@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JComponent;
 import javax.swing.JToolBar;
+import javax.swing.plaf.nimbus.State;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
 /**

@@ -41,10 +41,10 @@ import javax.swing.plaf.synth.SynthContext;
 import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
+import sun.swing.plaf.synth.DefaultSynthStyle;
 import sun.swing.plaf.synth.SynthIcon;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.utils.ContextUtils;
 
 /**
@@ -71,15 +71,6 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
     @Override
     protected void installDefaults() {
         toolBar.setLayout(createLayout());
-        if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
-        if (this.contentStyle == null) {
-			this.contentStyle = OntimizeStyle.NULL_STYLE;
-		}
-        if (this.dragWindowStyle == null) {
-			this.dragWindowStyle = OntimizeStyle.NULL_STYLE;
-		}
         updateStyle(toolBar);
     }
 
@@ -163,6 +154,9 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
     }
 
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
@@ -175,9 +169,17 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
     }
     
     protected SynthContext getContext(JComponent c, Region region, int state) {
-        SynthStyle style = contentStyle;
+        SynthStyle style = this.style;
 
-        if (region == Region.TOOL_BAR_DRAG_WINDOW) {
+        if(region == Region.TOOL_BAR_CONTENT){
+        	if(this.contentStyle == null){
+        		this.contentStyle = new DefaultSynthStyle();// OntimizeLookAndFeel.getOntimizeStyle(c, region);
+        	}
+        	style = this.contentStyle;
+        }else if (region == Region.TOOL_BAR_DRAG_WINDOW) {
+        	if(this.dragWindowStyle == null){
+        		this.dragWindowStyle = new DefaultSynthStyle();//OntimizeLookAndFeel.getOntimizeStyle(c, region);
+        	}
             style = dragWindowStyle;
         }
         return new SynthContext( c, region, style, state);

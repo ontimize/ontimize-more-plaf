@@ -18,7 +18,6 @@ import javax.swing.text.JTextComponent;
 
 import com.ontimize.gui.field.DataField;
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.utils.ContextUtils;
 
 public class OTextAreaUI extends BasicTextAreaUI implements SynthUI, FocusListener {
@@ -46,10 +45,6 @@ public class OTextAreaUI extends BasicTextAreaUI implements SynthUI, FocusListen
 		// Installs the text cursor on the component
 		super.installDefaults();
 
-		if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
-		
 		// Ontimize DataField stores foreground color into 'fontColor' variable
 		// that is just initialized on init method. On new installations of
 		// Look&Feel it is necessary to update this value.
@@ -115,6 +110,9 @@ public class OTextAreaUI extends BasicTextAreaUI implements SynthUI, FocusListen
     }
 
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext(c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 

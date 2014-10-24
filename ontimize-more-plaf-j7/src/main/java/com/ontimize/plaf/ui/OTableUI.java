@@ -46,7 +46,6 @@ import javax.swing.table.TableColumnModel;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeLookAndFeel.TableCellEditorBorder;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.border.OntimizeBorder;
 import com.ontimize.plaf.painter.ViewportPainter;
 import com.ontimize.plaf.utils.ContextUtils;
@@ -107,9 +106,6 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 		imageIconRenderer = installRendererIfPossible(ImageIcon.class, null);
 		booleanRenderer = installRendererIfPossible(Boolean.class, new OBooleanTableCellRenderer());
 		objectRenderer = installRendererIfPossible(Object.class, new OTableCellRenderer());
-		if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
 		updateStyle(table);
 	}
 
@@ -241,6 +237,9 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 	}
 
 	protected SynthContext getContext(JComponent c, int state) {
+		if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
 		return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style,
 				state);
 	}

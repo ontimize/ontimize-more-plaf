@@ -1,7 +1,6 @@
 package com.ontimize.plaf.ui;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -21,7 +20,6 @@ import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.painter.ViewportPainter;
 import com.ontimize.plaf.utils.ContextUtils;
 
@@ -52,9 +50,6 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
     }
 
     protected void installDefaults(JComponent c) {
-    	if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
         updateStyle(c);
     }
 
@@ -109,6 +104,9 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
     }
 
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext( c, this.getRegion(c), this.style, state);
     }
 

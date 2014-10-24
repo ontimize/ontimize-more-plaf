@@ -25,6 +25,7 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 
 import javax.swing.JComponent;
+import javax.swing.JViewport;
 import javax.swing.Painter;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -46,8 +47,8 @@ import com.ontimize.plaf.border.OntimizeBorder;
  *
  * @see javax.swing.plaf.synth.SynthStyle
  */
-public class OntimizeStyleWrapper extends OntimizeStyle {
-
+public class OntimizeStyleWrapper extends SynthStyle implements OntimizeStyle{
+	
     /** Shared SynthGraphics. */
     protected static final SynthGraphicsUtils SYNTH_GRAPHICS = new SynthGraphicsUtils();
 
@@ -72,7 +73,6 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
      *              ComboBox."ComboBox.arrowButton"
      */
     OntimizeStyleWrapper(SynthStyle style) {
-        super(null, null);
         this.style   = style;
         this.painter = new OntimizeSynthPainterImpl(this);
     }
@@ -96,6 +96,30 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
         // delegate to the superclass to install defaults such as background,
         // foreground, font, and opaque onto the swing component.
         this.style.installDefaults(ctx);
+    }
+    
+    /**
+     * Install UI defaults.
+     *
+     * @param context the SynthContext describing the component/region, the
+     *                style, and the state.
+     * @param ui      the UI delegate.
+     */
+    public void installDefaults(SynthContext context, SynthUI ui) {
+        // Special case the Border as this will likely change when the LAF
+        // can have more control over this.
+        if (!context.getRegion().isSubregion()) {
+            JComponent c      = context.getComponent();
+            Border     border = c.getBorder();
+
+            if (border == null || border instanceof UIResource) {
+            	if( !(c instanceof JViewport) ){
+            		c.setBorder(new OntimizeBorder(ui, getInsets(context, null)));
+            	}
+            }
+        }
+
+        installDefaults(context);
     }
 
     /**
@@ -244,7 +268,9 @@ public class OntimizeStyleWrapper extends OntimizeStyle {
          *      java.lang.Object, int, int)
          */
         public void paint(Graphics2D g, Object object, int width, int height) {
-            painter.paint(g, object, width, height);
+        	if(painter!=null){
+        		painter.paint(g, object, width, height);
+        	}
         }
     }
 }

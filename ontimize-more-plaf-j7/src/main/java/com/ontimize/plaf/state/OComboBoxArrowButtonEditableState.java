@@ -4,6 +4,7 @@ import java.awt.Component;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.plaf.nimbus.State;
 
 public class OComboBoxArrowButtonEditableState extends State {
 	public OComboBoxArrowButtonEditableState() {

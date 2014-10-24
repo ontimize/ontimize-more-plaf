@@ -35,7 +35,6 @@ import com.ontimize.gui.calendar.VisualCalendarComponent;
 import com.ontimize.gui.tree.BasicTreeCellRenderer;
 import com.ontimize.gui.tree.Tree;
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.painter.util.ShapeFactory;
 import com.ontimize.plaf.ui.OComboBoxUI.SynthComboBoxRenderer;
 import com.ontimize.plaf.utils.ContextUtils;
@@ -74,9 +73,6 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     	} else{
     		super.installDefaults(c);
     	}
-    	if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
         updateStyle(c);
     }
 
@@ -84,7 +80,7 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     	
         SynthContext context = getContext(c, ENABLED);
         
-        style = (OntimizeStyle) OntimizeLookAndFeel.updateStyle(context, this);
+        style = OntimizeLookAndFeel.updateStyle(context, this);
         
         Object iconTextGap = style.get(context, ".iconTextGap");
         if (iconTextGap instanceof Integer) {
@@ -106,6 +102,9 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     }
 
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 

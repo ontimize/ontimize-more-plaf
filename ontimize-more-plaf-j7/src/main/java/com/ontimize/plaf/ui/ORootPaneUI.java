@@ -38,7 +38,6 @@ import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.border.OntimizeBorder;
 import com.ontimize.plaf.component.OTitlePane;
 import com.ontimize.plaf.utils.ContextUtils;
@@ -79,9 +78,6 @@ public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
 	
 	@Override
 	protected void installDefaults(JRootPane c) {
-		if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
 		updateStyle(c);
 	}
 	
@@ -306,6 +302,9 @@ public class ORootPaneUI extends BasicRootPaneUI implements SynthUI{
      * @return the SynthContext.
      */
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 

@@ -22,7 +22,6 @@ import javax.swing.plaf.synth.SynthUI;
 import javax.swing.text.View;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.utils.ContextUtils;
 
 public class OToolTipUI extends BasicToolTipUI implements PropertyChangeListener, SynthUI {
@@ -33,9 +32,6 @@ public class OToolTipUI extends BasicToolTipUI implements PropertyChangeListener
 	}
 
 	protected void installDefaults(JComponent c) {
-		if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
 		updateStyle(c);
 	}
 
@@ -65,6 +61,9 @@ public class OToolTipUI extends BasicToolTipUI implements PropertyChangeListener
 	}
 
 	protected SynthContext getContext(JComponent c, int state) {
+		if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
 		return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style,
 				state);
 	}

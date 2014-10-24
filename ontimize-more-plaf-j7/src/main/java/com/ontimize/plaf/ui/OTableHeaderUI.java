@@ -36,7 +36,6 @@ import sun.swing.DefaultLookup;
 
 import com.ontimize.gui.table.Table;
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.border.OntimizeBorder;
 import com.ontimize.plaf.utils.ContextUtils;
 
@@ -65,9 +64,6 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
         if (prevRenderer instanceof UIResource) {
             header.setDefaultRenderer(new HeaderRenderer());
         }
-        if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
         updateStyle(header);
     }
 
@@ -181,6 +177,9 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
      * @return DOCUMENT ME!
      */
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext( c, SynthLookAndFeel.getRegion(c), this.style, state);
     }
 

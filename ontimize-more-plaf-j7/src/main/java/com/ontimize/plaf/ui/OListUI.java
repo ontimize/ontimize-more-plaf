@@ -20,7 +20,6 @@ import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.border.OntimizeBorder;
 import com.ontimize.plaf.utils.ContextUtils;
 
@@ -75,9 +74,6 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
                  (list.getCellRenderer() instanceof UIResource)) {
             list.setCellRenderer(new OListCellRenderer());
         }
-        if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
         updateStyle(list);
     }
 
@@ -85,7 +81,7 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
     	SynthContext context = getContext(list, ENABLED);
         SynthStyle oldStyle = style;
 
-        style = (OntimizeStyle) OntimizeLookAndFeel.updateStyle(context, this);
+        style = OntimizeLookAndFeel.updateStyle(context, this);
 
         if (style != oldStyle) {
             ContextUtils.setComponentState(context, SELECTED);
@@ -133,6 +129,9 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
     }
 
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext( c,
                 OntimizeLookAndFeel.getRegion(c), this.style, state);
     }

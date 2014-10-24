@@ -18,8 +18,9 @@ import javax.swing.plaf.synth.SynthContext;
 import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
+import sun.swing.plaf.synth.DefaultSynthStyle;
+
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.component.OntimizeArrowButton;
 import com.ontimize.plaf.utils.ContextUtils;
 
@@ -54,15 +55,6 @@ public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeList
                      (scrollbar.getLayout() instanceof UIResource)) {
             scrollbar.setLayout(this);
         }
-        if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
-		if (this.thumbStyle == null) {
-			this.thumbStyle = OntimizeStyle.NULL_STYLE;
-		}
-		if (this.trackStyle == null) {
-			this.trackStyle = OntimizeStyle.NULL_STYLE;
-		}
         updateStyle(scrollbar);
     }
 
@@ -166,6 +158,9 @@ public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeList
     }
 
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext( c,
                 OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
@@ -183,10 +178,18 @@ public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeList
     }
 
     protected SynthContext getContext(JComponent c, Region region, int state) {
-        SynthStyle style = trackStyle;
+        SynthStyle style = this.style;
 
         if (region == Region.SCROLL_BAR_THUMB) {
+        	if(this.thumbStyle == null){
+        		this.thumbStyle = new DefaultSynthStyle();//OntimizeLookAndFeel.getOntimizeStyle(c, region);
+        	}
             style = thumbStyle;
+        } else if(region == Region.SCROLL_BAR_TRACK){
+        	if(this.trackStyle == null){
+        		this.trackStyle = new DefaultSynthStyle();// OntimizeLookAndFeel.getOntimizeStyle(c, region);
+        	}
+        	style = trackStyle;
         }
         return new SynthContext( c, region, style, state);
     }

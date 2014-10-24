@@ -18,7 +18,6 @@ import javax.swing.plaf.synth.SynthUI;
 
 import com.ontimize.gui.container.Tab;
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.utils.ContextUtils;
 
 public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, SynthUI {
@@ -51,9 +50,6 @@ public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, Sy
 	}
 
 	protected void installDefaults(JPanel p) {
-		if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
 		updateStyle(p);
 	}
 
@@ -104,8 +100,6 @@ public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, Sy
     }
 	
 	protected void updateStyle(JComponent c, SynthContext context, String prefix){
-		OntimizeStyle style = (OntimizeStyle) context.getStyle();
-		
 		 Color bg = c.getBackground();
         if ((bg == null) || (bg instanceof UIResource)) {
             c.setBackground((Color)UIManager.get(prefix + ".background"));
@@ -117,6 +111,9 @@ public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, Sy
 	}
 
 	protected SynthContext getContext(JComponent c, int state) {
+		if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
 		return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style, state);
 	}
 

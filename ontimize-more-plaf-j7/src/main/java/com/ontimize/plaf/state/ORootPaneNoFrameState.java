@@ -7,6 +7,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JRootPane;
+import javax.swing.plaf.nimbus.State;
 
 /**
  * Does root pane have a frame?

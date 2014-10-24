@@ -24,6 +24,7 @@ import java.awt.Window;
 
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
+import javax.swing.plaf.nimbus.State;
 
 /**
  * Is the window for this toolbar active?

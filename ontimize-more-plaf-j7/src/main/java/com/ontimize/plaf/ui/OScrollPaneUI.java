@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * $Id: OScrollPaneUI.java,v 1.10 2012/10/15 09:50:32 daniel.grana Exp $
  */
 package com.ontimize.plaf.ui;
 
@@ -62,7 +61,6 @@ import javax.swing.text.JTextComponent;
 
 import com.ontimize.gui.table.EJTable;
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.utils.ContextUtils;
 
 /**
@@ -120,9 +118,6 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
         }
 
         LookAndFeel.installProperty(scrollpane, "opaque", Boolean.FALSE);
-        if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
         updateStyle(scrollpane);
     }
 
@@ -242,6 +237,9 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     }
 
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext( c, SynthLookAndFeel.getRegion(c), this.style, state);
     }
 

@@ -42,7 +42,6 @@ import javax.swing.plaf.synth.SynthUI;
 
 import com.ontimize.gui.field.DataField;
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.component.OntimizeArrowButton;
 import com.ontimize.plaf.component.OntimizeComboPopup;
 import com.ontimize.plaf.utils.ContextUtils;
@@ -125,9 +124,6 @@ public class OComboBoxUI extends BasicComboBoxUI implements PropertyChangeListen
 
     @Override
     protected void installDefaults() {
-    	if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
         //NOTE: This next line of code was added because, since squareButton in
         //BasicComboBoxUI is protected, I need to have some way of reading it from UIManager.
         //This is an incomplete solution (since it implies that squareButons,
@@ -221,6 +217,9 @@ public class OComboBoxUI extends BasicComboBoxUI implements PropertyChangeListen
     }
 
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
         return new SynthContext( c,
                 OntimizeLookAndFeel.getRegion(c), this.style, state);
     }

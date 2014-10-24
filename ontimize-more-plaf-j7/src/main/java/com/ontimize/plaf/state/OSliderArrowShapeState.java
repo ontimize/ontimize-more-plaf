@@ -1,6 +1,7 @@
 package com.ontimize.plaf.state;
 
 import javax.swing.JComponent;
+import javax.swing.plaf.nimbus.State;
 
 /**
  * Do we use the arrow shape for a slider? We do if snap-to-ticks is set for the

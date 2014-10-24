@@ -31,10 +31,9 @@ import sun.swing.SwingUtilities2;
 
 import com.ontimize.gui.Form.StatusBar;
 import com.ontimize.gui.field.DataField;
-import com.ontimize.plaf.OSynthConstants;
 import com.ontimize.plaf.OntimizeLookAndFeel;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.utils.ContextUtils;
+import com.ontimize.plaf.utils.ReflectionUtils;
 
 public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusListener {
 	
@@ -91,7 +90,7 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
      *                "FormattedTextField", or "PasswordField".
      */
     static void updateStyle(JTextComponent c, SynthContext context, String prefix) {
-    	OntimizeStyle style = (OntimizeStyle) context.getStyle();
+    	SynthStyle style = context.getStyle();
 
     	if (c instanceof StatusBar){
     	    ((StatusBar)c).setLFConfiguration(true);
@@ -106,7 +105,8 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
         Color fg = c.getForeground();
 
         if (fg == null || fg instanceof UIResource) {
-            fg = style.getColorForState(context, ColorType.TEXT_FOREGROUND);
+//            fg = style.getColorForState(context, ColorType.TEXT_FOREGROUND);
+        	fg = (Color)ReflectionUtils.invoke(style, "getColorForState", new Object[]{context, ColorType.TEXT_FOREGROUND});
             if (fg != null) {
                 c.setForeground(fg);
             }
@@ -235,27 +235,13 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
     }
 
     protected SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext(c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
     protected int getComponentState(JComponent c) {
-    	if(c.getParent() instanceof DataField && c.isEnabled()){
-    		DataField dF = (DataField)c.getParent();
-    		if(dF.isRequired()){
-    			if (c.isFocusOwner()) {
-    				return OSynthConstants.REQUIRED | SynthUI.FOCUSED;
-    			}
-    			return OSynthConstants.REQUIRED;
-    		}
-    	} else if(c.getParent() != null && c.getParent().getParent() instanceof DataField && c.isEnabled()){
-    		DataField dF = (DataField)c.getParent().getParent();
-    		if(dF.isRequired()){
-    			if (c.isFocusOwner()) {
-    				return OSynthConstants.REQUIRED | SynthUI.FOCUSED;
-    			}
-    			return OSynthConstants.REQUIRED;
-    		}
-    	}
         return OntimizeLookAndFeel.getComponentState(c);
     }
 
@@ -282,9 +268,6 @@ public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusList
      * @see javax.swing.plaf.basic.BasicTextUI#installDefaults()
      */
     protected void installDefaults() {
-    	if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
         // Installs the text cursor on the component
         super.installDefaults();
 

@@ -43,10 +43,10 @@ import javax.swing.plaf.synth.SynthUI;
 import javax.swing.text.View;
 
 import sun.swing.SwingUtilities2;
+import sun.swing.plaf.synth.DefaultSynthStyle;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeRegion;
-import com.ontimize.plaf.OntimizeStyle;
 import com.ontimize.plaf.OntimizeSynthPainterImpl;
 import com.ontimize.plaf.component.OntimizeArrowButton;
 import com.ontimize.plaf.utils.ContextUtils;
@@ -195,22 +195,6 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
     protected void installDefaults() {
         leadingTabIndex  = 0;
         trailingTabIndex = 0;
-
-        if (this.style == null) {
-			this.style = OntimizeStyle.NULL_STYLE;
-		}
-		if (this.tabStyle == null) {
-			this.tabStyle = OntimizeStyle.NULL_STYLE;
-		}
-		if (this.tabAreaStyle == null) {
-			this.tabAreaStyle = OntimizeStyle.NULL_STYLE;
-		}
-		if (this.tabContentStyle == null) {
-			this.tabContentStyle = OntimizeStyle.NULL_STYLE;
-		}
-		if (this.tabCloseStyle == null) {
-			this.tabCloseStyle = OntimizeStyle.NULL_STYLE;
-		}
         this.updateStyle(this.tabPane);
     }
 
@@ -270,7 +254,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
                 selectedTabPadInsets = new Insets(0, 0, 0, 0);
             }
 
-            if (oldStyle != OntimizeStyle.NULL_STYLE) {
+            if (oldStyle != null) {
                 uninstallKeyboardActions();
                 installKeyboardActions();
             }
@@ -365,14 +349,8 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
         style.uninstallDefaults(context);
         
         style = null;
-
-//        tabStyle.uninstallDefaults(tabContext);
         tabStyle   = null;
-
-//        tabAreaStyle.uninstallDefaults(tabAreaContext);
         tabAreaStyle   = null;
-
-//        tabContentStyle.uninstallDefaults(tabContentContext);
         tabContentStyle   = null;
     }
     
@@ -394,6 +372,9 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @return the newly created SynthContext.
      */
     public SynthContext getContext(JComponent c, int state) {
+    	if(this.style == null){
+    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+    	}
     	return new SynthContext(c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
@@ -420,15 +401,27 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
      * @return the newly created SynthContext.
      */
     protected SynthContext getContext(JComponent c, Region subregion, int state) {
-        SynthStyle style = null;
+        SynthStyle style = this.style;
 
         if (subregion == Region.TABBED_PANE_TAB) {
+        	if(this.tabStyle == null){
+        		this.tabStyle = new DefaultSynthStyle();//OntimizeLookAndFeel.getOntimizeStyle(c, subregion);
+        	}
             style = tabStyle;
         } else if (subregion == Region.TABBED_PANE_TAB_AREA) {
+        	if(this.tabAreaStyle == null){
+        		this.tabAreaStyle = new DefaultSynthStyle();// OntimizeLookAndFeel.getOntimizeStyle(c, subregion);
+        	}
             style = tabAreaStyle;
         } else if (subregion == Region.TABBED_PANE_CONTENT) {
+        	if(this.tabContentStyle == null){
+        		this.tabContentStyle = new DefaultSynthStyle();//OntimizeLookAndFeel.getOntimizeStyle(c, subregion);
+        	}
             style = tabContentStyle;
         } else if (subregion == OntimizeRegion.TABBED_PANE_TAB_CLOSE_BUTTON) {
+        	if(this.tabCloseStyle == null){
+        		this.tabCloseStyle = new DefaultSynthStyle();//OntimizeLookAndFeel.getOntimizeStyle(c, subregion);
+        	}
             style = tabCloseStyle;
         }
 
