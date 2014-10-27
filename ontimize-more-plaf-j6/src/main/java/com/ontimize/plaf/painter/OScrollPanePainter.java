@@ -145,22 +145,6 @@ public class OScrollPanePainter extends AbstractRegionPainter {
         return ctx;
     }
     
-    protected boolean containsTextComponent(JComponent c){
-    	Component[] comps = c.getComponents();
-    	if(comps!=null && comps.length>0){
-    		for(int i=0;i<comps.length;i++){
-    			Component current = comps[i];
-    			if(current instanceof JComponent && current.getClass().isAssignableFrom(JViewport.class)){
-    				if(((JComponent)current).getComponents()[0] instanceof JTextComponent){
-    					return true;
-    				}
-    			}
-    		}
-    	}
-    	
-    	return false;
-    }
-    
     protected JTextComponent getTextComponent(JComponent c){
     	Component[] comps = c.getComponents();
     	if(comps!=null && comps.length>0){
@@ -178,8 +162,6 @@ public class OScrollPanePainter extends AbstractRegionPainter {
     }
 
 	protected void paintBorderEnabledAndFocused(Graphics2D g, JComponent c, int x, int y, int width, int height) {
-		if (!containsTextComponent(c))
-			return;
 		if (degradatedBorderColorFocused != null && degradatedBorderColorFocused.length > 0) {
 			drawDegradatedBorders(g, c, x, y, width, height, degradatedBorderColorFocused);
 		}
@@ -187,9 +169,6 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 	}
 
 	protected void paintBorderEnabled(Graphics2D g, JComponent c, int x, int y, int width, int height) {
-		if (!containsTextComponent(c)) {
-			return;
-		}
 		if (degradatedBorderColorEnabled != null && degradatedBorderColorEnabled.length > 0) {
 			drawDegradatedBorders(g, c, x, y, width, height, degradatedBorderColorEnabled);
 		}
@@ -197,9 +176,6 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 	}
 	
 	protected void paintBorderDisabled(Graphics2D g, JComponent c, int x, int y, int width, int height) {
-		if (!containsTextComponent(c)) {
-			return;
-		}
 		if (degradatedBorderColorDisabled != null && degradatedBorderColorDisabled.length > 0) {
 			drawDegradatedBorders(g, c, x, y, width, height, degradatedBorderColorDisabled);
 		}

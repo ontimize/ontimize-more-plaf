@@ -178,14 +178,6 @@ public class OTableUI extends BasicTableUI implements SynthUI, PropertyChangeLis
 				alternateOddColor = (Color) style.get(context, "Table.alternateOddRowColor");
 				alternateEvenColor = (Color) style.get(context, "Table.alternateEvenRowColor");
 			}
-			// install the scrollpane border
-	        Container parent = table.getParent();  // should be viewport
-	        if (parent != null) {
-	            parent = parent.getParent();  // should be the scrollpane
-	            if (parent != null && parent instanceof JScrollPane) {
-	                LookAndFeel.installBorder((JScrollPane)parent, "Table.scrollPaneBorder");
-	            }
-	        }
 
 			if (oldStyle != null) {
 				uninstallKeyboardActions();

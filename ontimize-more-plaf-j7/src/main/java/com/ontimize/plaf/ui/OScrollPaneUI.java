@@ -261,8 +261,8 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     	SynthContext context = getContext(c);
     	
     	OntimizeLookAndFeel.update(context, g);
-    	if(! (containsTextComponent(context.getComponent()) || containsTableComponent(context.getComponent()))   ){
-    		((JComponent)c).setBorder(BorderFactory.createEmptyBorder());
+    	if(containsTableComponent(context.getComponent())){
+    		((JComponent)c).setBorder((Border) UIManager.getDefaults().get("Table.scrollPaneBorder"));
     	}
     	
         ContextUtils.getPainter(context).paintScrollPaneBackground(context, g, 0, 0, context.getComponent().getWidth(), context.getComponent().getHeight());
@@ -313,38 +313,11 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
     }
 
     protected void paint(SynthContext context, Graphics g) {
-//        Border vpBorder = scrollpane.getViewportBorder();
-//        if (vpBorder != null) {
-//            Rectangle r = scrollpane.getViewportBorderBounds();
-//            vpBorder.paintBorder(scrollpane, g, r.x, r.y, r.width, r.height);
-//        }
     }
 
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
     	JComponent c = context.getComponent();
-    	if(containsTextComponent(c)){
-    		ContextUtils.getPainter(context).paintScrollPaneBorder(context, g, x, y, w, h);
-    	}else{
-    		((JComponent)c).setBorder(BorderFactory.createEmptyBorder());
-    		ContextUtils.getPainter(context).paintScrollPaneBorder(context, g, x, y, w, h);
-    	}
-    }
-    
-    protected boolean containsTextComponent(JComponent c){
-    	Component[] comps = c.getComponents();
-    	if(comps!=null && comps.length>0){
-    		for(int i=0;i<comps.length;i++){
-    			Component current = comps[i];
-    			if(current instanceof JComponent && current.getClass().isAssignableFrom(JViewport.class)){
-    				JComponent jC = (JComponent)current;
-    				if(jC.getComponents().length>0 && jC.getComponents()[0] instanceof JTextComponent ){
-    					return true;
-    				}
-    			}
-    		}
-    	}
-    	
-    	return false;
+		ContextUtils.getPainter(context).paintScrollPaneBorder(context, g, x, y, w, h);
     }
     
     protected boolean containsTableComponent(JComponent c){
