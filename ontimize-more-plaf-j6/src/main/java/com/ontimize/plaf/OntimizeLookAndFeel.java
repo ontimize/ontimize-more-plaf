@@ -2238,6 +2238,8 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		tCRFont = tCRFont.deriveFont((float)tCRFont.getSize()-1);
 		setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(tCRFont));
 		setColorUIResource(d, compName, "textForeground", "#517286");
+		setColor(d, compName, "rootForeground", "#4AAEE3");
+		setColor(d, compName, "rootSelectionForeground", "#396F8A");
 		
 		setColorUIResource(d, compName, "background", "#E4EDF0");
 		setColorUIResource(d, compName, "backgroundSelectionParent", "#ABC7D8");
@@ -3227,11 +3229,11 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 		Tree.enabledRowCount = true;
 
 		BasicTreeCellRenderer.firstNodeConfiguration = true;
-		BasicTreeCellRenderer.organizationalForegroundColor = d.getColor("\"Tree.cellRenderer\".textForeground");
+		BasicTreeCellRenderer.organizationalForegroundColor = d.getColor("Tree:\"Tree.cellRenderer\".textForeground");
 		BasicTreeCellRenderer.includeChildCount = false;
 
-		BasicTreeCellRenderer.rootNodeForegroundColor = OntimizeLAFParseUtils.parseColor("#4AAEE3", null);
-		BasicTreeCellRenderer.rootNodeSelectionForegroundColor = OntimizeLAFParseUtils.parseColor("#396F8A", null);
+		BasicTreeCellRenderer.rootNodeForegroundColor = d.getColor("Tree:\"Tree.cellRenderer\".rootForeground");
+		BasicTreeCellRenderer.rootNodeSelectionForegroundColor = d.getColor("Tree:\"Tree.cellRenderer\".rootSelectionForeground");
 
 		BooleanCellRenderer.USE_CHECKBOX = true;
 
@@ -4016,7 +4018,7 @@ public class OntimizeLookAndFeel extends com.sun.java.swing.plaf.nimbus.NimbusLo
 
 		register(Region.LABEL, "\"CollapsibleButtonPanel\"");
 		register(Region.LABEL, "\"ELabel\"");
-		register(Region.LABEL, "\"Tree.cellRenderer\"");
+		register(Region.LABEL, "Tree:\"Tree.cellRenderer\"");
 		register(Region.LABEL, "\"PopupItem\"");
 		register(Region.LABEL, "\"PageFetcher.Label\"");
 

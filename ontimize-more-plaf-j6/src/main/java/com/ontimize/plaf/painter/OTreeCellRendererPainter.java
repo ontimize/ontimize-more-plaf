@@ -71,35 +71,35 @@ public class OTreeCellRendererPainter extends AbstractRegionPainter {
 
 	protected void init (){
 
-		Object obj = UIManager.getLookAndFeelDefaults().get( "\"Tree.cellRenderer\".background");
+		Object obj = UIManager.getLookAndFeelDefaults().get( "Tree:\"Tree.cellRenderer\".background");
 		if(obj instanceof Paint){
 			background = (Paint)obj;
 		}else{
 			background = OntimizeLAFParseUtils.parseColor("#E4EDF0", Color.white);
 		}
 		
-		obj = UIManager.getLookAndFeelDefaults().get( "\"Tree.cellRenderer\".backgroundSelectionParent");
+		obj = UIManager.getLookAndFeelDefaults().get( "Tree:\"Tree.cellRenderer\".backgroundSelectionParent");
 		if(obj instanceof Paint){
 			backgroundSelectionParent = (Paint)obj;
 		}else{
 			backgroundSelectionParent = OntimizeLAFParseUtils.parseColor("#ABC7D8",Color.white);
 		}
 		
-		obj = UIManager.getLookAndFeelDefaults().get( "\"Tree.cellRenderer\".backgroundSelection");
+		obj = UIManager.getLookAndFeelDefaults().get( "Tree:\"Tree.cellRenderer\".backgroundSelection");
 		if(obj instanceof Paint){
 			backgroundSelection = (Paint)obj;
 		}else{
 			backgroundSelection = OntimizeLAFParseUtils.parseColor("#517286", Color.blue);
 		}
 		
-		obj = UIManager.getLookAndFeelDefaults().get( "\"Tree.cellRenderer\".topBackgroundSelection");
+		obj = UIManager.getLookAndFeelDefaults().get( "Tree:\"Tree.cellRenderer\".topBackgroundSelection");
 		if(obj instanceof Paint){
 			topBackgroundSelection = (Paint)obj;
 		}else{
 			topBackgroundSelection = OntimizeLAFParseUtils.parseColor("#638092", Color.blue);
 		}
 		
-		obj = UIManager.getLookAndFeelDefaults().get( "\"Tree.cellRenderer\".bottomBackgroundSelection");
+		obj = UIManager.getLookAndFeelDefaults().get( "Tree:\"Tree.cellRenderer\".bottomBackgroundSelection");
 		if(obj instanceof Paint){
 			bottomBackgroundSelection = (Paint)obj;
 		}else{
