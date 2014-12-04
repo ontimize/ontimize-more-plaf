@@ -1,10 +1,5 @@
 package com.ontimize.plaf;
 
-import static java.awt.BorderLayout.EAST;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.BorderLayout.SOUTH;
-import static java.awt.BorderLayout.WEST;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -48,6 +43,7 @@ import javax.swing.plaf.DimensionUIResource;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.InsetsUIResource;
 import javax.swing.plaf.UIResource;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.plaf.synth.ColorType;
 import javax.swing.plaf.synth.Region;
 import javax.swing.plaf.synth.SynthConstants;
@@ -59,6 +55,7 @@ import javax.swing.plaf.synth.SynthUI;
 
 import sun.swing.plaf.synth.DefaultSynthStyle;
 
+import com.ontimize.agenda.CenterPanel;
 import com.ontimize.gui.ApToolBarNavigator;
 import com.ontimize.gui.ApToolBarPopupButton;
 import com.ontimize.gui.ApplicationManager;
@@ -70,7 +67,6 @@ import com.ontimize.gui.attachment.AttachmentComponent;
 import com.ontimize.gui.attachment.AttachmentListPopup;
 import com.ontimize.gui.button.FormHeaderButton;
 import com.ontimize.gui.button.FormHeaderPopupButton;
-import com.ontimize.gui.button.RolloverButton;
 import com.ontimize.gui.calendar.VisualCalendarComponent;
 import com.ontimize.gui.container.CollapsiblePanel;
 import com.ontimize.gui.container.CurveMattedDeployableBorder;
@@ -98,6 +94,7 @@ import com.ontimize.plaf.border.OLoweredBorder;
 import com.ontimize.plaf.component.OntimizePopupFactory;
 import com.ontimize.plaf.component.OntimizeSynthIcon;
 import com.ontimize.plaf.painter.AbstractOButtonPainter;
+import com.ontimize.plaf.painter.AbstractOTextFieldPainter;
 import com.ontimize.plaf.painter.AbstractOToolBarPainter;
 import com.ontimize.plaf.painter.AbstractRegionPainter;
 import com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext;
@@ -112,6 +109,9 @@ import com.ontimize.plaf.painter.OComboBoxPainter;
 import com.ontimize.plaf.painter.OComboBoxTextFieldPainter;
 import com.ontimize.plaf.painter.OEditorPanePainter;
 import com.ontimize.plaf.painter.OFormBodyPanelPainter;
+import com.ontimize.plaf.painter.OFormButtonPanelPainter;
+import com.ontimize.plaf.painter.OFormTabbedPaneTabAreaPainter;
+import com.ontimize.plaf.painter.OFormTabbedPaneTabPainter;
 import com.ontimize.plaf.painter.OFormTitlePainter;
 import com.ontimize.plaf.painter.OGridPanelPainter;
 import com.ontimize.plaf.painter.OMenuBarMenuPainter;
@@ -121,7 +121,6 @@ import com.ontimize.plaf.painter.OMenuPainter;
 import com.ontimize.plaf.painter.OPopupItemPainter;
 import com.ontimize.plaf.painter.OPopupMenuPainter;
 import com.ontimize.plaf.painter.OPopupMenuSeparatorPainter;
-import com.ontimize.plaf.painter.OQuickFilterPainter;
 import com.ontimize.plaf.painter.ORadioButtonMenuItemPainter;
 import com.ontimize.plaf.painter.ORadioButtonPainter;
 import com.ontimize.plaf.painter.ORootPainter;
@@ -140,13 +139,10 @@ import com.ontimize.plaf.painter.OTabbedPaneTabAreaPainter;
 import com.ontimize.plaf.painter.OTabbedPaneTabPainter;
 import com.ontimize.plaf.painter.OTableButtonFooterPanelPainter;
 import com.ontimize.plaf.painter.OTableButtonPanelPainter;
-import com.ontimize.plaf.painter.OTableCellEditorPainter;
 import com.ontimize.plaf.painter.OTableHeaderPainter;
 import com.ontimize.plaf.painter.OTableHeaderRendererPainter;
 import com.ontimize.plaf.painter.OTextAreaPainter;
-import com.ontimize.plaf.painter.OTextFieldPainter;
 import com.ontimize.plaf.painter.OToggleButtonPainter;
-import com.ontimize.plaf.painter.OToolBarButtonPainter;
 import com.ontimize.plaf.painter.OToolBarPainter;
 import com.ontimize.plaf.painter.OToolBarSeparatorPainter;
 import com.ontimize.plaf.painter.OToolBarToggleButtonPainter;
@@ -179,7 +175,7 @@ import com.ontimize.util.swing.CollapsibleButtonPanel;
 
 /**
  * Ontimize Look And Feel development.
- * 
+ *
  * @author Imatia Innovation
  */
 @SuppressWarnings("serial")
@@ -201,12 +197,12 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 	/** Refer to setSelectedUI */
 	public static int selectedUIState;
-	
+
 	/**
 	 * The number of pixels that compounds the border width of the component.
 	 */
 	public static int defaultNumBorders = 4;
-	
+
 	/**
 	 * The radius of component corners.
 	 */
@@ -224,30 +220,31 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 */
 	protected Font defaultFont;
 
-	public static final String[] NIMBUS_COLORS_KEYS = new String[] { "nimbusSelectionBackground", "text", "nimbusSelectedText", "nimbusDisabledText", "nimbusLightBackground", "control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase",
-			"nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background", "controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu",
-			"menuText", "nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
+	public static final String[] NIMBUS_COLORS_KEYS = new String[] { "nimbusSelectionBackground", "text", "nimbusSelectedText", "nimbusDisabledText", "nimbusLightBackground",
+			"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
+			"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
+			"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
 
 	/**
 	 * Constructor method. Here it is indicated: - initialize the map of styles
 	 * (for Ontimize components that must be configured regardless of other JAVA
 	 * components. For instance, to allow users to configurate the Rows and
 	 * Columns in other way that the other Panels in the look and feel, but
-	 * using the same keys) 
+	 * using the same keys)
 	 */
 	public OntimizeLookAndFeel() {
 		super();
 
-		defaultFont = getDefaultFont();
-		defaultStyle = new DefaultSynthStyle();
-		defaultStyle.setFont(defaultFont);
+		this.defaultFont = this.getDefaultFont();
+		this.defaultStyle = new DefaultSynthStyle();
+		this.defaultStyle.setFont(this.defaultFont);
 
 		/*
 		 * Register all of the regions and their states that this class will use
 		 * for later lookup. Additional regions can be registered later by 3rd
 		 * party components. These are simply the default registrations.
 		 */
-		registerStyles();
+		this.registerStyles();
 
 	}
 
@@ -268,28 +265,29 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 	@Override
 	public boolean getSupportsWindowDecorations() {
-		return decorated;
+		return this.decorated;
 	}
 
 	public static Object lookup(String s) {
-		if (UIManager.getDefaults() != null)
+		if (UIManager.getDefaults() != null) {
 			return UIManager.getDefaults().get(s);
-		else
+		} else {
 			return UIManager.get(s);
+		}
 	}
 
 	public static boolean isWindowOpacityEnabled(Window window) {
 		// boolean flag = !getBoolean("Synthetica.window.opaque", window, true);
 		boolean flag = false;
 		// return !isJava6u10OrAbove() && OS.getCurrentOS() != OS.Mac || !flag;
-		return !isJava6u10OrAbove() && !flag;
+		return !OntimizeLookAndFeel.isJava6u10OrAbove() && !flag;
 	}
 
 	public static boolean isWindowShapeEnabled(Window window) {
 		// String s = getString("Synthetica.window.shape", window);
 		// return (isJava6u10OrAbove() || OS.getCurrentOS() == OS.Mac) &&
 		// "ROUND_RECT".equals(s);
-		return isJava6u10OrAbove();
+		return OntimizeLookAndFeel.isJava6u10OrAbove();
 	}
 
 	public static void updateWindowShape(Window window) {
@@ -334,31 +332,41 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 	protected static boolean isJava6u10OrAbove() {
 		String s = System.getProperty("java.version");
-		if (s.startsWith("1.5."))
+		if (s.startsWith("1.5.")) {
 			return false;
-		if (s.startsWith("1.6.0_09"))
+		}
+		if (s.startsWith("1.6.0_09")) {
 			return false;
-		if (s.startsWith("1.6.0_08"))
+		}
+		if (s.startsWith("1.6.0_08")) {
 			return false;
-		if (s.startsWith("1.6.0_07"))
+		}
+		if (s.startsWith("1.6.0_07")) {
 			return false;
-		if (s.startsWith("1.6.0_06"))
+		}
+		if (s.startsWith("1.6.0_06")) {
 			return false;
-		if (s.startsWith("1.6.0_05"))
+		}
+		if (s.startsWith("1.6.0_05")) {
 			return false;
-		if (s.startsWith("1.6.0_04"))
+		}
+		if (s.startsWith("1.6.0_04")) {
 			return false;
-		if (s.startsWith("1.6.0_03"))
+		}
+		if (s.startsWith("1.6.0_03")) {
 			return false;
-		if (s.startsWith("1.6.0_02"))
+		}
+		if (s.startsWith("1.6.0_02")) {
 			return false;
-		if (s.startsWith("1.6.0_01"))
+		}
+		if (s.startsWith("1.6.0_01")) {
 			return false;
+		}
 		return !s.equals("1.6.0");
 	}
 
 	public static SynthContext createContext(JComponent component, Region region, int state) {
-		SynthStyle synthstyle = getStyle(component, region);
+		SynthStyle synthstyle = NimbusLookAndFeel.getStyle(component, region);
 		return new SynthContext(component, region, synthstyle, state);
 	}
 
@@ -367,27 +375,27 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	protected Icon frameMaximizeIcon = null;
 
 	protected Icon createFrameCloseIcon() {
-		if (frameCloseIcon == null) {
-			URL url = getClass().getClassLoader().getResource("com/ontimize/plaf/images/closeIcon.png");
-			frameCloseIcon = new ImageIcon(url);
+		if (this.frameCloseIcon == null) {
+			URL url = this.getClass().getClassLoader().getResource("com/ontimize/plaf/images/closeIcon.png");
+			this.frameCloseIcon = new ImageIcon(url);
 		}
-		return frameCloseIcon;
+		return this.frameCloseIcon;
 	}
 
 	protected Icon createFrameIconifyIcon() {
-		if (frameIconifyIcon == null) {
-			URL url = getClass().getClassLoader().getResource("com/ontimize/plaf/images/iconifyIcon.png");
-			frameIconifyIcon = new ImageIcon(url);
+		if (this.frameIconifyIcon == null) {
+			URL url = this.getClass().getClassLoader().getResource("com/ontimize/plaf/images/iconifyIcon.png");
+			this.frameIconifyIcon = new ImageIcon(url);
 		}
-		return frameIconifyIcon;
+		return this.frameIconifyIcon;
 	}
 
 	protected Icon createFrameMaximizeIcon() {
-		if (frameMaximizeIcon == null) {
-			URL url = getClass().getClassLoader().getResource("com/ontimize/plaf/images/maximizeIcon.png");
-			frameMaximizeIcon = new ImageIcon(url);
+		if (this.frameMaximizeIcon == null) {
+			URL url = this.getClass().getClassLoader().getResource("com/ontimize/plaf/images/maximizeIcon.png");
+			this.frameMaximizeIcon = new ImageIcon(url);
 		}
-		return frameMaximizeIcon;
+		return this.frameMaximizeIcon;
 	}
 
 	// public static Icon createFrameMinimizeIcon() {
@@ -396,135 +404,157 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	// }
 	// return frame_minIcon;
 	// }
-	
-	 /**
-     * Convenience method for setting a component's foreground
-     * and background color properties with values from the
-     * defaults.  The properties are only set if the current
-     * value is either {@code null} or a {@code UIResource}. 
-     * 
-     * @param c component to set the colors on
-     * @param defaultBgName key for the background
-     * @param defaultFgName key for the foreground
-     * 
-     * @see #installColorsAndFont
-     * @see UIManager#getColor
-     * @throws NullPointerException as described in
-     *         <a href="#exceptions">exceptions</a>
-     */
+
+	/**
+	 * Convenience method for setting a component's foreground and background
+	 * color properties with values from the defaults. The properties are only
+	 * set if the current value is either {@code null} or a {@code UIResource}.
+	 *
+	 * @param c
+	 *            component to set the colors on
+	 * @param defaultBgName
+	 *            key for the background
+	 * @param defaultFgName
+	 *            key for the foreground
+	 *
+	 * @see #installColorsAndFont
+	 * @see UIManager#getColor
+	 * @throws NullPointerException
+	 *             as described in <a href="#exceptions">exceptions</a>
+	 */
 	public static void installColors(JComponent c, String defaultBgName, String defaultFgName) {
-		if (UIManager.getColor(defaultBgName) != null) { // bg == null || bg instanceof UIResource
+		if (UIManager.getColor(defaultBgName) != null) { // bg == null || bg
+			// instanceof
+			// UIResource
 			c.setBackground(UIManager.getColor(defaultBgName));
 		}
 
-		if (UIManager.getColor(defaultFgName) != null) {// fg == null || fg instanceof UIResource
+		if (UIManager.getColor(defaultFgName) != null) {// fg == null || fg
+			// instanceof UIResource
 			c.setForeground(UIManager.getColor(defaultFgName));
 		}
 	}
 
-
-    /**
-     * Convenience method for setting a component's foreground,
-     * background and font properties with values from the
-     * defaults.  The properties are only set if the current
-     * value is either {@code null} or a {@code UIResource}.
-     * 
-     * @param c component set to the colors and font on
-     * @param defaultBgName key for the background
-     * @param defaultFgName key for the foreground
-     * @param defaultFontName key for the font
-     * @throws NullPointerException as described in
-     *         <a href="#exceptions">exceptions</a>
-     * 
-     * @see #installColors
-     * @see UIManager#getColor
-     * @see UIManager#getFont
-     */
-	public static void installColorsAndFont(JComponent c, String defaultBgName, String defaultFgName,
-			String defaultFontName) {
-		if (UIManager.getFont(defaultFontName) != null) { // original -> f == null || f instanceof UIResource
+	/**
+	 * Convenience method for setting a component's foreground, background and
+	 * font properties with values from the defaults. The properties are only
+	 * set if the current value is either {@code null} or a {@code UIResource}.
+	 *
+	 * @param c
+	 *            component set to the colors and font on
+	 * @param defaultBgName
+	 *            key for the background
+	 * @param defaultFgName
+	 *            key for the foreground
+	 * @param defaultFontName
+	 *            key for the font
+	 * @throws NullPointerException
+	 *             as described in <a href="#exceptions">exceptions</a>
+	 *
+	 * @see #installColors
+	 * @see UIManager#getColor
+	 * @see UIManager#getFont
+	 */
+	public static void installColorsAndFont(JComponent c, String defaultBgName, String defaultFgName, String defaultFontName) {
+		if (UIManager.getFont(defaultFontName) != null) { // original -> f ==
+			// null || f
+			// instanceof
+			// UIResource
 			c.setFont(UIManager.getFont(defaultFontName));
 		}
-		installColors(c, defaultBgName, defaultFgName);
+		OntimizeLookAndFeel.installColors(c, defaultBgName, defaultFgName);
 	}
 
-	
 	public static Font defaultAppFont = null;
 
 	protected Font getDefaultFont() {
-		
-		if (defaultFont == null) {
-			defaultFont = StyleUtil.getFont("Application", "font", null);
-			
-			if(defaultAppFont instanceof Font && defaultFont == null){
-				defaultFont = defaultAppFont;
+
+		if (this.defaultFont == null) {
+			this.defaultFont = StyleUtil.getFont("Application", "font", null);
+
+			if ((OntimizeLookAndFeel.defaultAppFont instanceof Font) && (this.defaultFont == null)) {
+				this.defaultFont = OntimizeLookAndFeel.defaultAppFont;
 			}
-			
-			if (defaultFont == null) {
+
+			if (this.defaultFont == null) {
 				try {
-//					defaultFont = FontManager.getFontConfigFUIR("Arial", Font.PLAIN, 11);
-					defaultFont = new FontUIResource(new Font("Arial", Font.PLAIN, 11));
-				} catch (Throwable e) {
-				}
+					// defaultFont = FontManager.getFontConfigFUIR("Arial",
+					// Font.PLAIN, 11);
+					this.defaultFont = new FontUIResource(new Font("Arial", Font.PLAIN, 11));
+				} catch (Throwable e) {}
 			}
-			
-			if (defaultFont == null) {
-				defaultFont = new Font("Arial", Font.PLAIN, 11);
+
+			if (this.defaultFont == null) {
+				this.defaultFont = new Font("Arial", Font.PLAIN, 11);
 			}
 		}
 
-		return defaultFont;
+		return this.defaultFont;
 	}
-	
+
 	protected void defineDefaultFont(UIDefaults d) {
 		if (d != null) {
-			d.put("defaultFont", getDefaultFont());
+			d.put("defaultFont", this.getDefaultFont());
 		}
 	}
-	
-	protected void defineTextPane(UIDefaults d){
-		//Initialize TextPane
+
+	protected void defineTextPane(UIDefaults d) {
+		// Initialize TextPane
 		String compName = "TextPane";
-		
-		setBoolean(d, compName, "opaque", "true");
-		setInsetsUIResource(d, compName, "contentMargins", "4 6 4 6");
-		
-		setColor(d, compName, "selectionForeground", "#FFFFFF");
-		setColor(d, compName, "selectionBackground", "#39698a");
-		
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		
+		this.defineTextPane(compName, d);
+	}
+
+	protected void defineTextPane(String compName, UIDefaults d) {
+		// Initialize TextPane
+		if (compName == null) {
+			compName = "TextPane";
+		}
+
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 6 4 6");
+
+		OntimizeLookAndFeel.setColor(d, compName, "selectionForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColor(d, compName, "selectionBackground", "#39698a");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+
 		d.put(compName + "[Enabled].background", StyleUtil.getColorUI(compName, "[Enabled].background", "#FFFFFF"));
 		d.put(compName + "[Disabled].background", StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D"));
 		d.put(compName + "[Selected].background", StyleUtil.getColorUI(compName, "[Selected].background", "#FFFFFF"));
-		
+
 	}
 
 	protected void defineTextFields(UIDefaults d) {
-
-		// TextField: 
 		String compName = "TextField";
-		d.put(compName+".States", "Enabled,Disabled,Focused,Selected,Required");
-		d.put(compName+".Required", new RequiredState());
-		
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
-		
-		setDouble(d, "Application", "radius", ((Double)defaultRadius).toString());
-		
-		setColorUIResource(d, compName, "textBackground", "#39698a");//Background of the selected text
+		this.defineTextFields(compName, d);
+	}
 
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");//	//oldvalue 3359718F
-		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+	protected void defineTextFields(String compName, UIDefaults d) {
+		// TextField:
+		if (compName == null) {
+			compName = "TextField";
+		}
+
+		d.put(compName + ".States", "Enabled,Disabled,Focused,Selected,Required");
+		d.put(compName + ".Required", new RequiredState());
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
+		OntimizeLookAndFeel.setDouble(d, "Application", "radius", ((Double) OntimizeLookAndFeel.defaultRadius).toString());
+		// Background of the selected text
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textBackground", "#39698a");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
 		ColorUIResource requiredFgColor = StyleUtil.getColorUI(compName, "[Required].textForeground", "#FFFFFF");
 		DataField.requiredFieldForegroundColor = requiredFgColor;
-		setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
 		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
 		d.put(compName + "[Disabled].background", disabledColor);
 		DataField.defaultDisableBackgroundColor = disabledColor;
@@ -536,48 +566,56 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Required].background", requiredColor);
 		d.put(compName + "[Focused+Required].background", requiredColor);
 		DataField.requiredFieldBackgroundColor = requiredColor;
-		
+
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
 		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
 		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
-		
-		//Editor inner border...
+
+		// Editor inner border...
 		d.put(compName + ".editorInnerBorder", StyleUtil.getArrayColorUI(compName, "editorInnerBorder", "#BAf1FE #F3FdFF"));
 
-		setColorUIResource(d, compName, "background", null);
-		setColorUIResource(d, compName, "foreground", null);
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
 
-		String pClass = "com.ontimize.plaf.painter.OTextFieldPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_REQUIRED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_REQUIRED, ctx));
-		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_DISABLED, ctx));
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTextFieldPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
 
+	}
+
+	protected void defineTextArea(UIDefaults d) {
+		String compName = "TextArea";
+		this.defineTextArea(compName, d);
+	}
+
+	protected void defineTextArea(String compName, UIDefaults d) {
 		// Initialize TextArea
-		compName = "TextArea";
+		if (compName == null) {
+			compName = "TextArea";
+		}
 
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setInsetsUIResource(d, compName, "contentMargins", "6 6 6 6");
-		
-		setColorUIResource(d, compName, "textBackground", "#39698a");//Background of the selected text
-		
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		
-		
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "6 6 6 6");
+		// Background of the selected text
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textBackground", "#39698a");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+
 		d.put(compName + "[Enabled].background", StyleUtil.getColorUI(compName, "[Enabled].background", "#FFFFFF"));
 		d.put(compName + "[Required].background", StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9"));
 		d.put(compName + "[Disabled].background", StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D"));
@@ -587,14 +625,15 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
 		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
 
-		setColorUIResource(d, compName, "background", null);
-		setColorUIResource(d, compName, "foreground", null);
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+
 		// TextArea in scroll pane
-		pClass = "com.ontimize.plaf.painter.OTextAreaPainter";
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "6 6 6 6"), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTextAreaPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "6 6 6 6"), new Dimension(122, 24),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Selected,Disabled,Focused,NotInScrollPane");
 		d.put(compName + ".NotInScrollPane", new OTextAreaNotInScrollPaneState());
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_DISABLED, ctx));
@@ -611,69 +650,83 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Focused+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED_NOTINSCROLLPANE, ctx));
 		d.put(compName + "[Enabled+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_ENABLED_NOTINSCROLLPANE, ctx));
 	}
-	
-	protected void definePassword(UIDefaults d){
-		String compName = "PasswordField";
-        
-        setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
-		
-		setDouble(d, "Application", "radius", ((Double)defaultRadius).toString());
 
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+	protected void definePassword(UIDefaults d) {
+		String compName = "PasswordField";
+		this.definePassword(compName, d);
+	}
+
+	protected void definePassword(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "PasswordField";
+		}
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
+
+		OntimizeLookAndFeel.setDouble(d, "Application", "radius", ((Double) OntimizeLookAndFeel.defaultRadius).toString());
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
 		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
 		d.put(compName + "[Required].background", requiredColor);
-		
+
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
 		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
 		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
-		
-		//Editor inner border...
+
+		// Editor inner border...
 		d.put(compName + ".editorInnerBorder", StyleUtil.getArrayColorUI(compName, "editorInnerBorder", "#BAf1FE #F3FdFF"));
 
-		setColorUIResource(d, compName, "background", null);
-		setColorUIResource(d, compName, "foreground", null);
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
 
-		String pClass = "com.ontimize.plaf.painter.OTextFieldPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_REQUIRED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_REQUIRED, ctx));
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTextFieldPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
 
 	}
-	
-	protected void defineReferenceExtComponent(UIDefaults d){
+
+	protected void defineReferenceExtComponent(UIDefaults d) {
 		String compName = "TextField:\"TextField.ReferenceExt\"";
-		
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
-		
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+		this.defineReferenceExtComponent(compName, d);
+	}
+
+	protected void defineReferenceExtComponent(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "TextField:\"TextField.ReferenceExt\"";
+		}
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
 		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
 		d.put(compName + "[Required].background", requiredColor);
-		
+
 		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
 		d.put(compName + "[Disabled].background", disabledColor);
 		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
@@ -683,78 +736,91 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
 		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
 		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
-		
 
-		String pClass = "com.ontimize.plaf.painter.OReferenceExtFieldPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_REQUIRED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_REQUIRED, ctx));
-		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
-		
-		
-		compName = "TextField:\"TextField.ReferenceExtCode\"";
-		
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
-		
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
-		requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OReferenceExtFieldPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
+
+	}
+
+	protected void defineReferenceExtCodeComponent(UIDefaults d) {
+		String compName = "TextField:\"TextField.ReferenceExtCode\"";
+		this.defineReferenceExtCodeComponent(compName, d);
+	}
+
+	protected void defineReferenceExtCodeComponent(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "TextField:\"TextField.ReferenceExtCode\"";
+		}
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
 		d.put(compName + "[Required].background", requiredColor);
-		
-		disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
+
+		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
 		d.put(compName + "[Disabled].background", disabledColor);
-		focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
+		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
 		d.put(compName + "[Focused].background", focusedColor);
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
 		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
 		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
-		
 
-		pClass = "com.ontimize.plaf.painter.OReferenceExtCodeFieldPainter";
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, OTextFieldPainter.BACKGROUND_REQUIRED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_REQUIRED, ctx));
-		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, OTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
-		
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OReferenceExtCodeFieldPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
 	}
 
 	protected void defineQuickFilter(UIDefaults d) {
+		String compName = "Table:\"Table.QuickFilter\"";
+		this.defineQuickFilter(compName, d);
+	}
+
+	protected void defineQuickFilter(String compName, UIDefaults d) {
 
 		// QuickFilter...
-		String compName = "Table:\"Table.QuickFilter\"";
-		String pClass = "com.ontimize.plaf.painter.OQuickFilterPainter";
-		
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setInsetsUIResource(d, compName, "contentMargins", "4 14 4 30");
+		if (compName == null) {
+			compName = "Table:\"Table.QuickFilter\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OQuickFilterPainter");
 
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
-		
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 14 4 30");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+
 		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
 		d.put(compName + "[Disabled].background", disabledColor);
 		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
@@ -764,24 +830,31 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
 		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
 		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
-		
+
 		d.put(compName + ".icon", StyleUtil.getProperty(compName, "icon", "com/ontimize/plaf/images/queryfilter.png"));
-		
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(4, 14, 4, 30), new Dimension(122, 26), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OQuickFilterPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OQuickFilterPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OQuickFilterPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, OQuickFilterPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OQuickFilterPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OQuickFilterPainter.BORDER_DISABLED, ctx));
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(4, 14, 4, 30), new Dimension(122, 26), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
 
 		QuickFieldText.paintFindText = false;
 	}
 
 	protected void defineEditorPane(UIDefaults d) {
-		// Initialize EditorPane
 		String compName = "EditorPane";
+		this.defineEditorPane(compName, d);
+	}
+
+	protected void defineEditorPane(String compName, UIDefaults d) {
+		// Initialize EditorPane
+		if (compName == null) {
+			compName = "EditorPane";
+		}
 		d.put(compName + ".contentMargins", new InsetsUIResource(10, 10, 10, 10));
 		d.put(compName + ".opaque", Boolean.TRUE);
 
@@ -798,9 +871,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
 		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
 
-		String pClass = "com.ontimize.plaf.painter.OEditorPanePainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(10, 10, 10, 10), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OEditorPanePainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(10, 10, 10, 10), new Dimension(122, 24), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OEditorPanePainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OEditorPanePainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OEditorPanePainter.BACKGROUND_SELECTED, ctx));
@@ -809,186 +882,271 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_ENABLED, ctx));
 
 	}
-	
-	protected void defineFileChooser(UIDefaults d){
+
+	protected void defineFileChooser(UIDefaults d) {
 		String compName = "FileChooser";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "10 10 10 10");
-		setBoolean(d, compName, "opaque", "true");
-		setBoolean(d, compName, "usesSingleFilePane", "true");
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#366581");
-		setColor(d, compName, "background", "#366581");
-		
-		String pClass = "com.ontimize.plaf.painter.OFileChooserPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(10, 10, 10, 10), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OEditorPanePainter.BACKGROUND_ENABLED, ctx));
-		
+		this.defineFileChooser(compName, d);
 	}
-	
-	protected void defineOptionPane(UIDefaults d){
+
+	protected void defineFileChooser(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "FileChooser";
+		}
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "10 10 10 10");
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "usesSingleFilePane", "true");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#366581");
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#366581");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFileChooserPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(10, 10, 10, 10), new Dimension(122, 24), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OEditorPanePainter.BACKGROUND_ENABLED, ctx));
+
+	}
+
+	protected void defineOptionPane(UIDefaults d) {
 		String compName = "OptionPane";
-		
+		this.defineOptionPane(compName, d);
+	}
+
+	protected void defineOptionPane(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "OptionPane";
+		}
+
 		// Initialize OptionPane
-		setColorUIResource(d, compName, "background", "#366581");
-		//MessageForeground must be Color not ColorUIResource, with UI color is not fixed.
-		setColor(d, compName, "messageForeground", "#ffffff");
-		setInteger(d, compName, "buttonMinimumWidth", "60");
-		
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#366581");
+		// MessageForeground must be Color not ColorUIResource, with UI color is
+		// not fixed.
+		OntimizeLookAndFeel.setColor(d, compName, "messageForeground", "#ffffff");
+		OntimizeLookAndFeel.setInteger(d, compName, "buttonMinimumWidth", "60");
+
 	}
 
 	protected void defineScrollPane(UIDefaults d) {
+		String compName = "ScrollPane";
+		this.defineScrollPane(compName, d);
+	}
+
+	protected void defineScrollPane(String compName, UIDefaults d) {
 
 		// Initialize ScrollPane
-		String compName = "ScrollPane";
-		String painterClass = "com.ontimize.plaf.painter.OScrollPanePainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(4, 4, 4, 4), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		if (compName == null) {
+			compName = "ScrollPane";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OScrollPanePainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(4, 4, 4, 4), new Dimension(122, 24), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + ".contentMargins", new InsetsUIResource(4, 4, 4, 4));
-		setBoolean(d, compName, "opaque", "true");
-		setBoolean(d, compName, "useChildTextComponentFocus", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "useChildTextComponentFocus", "true");
 
-		d.put(compName + "[Enabled+Focused].borderPainter", new LazyPainter(painterClass, OScrollPanePainter.BORDER_ENABLED_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(painterClass, OScrollPanePainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(painterClass, OScrollPanePainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(painterClass, OScrollPanePainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled+Focused].borderPainter", new LazyPainter(pClass, OScrollPanePainter.BORDER_ENABLED_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OScrollPanePainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OScrollPanePainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OScrollPanePainter.BACKGROUND_ENABLED, ctx));
 
 		// Store ScrollPane Corner Component
-		d.put(compName + ".cornerPainter", new LazyPainter(painterClass, OScrollPanePainter.CORNER_ENABLED, ctx));
+		d.put(compName + ".cornerPainter", new LazyPainter(pClass, OScrollPanePainter.CORNER_ENABLED, ctx));
+	}
+
+	protected void defineFormScrollPanel(UIDefaults d) {
+		String compName = "\"FormScrollPane\"";
+		this.defineScrollPane(d);
+
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff01");
+	}
+
+	protected void defineTreeScrollPanel(UIDefaults d) {
+		String compName = "\"TreeScrollPane\"";
+		this.defineScrollPane(d);
+
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff01");
 	}
 
 	protected void defineViewport(UIDefaults d) {
 
-//		// Initialize Viewport
+		// // Initialize Viewport
 		d.put("Viewport.contentMargins", new InsetsUIResource(0, 0, 0, 0));
 		d.put("Viewport.opaque", Boolean.FALSE);
 	}
 
 	protected void defineScrollBar(UIDefaults d) {
-
-		// ScrollBar:
 		String compName = "ScrollBar";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "6 6 6 6");
-		setFontUIResource(d, compName, "font", null);
-		setBoolean(d, compName, "opaque", "true");
-		setInteger(d, compName, "decrementButtonGap", "0");//0
-		setInteger(d, compName, "incrementButtonGap", "0");//0
-		setInteger(d, compName, "thumbHeight", "12");
+		this.defineScrollBar(compName, d);
+	}
+
+	protected void defineScrollBar(String compName, UIDefaults d) {
+		// ScrollBar:
+		if (compName == null) {
+			compName = "ScrollBar";
+		}
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "6 6 6 6");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setInteger(d, compName, "decrementButtonGap", "0");// 0
+		OntimizeLookAndFeel.setInteger(d, compName, "incrementButtonGap", "0");// 0
+		OntimizeLookAndFeel.setInteger(d, compName, "thumbHeight", "12");
 		d.put(compName + ".minimumThumbSize", new DimensionUIResource(29, 29));
 		d.put(compName + ".maximumThumbSize", new DimensionUIResource(1000, 1000));
-		
-		setColorUIResource(d, compName, "foreground", null);
-		setColorUIResource(d, compName, "background", "#ffffff01");
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		
-		setColorUIResource(d, compName, "[Enabled].border", "#FFFFFF");
-		setColorUIResource(d, compName, "[Disabled].border", "#FFFFFF");
-		
-		String pClass = "com.ontimize.plaf.painter.OScrollBarPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "6 6 6 6"), new Dimension(122, 24), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].border", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].border", "#FFFFFF");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OScrollBarPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "6 6 6 6"), new Dimension(122, 24),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + ".States", "Enabled,Disabled");
 		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OScrollBarPainter.BORDER_ENABLED, ctx));
 		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OScrollBarPainter.BORDER_DISABLED, ctx));
 
+	}
+
+	protected void defineScrollBarButton(UIDefaults d) {
+		String compName = "ScrollBar:\"ScrollBar.button\"";
+		this.defineScrollBarButton(compName, d);
+	}
+
+	protected void defineScrollBarButton(String compName, UIDefaults d) {
 		// ScrollBar button:
-		compName="ScrollBar:\"ScrollBar.button\"";
-		pClass = "com.ontimize.plaf.painter.OScrollBarButtonPainter";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
-		setInteger(d, compName, "size", "25");
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#BDBDBD");
-		setColorUIResource(d, compName, "[Disabled].background", "#D0DAE2");
-		setColorUIResource(d, compName, "[MouseOver].background", "#BDBDBD");
-		setColorUIResource(d, compName, "[Pressed].background", "#9D9D9D");
-		
-		setColorUIResource(d, compName, "[Enabled].arrowBackground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Disabled].arrowBackground", "#FFFFFF");
-		setColorUIResource(d, compName, "[MouseOver].arrowBackground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Pressed].arrowBackground", "#FFFFFF");
-		
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(25, 16), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		if (compName == null) {
+			compName = "ScrollBar:\"ScrollBar.button\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OScrollBarButtonPainter");
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+		OntimizeLookAndFeel.setInteger(d, compName, "size", "25");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#BDBDBD");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#D0DAE2");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#BDBDBD");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].background", "#9D9D9D");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].arrowBackground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].arrowBackground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].arrowBackground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].arrowBackground", "#FFFFFF");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(25, 16),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_ENABLED, ctx));
 		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_DISABLED, ctx));
 		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_MOUSEOVER, ctx));
 		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_PRESSED, ctx));
+	}
 
+	protected void defineScrollBarThumb(UIDefaults d) {
+		String compName = "ScrollBar:ScrollBarThumb";
+		this.defineScrollBarThumb(compName, d);
+	}
+
+	protected void defineScrollBarThumb(String compName, UIDefaults d) {
 		// ScrollBar thumb :
-		compName = "ScrollBar:ScrollBarThumb";
-		pClass = "com.ontimize.plaf.painter.OScrollBarThumbPainter";
-		setInsetsUIResource(d, compName, "contentMargins", "2 2 2 2");
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#36627F");
-		setColorUIResource(d, compName, "[MouseOver].background", "#36627F");
-		setColorUIResource(d, compName, "[Pressed].background", "#36627F");
-		setColorUIResource(d, compName, "[Enabled].border", "#36627F");
-		setColorUIResource(d, compName, "[MouseOver].border", "#36627F");
-		setColorUIResource(d, compName, "[Pressed].border", "#36627F");
-		setColorUIResource(d, compName, "[Enabled].backgroundShadow", "#FFFFFF25");
-		setColorUIResource(d, compName, "[MouseOver].backgroundShadow", "#FFFFFF25");
-		setColorUIResource(d, compName, "[Pressed].backgroundShadow", "#FFFFFF25");
-		
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 2 2 2"), new Dimension(38, 15), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, 2.0);
+		if (compName == null) {
+			compName = "ScrollBar:ScrollBarThumb";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OScrollBarThumbPainter");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 2 2 2");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#36627F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#36627F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].background", "#36627F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].border", "#36627F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].border", "#36627F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].border", "#36627F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].backgroundShadow", "#FFFFFF25");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].backgroundShadow", "#FFFFFF25");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].backgroundShadow", "#FFFFFF25");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 2 2 2"), new Dimension(38, 15),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, 2.0);
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OScrollBarThumbPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OScrollBarThumbPainter.BACKGROUND_MOUSEOVER, ctx));
 		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, OScrollBarThumbPainter.BACKGROUND_PRESSED, ctx));
+	}
 
+	protected void defineScrollBarTrack(UIDefaults d) {
+		String compName = "ScrollBar:ScrollBarTrack";
+		this.defineScrollBarTrack(compName, d);
+	}
+
+	protected void defineScrollBarTrack(String compName, UIDefaults d) {
 		// ScrollBar track :
-		compName = "ScrollBar:ScrollBarTrack";
-		pClass = "com.ontimize.plaf.painter.OScrollBarTrackPainter";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "5 5 5 5");
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#E6E6E6");
-		setColorUIResource(d, compName, "[Disabled].background", "#EEF1F4");
-		
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(18, 15), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, 2.0);
+		if (compName == null) {
+			compName = "ScrollBar:ScrollBarTrack";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OScrollBarTrackPainter");
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "5 5 5 5");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#E6E6E6");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#EEF1F4");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(18, 15),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, 2.0);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OScrollBarTrackPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OScrollBarTrackPainter.BACKGROUND_ENABLED, ctx));
-
 	}
 
 	protected void defineTable(UIDefaults d) {
-
-		// Table:
 		String compName = "Table";
-		
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont));
-		setInsetsUIResource(d, compName, "contentMargins", "2 2 2 2");
-		setInteger(d, compName, "rowHeight", "22");
-		setBoolean(d, compName, "opaque", "true");
-		setBoolean(d, compName, "showGrid", "true");
-		setColorUIResource(d, compName, "gridColor", "#ffffff");
-		setColorUIResource(d, compName, "disabledText", null);
-		setColorUIResource(d, compName, "disabled", null);
-		
-		setColorUIResource(d, compName, "foreground", "#3A5F77");
-		setColorUIResource(d, compName, "textForeground", "#3A5F77");
-		setColorUIResource(d, compName, "TextBackground", "#9cb2c1");
-		setColorUIResource(d, compName, "background", "#c3d5dd");
-		setColor(d, compName, "alternateRowColor", "#Dae7Ed");
-		setColorUIResource(d, compName, "alternateOddRowColor", "#B6CAD6");
-		setColorUIResource(d, compName, "alternateEvenRowColor", "#A6BDCB");
-		setBoolean(d, compName, "useOddEvenAlternateRowColor", "true");
-		setBoolean(d, compName, "rendererUseTableColors", "true");
-		setBoolean(d, compName, "rendererUseUIBorder", "true");
-		
-		setColorUIResource(d, compName, "selectionBackground", "#F2F8F9");
-		setColorUIResource(d, compName, "selectionForeground", "#2E8ECB");
-		
-		d.put("Table.cellNoFocusBorder", new BorderUIResource(BorderFactory.createEmptyBorder(2, 5, 2, 5)));
-        Color borderColor = StyleUtil.getColor(compName, "[Selected].border", "#2E8ECB");
+		this.defineTable(compName, d);
+	}
+
+	protected void defineTable(String compName, UIDefaults d) {
+		// Table:
+		if (compName == null) {
+			compName = "Table";
+		}
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 2 2 2");
+		OntimizeLookAndFeel.setInteger(d, compName, "rowHeight", "22");
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "showGrid", "true");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "gridColor", "#ffffff");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#3A5F77");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#3A5F77");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "TextBackground", "#9cb2c1");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#c3d5dd");
+		OntimizeLookAndFeel.setColor(d, compName, "alternateRowColor", "#Dae7Ed");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "alternateOddRowColor", "#B6CAD6");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "alternateEvenRowColor", "#A6BDCB");
+		OntimizeLookAndFeel.setBoolean(d, compName, "useOddEvenAlternateRowColor", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "rendererUseTableColors", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "rendererUseUIBorder", "true");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "selectionBackground", "#F2F8F9");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "selectionForeground", "#2E8ECB");
+
+		d.put(compName + ".cellNoFocusBorder", new BorderUIResource(BorderFactory.createEmptyBorder(2, 5, 2, 5)));
+		Color borderColor = StyleUtil.getColor(compName, "[Selected].border", "#2E8ECB");
 		Border outsideBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, borderColor);
 		Border insideBorder = BorderFactory.createEmptyBorder(0, 5, 0, 5);
-		d.put("Table.focusCellHighlightBorder", new BorderUIResource(BorderFactory.createCompoundBorder(outsideBorder, insideBorder)));
-		
-		setColorUIResource(d, compName, "[Enabled+Selected].textForeground", "#2E8ECB");	//Color used for default TableCellRenderes of swing
-		setColorUIResource(d, compName, "[Enabled+Selected].textBackground", "#F2F8F9");	//Color used for default TableCellRenderes of swing
-		setColorUIResource(d, compName, "[Disabled+Selected].textBackground", "#F2F8F9");
-		
+		d.put(compName + ".focusCellHighlightBorder", new BorderUIResource(BorderFactory.createCompoundBorder(outsideBorder, insideBorder)));
+
+		// Color used for default TableCellRenderes of swing
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled+Selected].textForeground", "#2E8ECB");
+		// Color used for default TableCellRenderes of swing
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled+Selected].textBackground", "#F2F8F9");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Selected].textBackground", "#F2F8F9");
 
 		// ************Ontimize Table Configuration***********
 		Table.defaultTableOpaque = Boolean.TRUE;
@@ -997,18 +1155,17 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		borderColor = StyleUtil.getColorUI("Table", "border", "#ADC0CE");
 		BorderUIResource tBorder = new BorderUIResource(BorderFactory.createLineBorder(borderColor, 2));
 		BorderManager.putBorder(BorderManager.DEFAULT_TABLE_BORDER_KEY, tBorder);
-		d.put("Table.scrollPaneBorder", tBorder);
-		
-		
+		d.put(compName + ".scrollPaneBorder", tBorder);
+
 		compName = "\"PageFetcher.Label\"";
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		
-		setColor(d, compName, "foreground", "#335971");
-		setColor(d, compName, "disabled", "#243b4aCC");
-		setColor(d, compName, "disabledText", "#243b4aCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColor(d, compName, "foreground", "#335971");
+		OntimizeLookAndFeel.setColor(d, compName, "disabled", "#243b4aCC");
+		OntimizeLookAndFeel.setColor(d, compName, "disabledText", "#243b4aCC");
 
 		// Buttons configuration...
 		ImageManager.TABLE_SUMROWSETUP = "com/ontimize/plaf/images/table/calc.png";
@@ -1032,12 +1189,16 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	}
 
 	protected void defineTableCellRenderer(UIDefaults d) {
-		// Table:"Table.cellRenderer
 		String compName = "Table:\"Table.cellRenderer\"";
-//		d.put("Table:\"Table.cellRenderer\".contentMargins", new InsetsUIResource(1, 6, 1, 6));
-//		d.put("Table:\"Table.cellRenderer\".opaque", Boolean.FALSE);
-//		d.put("Table:\"Table.cellRenderer\".background", OntimizeLAFColorUtils.setAlpha(Color.red, 0.5));
-		
+		this.defineTableCellRenderer(compName, d);
+	}
+
+	protected void defineTableCellRenderer(String compName, UIDefaults d) {
+		// Table:"Table.cellRenderer
+		if (compName == null) {
+			compName = "Table:\"Table.cellRenderer\"";
+		}
+
 		// ************Ontimize Table Configuration***********
 		CellRenderer.font = StyleUtil.getFont(compName, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont));
 		CellRenderer.fontColor = StyleUtil.getColor(compName, "foreground", "#3A5F77");
@@ -1048,7 +1209,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		CellRenderer.editableFontColor = StyleUtil.getColor(compName, "[Editable].foreground", "#3A5F77");
 		CellRenderer.evenEditableBackgroundColor = StyleUtil.getColor(compName, "[Editable].evenEditableBackground", "#c3d5dd");
 		CellRenderer.oddEditableBackgroundColor = StyleUtil.getColor(compName, "[Editable].oddEditableBackground", "#dae7ed");
-		
+
 		CellRenderer.requiredInsertColumns = StyleUtil.getColor(compName, "[Insertable].requiredBackground", "#b8bacb");
 		CellRenderer.noRequiredInsertColumns = StyleUtil.getColor(compName, "[Insertable].norequiredBackground", "#cdced9");
 
@@ -1061,25 +1222,53 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		CellRenderer.focusBorder = BorderFactory.createCompoundBorder(outsideBorder, insideBorder);
 		CellRenderer.focusBorderColor = borderColor;
 
+	}
+
+	protected void defineTableRowHeadCellRenderer(UIDefaults d) {
+		String compName = "Table:\"Table.rowHeadCellRenderer\"";
+		this.defineTableRowHeadCellRenderer(compName, d);
+	}
+
+	protected void defineTableRowHeadCellRenderer(String compName, UIDefaults d) {
 		// Row number column...
-		compName = "Table:\"Table.rowHeadCellRenderer\"";
+		if (compName == null) {
+			compName = "Table:\"Table.rowHeadCellRenderer\"";
+		}
 		RowHeadCellRenderer.rowNumberForeground = StyleUtil.getColor(compName, "foreground", "#dae7ed");
-		Font rNFont = getDefaultFont();
-		rNFont = rNFont.deriveFont((float)rNFont.getSize()+3);
+		Font rNFont = this.getDefaultFont();
+		rNFont = rNFont.deriveFont((float) rNFont.getSize() + 3);
 		RowHeadCellRenderer.rowNumberFont = StyleUtil.getFont(compName, "font", OntimizeLAFParseUtils.fontToString(rNFont));
 		RowHeadCellRenderer.rowNumberBackground = StyleUtil.getColor(compName, "[Enabled].background", "#6387a0");
-		borderColor = StyleUtil.getColor(compName, "border", "#FFFFFF");
 		RowHeadCellRenderer.rowNumberBorder = BorderFactory.createEmptyBorder();
+	}
 
+	protected void defineTableSumCellRenderer(UIDefaults d) {
+		String compName = "Table:\"Table.sumCellRenderer\"";
+		this.defineTableSumCellRenderer(compName, d);
+	}
+
+	protected void defineTableSumCellRenderer(String compName, UIDefaults d) {
 		// SumCell Renderer
-		compName = "Table:\"Table.sumCellRenderer\"";
+		if (compName == null) {
+			compName = "Table:\"Table.sumCellRenderer\"";
+		}
 		SumCellRenderer.backgroundColor = StyleUtil.getColor(compName, "[Enabled].background", "#80B721");
 		SumCellRenderer.foregroundColor = StyleUtil.getColor(compName, "foreground", "#FFFFFF");
 		SumCellRenderer.disabledBackgroundColor = StyleUtil.getColor(compName, "[Disabled].background", "#9CB2C1");
+	}
 
+	protected void defineTableVisualCalendarCellRenderer(UIDefaults d) {
+		String compName = "Table:\"VisualCalendar:Table.cellRenderer\"";
+		this.defineTableVisualCalendarCellRenderer(compName, d);
+	}
+
+	protected void defineTableVisualCalendarCellRenderer(String compName, UIDefaults d) {
 		// VisualCalendar Component...
-		compName = "Table:\"VisualCalendar:Table.cellRenderer\"";
-		String pClass = "com.ontimize.plaf.painter.OTableVisualCalendarCellRendererPainter";
+		if (compName == null) {
+			compName = "Table:\"VisualCalendar:Table.cellRenderer\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTableVisualCalendarCellRendererPainter");
+
 		d.put(compName + ".States", "Enabled");
 		d.put(compName + ".contentMargins", new InsetsUIResource(0, 0, 0, 0));
 		d.put(compName + ".opaque", Boolean.TRUE);
@@ -1091,29 +1280,59 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		VisualCalendarComponent.DayRenderer.dayOfWeekFgColor = StyleUtil.getColor(compName, "dayOfWeekFgColor", "#6b7e75");
 		VisualCalendarComponent.DayRenderer.dayOfWeekEndFgColor = StyleUtil.getColor(compName, "dayOfWeekEndFgColor", "#a8b7c0");
 		VisualCalendarComponent.DayRenderer.daySelectedFgColor = StyleUtil.getColor(compName, "daySelectedFgColor", "#ffffff");
-		
-		setColor(d, compName, "[Selected].background", "#5cb1ea");
-		setColor(d, compName, "[Selected].dayColor", "#bcd3e3");
-		setColor(d, compName, "evenColumnBackground", "#ffffff");
-		setColor(d, compName, "oddColumnBackground", "#F3F3F0");
-		
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(5, 5, 5, 5), new Dimension(22, 20), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED, ctx));
 
+		OntimizeLookAndFeel.setColor(d, compName, "[Selected].background", "#5cb1ea");
+		OntimizeLookAndFeel.setColor(d, compName, "[Selected].dayColor", "#bcd3e3");
+		OntimizeLookAndFeel.setColor(d, compName, "evenColumnBackground", "#ffffff");
+		OntimizeLookAndFeel.setColor(d, compName, "oddColumnBackground", "#F3F3F0");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(5, 5, 5, 5), new Dimension(22, 20), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineTableCellEditor(UIDefaults d) {
-
 		String compName = "\"Table.editor\"";
-		String pClass = "com.ontimize.plaf.painter.OTableCellEditorPainter";
-		d.put(compName + ".contentMargins", new InsetsUIResource(0, 6, 0, 6));
+		this.defineTableCellEditor(compName, d);
+	}
+
+	protected void defineTableCellEditor(String compName, UIDefaults d) {
+
+		if (compName == null) {
+			compName = "\"Table.editor\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTableCellEditorPainter");
+
+		d.put(compName + ".States", "Enabled,Disabled,Focused,Selected");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 6 0 6");
 		d.put(compName + ".opaque", Boolean.TRUE);
-		d.put(compName + "[Enabled].textForeground", StyleUtil.getColorUI(compName, "[Enabled].textForeground", "#31c7fc"));
-		d.put(compName + "[Selected].textForeground", StyleUtil.getColorUI(compName, "[Selected].textForeground", "#FFFFFF"));
-		
+
+		// Background of the selected text
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textBackground", "#39698a");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF7D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Enabled].background", "#FFFFFF");
+
+		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
+		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
+		d.put(compName + "[Focused+Enabled].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
+		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
+
 		PaintContext ctx = new PaintContext(new Insets(1, 1, 1, 1), new Dimension(31, 17), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass,	OTableCellEditorPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Enabled+Focused].backgroundPainter", new LazyPainter(pClass,	OTableCellEditorPainter.BACKGROUND_ENABLED_FOCUSED, ctx));
+
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused+Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Focused+Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
 
 		// ************Ontimize Table Configuration***********
 		compName = "Table:\"Table.cellEditor\"";
@@ -1124,86 +1343,103 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		CellEditor.fontColor = StyleUtil.getColor(compName, "foreground", "#31c7fc");
 		CellEditor.backgroundColor = StyleUtil.getColor(compName, "background", "#FFFFFF");
 		CellEditor.font = StyleUtil.getFont(compName, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont));
-		
-		d.put("Table.cellEditorBorder", new TableCellEditorBorder(CellEditor.focusBorder));
+
+		d.put(compName + ".cellEditorBorder", new TableCellEditorBorder(CellEditor.focusBorder));
 
 	}
-	
-	public class TableCellEditorBorder extends BorderUIResource{
+
+	public class TableCellEditorBorder extends BorderUIResource {
 		protected Border delegate_;
-		
-		public TableCellEditorBorder(Border delegate){
+
+		public TableCellEditorBorder(Border delegate) {
 			super(delegate);
 			this.delegate_ = delegate;
 		}
-		
-		public Border getDelegateBorder(){
+
+		public Border getDelegateBorder() {
 			return this.delegate_;
 		}
 	}
 
 	protected void defineTableHeader(UIDefaults d) {
-		// TableHeader:
 		String compName = "TableHeader";
+		this.defineTableHeader(compName, d);
+	}
 
-		Font tHFont = getDefaultFont();
-		tHFont = tHFont.deriveFont((float)tHFont.getSize()+1);
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(tHFont));
+	protected void defineTableHeader(String compName, UIDefaults d) {
+		// TableHeader:
+		if (compName == null) {
+			compName = "TableHeader";
+		}
+
+		Font tHFont = this.getDefaultFont();
+		tHFont = tHFont.deriveFont((float) tHFont.getSize() + 1);
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(tHFont));
 		/*
-		 * NOTE:
-		 * //Insets fixed, they can't be changed by the user. If user wants to change insets,
-		 * he could change them into table header renderer.
+		 * NOTE: //Insets fixed, they can't be changed by the user. If user
+		 * wants to change insets, he could change them into table header
+		 * renderer.
 		 */
-		d.put(compName + ".contentMargins", new InsetsUIResource(0, 0, 0, 0)); 
-		setBoolean(d, compName, "opaque", "true");
-		setBoolean(d, compName, "rightAlignSortArrow", "false");
-		
-		setColorUIResource(d, compName, "foreground", "#647b8b");
-		setColorUIResource(d, compName, "background", "#e5edf0");
-		setColorUIResource(d, compName, "disabledText", null);
-		setColorUIResource(d, compName, "disabled", null);
+		d.put(compName + ".contentMargins", new InsetsUIResource(0, 0, 0, 0));
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "rightAlignSortArrow", "false");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#647b8b");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#e5edf0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
 
 		SortTableCellRenderer.defaultForegroundFilterColor = StyleUtil.getColor(compName, "foregroundFilter", "#2E8ECb");
 		SortTableCellRenderer.paintSortIcon = true;
 
-		d.put("Table.ascendingSortIcon", new OntimizeSynthIcon("TableHeader", "ascendingSortIconPainter", 31, 17));
-		d.put("Table.descendingSortIcon", new OntimizeSynthIcon("TableHeader", "descendingSortIconPainter", 31, 17));
-		
-		setColorUIResource(d, compName, "ascendingSortIconBackground", "#80b721");
-		setColorUIResource(d, compName, "descendingSortIconBackground", "#e64718");
+		d.put(compName + ".ascendingSortIcon", new OntimizeSynthIcon("TableHeader", "ascendingSortIconPainter", 31, 17));
+		d.put(compName + ".descendingSortIcon", new OntimizeSynthIcon("TableHeader", "descendingSortIconPainter", 31, 17));
 
-		String pClass = "com.ontimize.plaf.painter.OTableHeaderPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0,0,0,0), new Dimension(31, 17), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "ascendingSortIconBackground", "#80b721");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "descendingSortIconBackground", "#e64718");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTableHeaderPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 0, 0, 0), new Dimension(31, 17), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
 		d.put(compName + "[Enabled].ascendingSortIconPainter", new LazyPainter(pClass, OTableHeaderPainter.ASCENDINGSORTICON_ENABLED, ctx));
 		d.put(compName + "[Enabled].descendingSortIconPainter", new LazyPainter(pClass, OTableHeaderPainter.DESCENDINGSORTICON_ENABLED, ctx));
 
 	}
 
 	protected void defineTableHeaderRenderer(UIDefaults d) {
+		String compName = "TableHeader:\"TableHeader.renderer\"";
+		this.defineTableHeaderRenderer(compName, d);
+	}
+
+	protected void defineTableHeaderRenderer(String compName, UIDefaults d) {
 
 		// TableHeader: renderer :
-		String compName = "TableHeader:\"TableHeader.renderer\"";
-		
+		if (compName == null) {
+			compName = "TableHeader:\"TableHeader.renderer\"";
+		}
+
 		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Disabled,Focused,Selected,Sorted");
 		d.put(compName + ".Sorted", new OTableHeaderTableHeaderRendererSortedState());
-		
-		setInsetsUIResource(d, compName, "contentMargins", "2 2 2 2");
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 2 2 2");
 		Insets insets = StyleUtil.getInsets(compName, "contentMargins", "2 2 2 2");
-		SortTableCellRenderer.defaultVerticalHeaderMargin = 4 + insets.top+insets.bottom;//4 is defaultVerticalHeaderMargin in Ontimize
-		
-		Font tHRFont = getDefaultFont();
-		tHRFont = tHRFont.deriveFont((float)tHRFont.getSize()+1);
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(tHRFont));
-		setBoolean(d, compName, "opaque", "true");
+		// 4 is the default VerticalHeaderMargin in Ontimize
+		SortTableCellRenderer.defaultVerticalHeaderMargin = 4 + insets.top + insets.bottom;
+
+		Font tHRFont = this.getDefaultFont();
+		tHRFont = tHRFont.deriveFont((float) tHRFont.getSize() + 1);
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(tHRFont));
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
 
 		d.put(compName + ".backgroundDegraded", StyleUtil.getArrayColor(compName, "backgroundDegraded", "#aab7bf #e5edf0"));
-		setColorUIResource(d, compName, "textForeground", "#647b8b");
-		setColorUIResource(d, compName, "outsideRightBorder", "#858d92");
-		setColorUIResource(d, compName, "insideRightBorder", "#FFFFFF");
-		setColorUIResource(d, compName, "bottomBorder", "#858d92");
-		
-		String pClass = "com.ontimize.plaf.painter.OTableHeaderRendererPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(22, 20), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#647b8b");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "outsideRightBorder", "#858d92");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "insideRightBorder", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "bottomBorder", "#858d92");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTableHeaderRendererPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(22, 20), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Enabled+Focused].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED_FOCUSED, ctx));
@@ -1213,111 +1449,148 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Enabled+Focused+Sorted].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED_FOCUSED_SORTED, ctx));
 		d.put(compName + "[Disabled+Sorted].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_DISABLED_SORTED, ctx));
 
-		// VisualCalendar Component...
-		compName = "TableHeader:\"VisualCalendar:TableHeader.renderer\"";
-		pClass = "com.ontimize.plaf.painter.OTableHeaderVisualCalendarRendererPainter";
-		d.put(compName + ".States", "Enabled");
-		
-		setInsetsUIResource(d, compName, "contentMargins", "5 5 5 5");
-		setColorUIResource(d, compName, "foreground", "#FFFFFF");
-		setColorUIResource(d, compName, "foregroundShadow", "00000033");
-		
-		setColorUIResource(d, compName, "topBorder", "#959ea3");
-		setColorUIResource(d, compName, "bottomBorder", "#b6bdbf");
+	}
 
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(22, 20), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+	protected void defineVisualCalendarTableHeaderRenderer(UIDefaults d) {
+		String compName = "TableHeader:\"VisualCalendar:TableHeader.renderer\"";
+		this.defineVisualCalendarTableHeaderRenderer(compName, d);
+	}
+
+	protected void defineVisualCalendarTableHeaderRenderer(String compName, UIDefaults d) {
+
+		// VisualCalendar Component...
+		if (compName == null) {
+			compName = "TableHeader:\"VisualCalendar:TableHeader.renderer\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTableHeaderVisualCalendarRendererPainter");
+
+		d.put(compName + ".States", "Enabled");
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "5 5 5 5");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foregroundShadow", "00000033");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "topBorder", "#959ea3");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "bottomBorder", "#b6bdbf");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(22, 20),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED, ctx));
+
 	}
 
 	protected void defineLabel(UIDefaults d) {
-		// Label
 		String compName = "Label";
-		setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont));
-		d.put(compName + ".contentMargins", new InsetsUIResource(0, 0, 0, 0));
-		
-		/*
-		 * Note:
-		 * Colors with state ([Enables]...) are used on renderers of Combos, Lists, etc.
-		 * Due to, background of this components is white, the color of the font is #335971
-		 */
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		/*
-		 * Generic colors of the Label when used alone, that is, when label background is not set
-		 * and then, white color is used.
-		 */
-		setColor(d, compName, "background", "#FFFFFF");
-		setColor(d, compName, "foreground", "#ffffff");
-		setColor(d, compName, "disabled", "#FFFFFF7D");
-		setColor(d, compName, "disabledText", "#243b4aCC");
-		
+		this.defineLabel(compName, d);
 	}
-	
-	protected void defineELabel(UIDefaults d) {
-		String prefix = "\"ELabel\"";
-		// Label
-//		d.put(prefix + "font", StyleUtil.getFont(prefix, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont) ));
-//		d.put(prefix + "contentMargins", new InsetsUIResource(0, 0, 0, 0));
-		
-		setFont(d, prefix, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont));
-		setInsetsUIResource(d, prefix, "contentMargins", "0 0 0 0");
 
-		setColorUIResource(d, prefix, "foreground", "#FFFFFF");
-		setColorUIResource(d, prefix, "[Enabled].textForeground", "#FFFFFF");
-		setColorUIResource(d, prefix, "[Disabled].textForeground", "#FFFFFF");
-		setColorUIResource(d, prefix, "disabledText", "#FFFFFF");
+	protected void defineLabel(String compName, UIDefaults d) {
+		// Label
+		if (compName == null) {
+			compName = "Label";
+		}
+		OntimizeLookAndFeel.setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont));
+		d.put(compName + ".contentMargins", new InsetsUIResource(0, 0, 0, 0));
+
+		/*
+		 * Note: Colors with state ([Enables]...) are used on renderers of
+		 * Combos, Lists, etc. Due to, background of this components is white,
+		 * the color of the font is #335971
+		 */
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		/*
+		 * Generic colors of the Label when used alone, that is, when label
+		 * background is not set and then, white color is used.
+		 */
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
+		OntimizeLookAndFeel.setColor(d, compName, "foreground", "#ffffff");
+		OntimizeLookAndFeel.setColor(d, compName, "disabled", "#FFFFFF7D");
+		OntimizeLookAndFeel.setColor(d, compName, "disabledText", "#243b4aCC");
+
+	}
+
+	protected void defineELabel(UIDefaults d) {
+		String compName = "\"ELabel\"";
+		this.defineELabel(compName, d);
+	}
+
+	protected void defineResultCountLabel(UIDefaults d) {
+		String compName = "\"ResultCountLabel\"";
+		this.defineELabel(compName, d);
+	}
+
+	protected void defineELabel(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"ELabel\"";
+		}
+		// Label
+		OntimizeLookAndFeel.setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", "#FFFFFF");
 
 	}
 
 	protected void defineButton(UIDefaults d) {
+		String compName = "Button";
+		this.defineButton(compName, d);
+	}
+
+	protected void defineButton(String compName, UIDefaults d) {
+
+		if (compName == null) {
+			compName = "Button";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OButtonPainter");
 
 		// Button
-		String compName = "Button";
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "7 7 7 7");
+		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
 
-		setInsetsUIResource(d, compName, "contentMargins", "7 7 7 7");
-		setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-		setFontUIResource(d, compName, "font", null);
-		setColorUIResource(d, compName,"disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		setColorUIResource(d, compName, "[Enabled].textForeground", null);
-		setColorUIResource(d, compName, "[Focused].textForeground", null);
-		setColorUIResource(d, compName, "[MouseOver].textForeground", null);
-		setColorUIResource(d, compName, "[Focused+MouseOver].textForeground", null);
-		setColorUIResource(d, compName, "[Pressed].textForeground", null);
-		setColorUIResource(d, compName, "[Focused+Pressed].textForeground", null);
-		
-		setColorUIResource(d, compName, "[Default].textForeground", null);
-		setColorUIResource(d, compName, "[Default+Focused].textForeground", null);
-		setColorUIResource(d, compName, "[Default+MouseOver].textForeground", null);
-		setColorUIResource(d, compName, "[Default+Focused+MouseOver].textForeground", null);
-		setColorUIResource(d, compName, "[Default+Pressed].textForeground", null);
-		setColorUIResource(d, compName, "[Default+Focused+Pressed].textForeground", null);
-		
-		setColorUIResource(d, compName, "background", "#FFFFFF");
-		
-		setFloat(d, compName, "[Default].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Default+Focused].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Default+MouseOver].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Default+Focused+MouseOver].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Default+Pressed].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Default+Focused+Pressed].alphaTransparency", "0.5");
-		
-		setFloat(d, compName, "[Disabled].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Enabled].alphaTransparency", "0.3");
-		setFloat(d, compName, "[Focused].alphaTransparency", "0.3");
-		setFloat(d, compName, "[MouseOver].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Pressed].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+Pressed].alphaTransparency", "0.5");
-		
-		
-		String pClass = "com.ontimize.plaf.painter.OButtonPainter";
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 7 7"), new Dimension(104, 33), false, PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+MouseOver].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Pressed].textForeground", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Default].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Default+Focused].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Default+MouseOver].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Default+Focused+MouseOver].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Default+Pressed].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Default+Focused+Pressed].textForeground", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#FFFFFF");
+
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default+Focused].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default+MouseOver].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default+Focused+MouseOver].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default+Pressed].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default+Focused+Pressed].alphaTransparency", "0.5");
+
+		OntimizeLookAndFeel.setFloat(d, compName, "[Disabled].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Enabled].alphaTransparency", "0.3");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.3");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Pressed].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Pressed].alphaTransparency", "0.5");
+
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 7 7"), new Dimension(104, 33), false, PaintContext.CacheMode.NO_CACHING,
+				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
@@ -1334,53 +1607,61 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
 		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
-	
-	protected void defineToggleButton(UIDefaults d){
+
+	protected void defineToggleButton(UIDefaults d) {
 		String compName = "ToggleButton";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "7 7 7 7");
-		setFontUIResource(d, compName, "font", null);
-		setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-		setColorUIResource(d, compName,"disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		setColorUIResource(d, compName, "[Enabled].textForeground", null);
-		setColorUIResource(d, compName, "[Focused].textForeground", null);
-		setColorUIResource(d, compName, "[MouseOver].textForeground", null);
-		setColorUIResource(d, compName, "[Focused+MouseOver].textForeground", null);
-		setColorUIResource(d, compName, "[Pressed].textForeground", null);
-		setColorUIResource(d, compName, "[Focused+Pressed].textForeground", null);
-		
-		setColorUIResource(d, compName, "[Selected].textForeground", null);
-		setColorUIResource(d, compName, "[Disabled+Selected].textForeground", null);
-		setColorUIResource(d, compName, "[Focused+Selected].textForeground", null);
-		setColorUIResource(d, compName, "[MouseOver+Selected].textForeground", null);
-		setColorUIResource(d, compName, "[Focused+MouseOver+Selected].textForeground", null);
-		setColorUIResource(d, compName, "[Pressed+Selected].textForeground", null);
-		setColorUIResource(d, compName, "[Focused+Pressed+Selected].textForeground", null);
-		
-		setColor(d, compName, "background", "#FFFFFF");
-		
-		setFloat(d, compName, "[Disabled].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Enabled].alphaTransparency", "0.3");
-		setFloat(d, compName, "[Focused].alphaTransparency", "0.3");
-		setFloat(d, compName, "[MouseOver].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Pressed].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+Pressed].alphaTransparency", "0.5");
-		
-		setFloat(d, compName, "[Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Disabled+Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[MouseOver+Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+MouseOver+Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Pressed+Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+Pressed+Selected].alphaTransparency", "0.5");
-		
-		String pClass = "com.ontimize.plaf.painter.OToggleButtonPainter";
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 7 7"), new Dimension(104, 33), false, PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		this.defineToggleButton(compName, d);
+	}
+
+	protected void defineToggleButton(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "ToggleButton";
+		}
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "7 7 7 7");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+MouseOver].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Pressed].textForeground", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Selected].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Selected].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver+Selected].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+MouseOver+Selected].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed+Selected].textForeground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Pressed+Selected].textForeground", null);
+
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
+
+		OntimizeLookAndFeel.setFloat(d, compName, "[Disabled].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Enabled].alphaTransparency", "0.3");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.3");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Pressed].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Pressed].alphaTransparency", "0.5");
+
+		OntimizeLookAndFeel.setFloat(d, compName, "[Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Disabled+Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver+Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver+Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Pressed+Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Pressed+Selected].alphaTransparency", "0.5");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToggleButtonPainter");
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 7 7"), new Dimension(104, 33), false, PaintContext.CacheMode.NO_CACHING,
+				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
@@ -1388,7 +1669,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
 		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
 		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
-		
+
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED, ctx));
 		d.put(compName + "[Disabled+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_DISABLED_SELECTED, ctx));
 		d.put(compName + "[Focused+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
@@ -1396,27 +1677,36 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED_FOCUSED, ctx));
 		d.put(compName + "[Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED, ctx));
 		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED_FOCUSED, ctx));
-		
+
 	}
-	
-	protected void defineSelectableItem(UIDefaults d){
+
+	protected void defineSelectableItem(UIDefaults d) {
 		String compName = "\"SelectableItem\"";
-		String pClass = "com.ontimize.plaf.painter.OCheckBoxPainter";
+		this.defineSelectableItem(compName, d);
+	}
+
+	protected void defineSelectableItem(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"SelectableItem\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OCheckBoxPainter");
+
 		String iconBasePath = "com/ontimize/plaf/images/check/";
-		
-		setColorUIResource(d, compName, "background", "#ffffff01");
-//		setColorUIResource(d, compName, "foreground", null);
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "foreground", "#335971");
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#335971");
-		
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(180, 180), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff01");
+		// setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#335971");
+
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(180, 180), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 
 		d.put(compName + ".contentMargins", StyleUtil.getInsetsUI(compName, "contentMargins", "0 0 0 0"));
 		// // addColor(d, "CheckBox[Disabled].textForeground",
@@ -1453,7 +1743,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-pressed-focused.png");
 		d.put(compName + "[Focused+Pressed+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
-		
+
 		path = StyleUtil.getIconPath(compName, "[MouseOver+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-mouseover.png");
 		d.put(compName + "[MouseOver+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_SELECTED, ctx, path));
 
@@ -1466,28 +1756,33 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	}
 
 	protected void defineCheckBox(UIDefaults d) {
-		// //Initialize CheckBox
 		String compName = "CheckBox";
-		String pClass = "com.ontimize.plaf.painter.OCheckBoxPainter";
-		String iconBasePath = "com/ontimize/plaf/images/check/";
-		
-		
-		setColorUIResource(d, compName, "background", "#ffffff01");
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "foreground", "#335971");
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7D");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		this.defineCheckBox(compName, d);
+	}
 
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(180, 180), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+	protected void defineCheckBox(String compName, UIDefaults d) {
+		// //Initialize CheckBox
+		if (compName == null) {
+			compName = "CheckBox";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OCheckBoxPainter");
+		String iconBasePath = "com/ontimize/plaf/images/check/";
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(180, 180), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 
 		d.put(compName + ".contentMargins", StyleUtil.getInsetsUI(compName, "contentMargins", "0 0 0 0"));
-		// // addColor(d, "CheckBox[Disabled].textForeground",
-		// "nimbusDisabledText", 0.0f, 0.0f, 0.0f, 0);
 		String path = StyleUtil.getIconPath(compName, "[Disabled].icon", iconBasePath + "18x18_ico_checkbox_disabled.png");
 		d.put(compName + "[Disabled].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_DISABLED, ctx, path));
 
@@ -1520,7 +1815,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-pressed-focused.png");
 		d.put(compName + "[Focused+Pressed+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
-		
+
 		path = StyleUtil.getIconPath(compName, "[MouseOver+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-mouseover.png");
 		d.put(compName + "[MouseOver+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_SELECTED, ctx, path));
 
@@ -1536,10 +1831,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		// Initialize ComboBox
 		String compName = "ComboBox";
-		setFontUIResource(d, compName, "font", null);
-		setInsetsUIResource(d, compName, "contentMargins", "2 13 2 4");//0 5 0 2
-		
-		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Selected,Disabled,Focused,Editable");
+		this.defineComboBox(compName, d);
+	}
+
+	protected void defineComboBox(String compName, UIDefaults d) {
+
+		// Initialize ComboBox
+		if (compName == null) {
+			compName = "ComboBox";
+		}
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 13 2 4");
+
+		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Selected,Disabled,Focused,Editable,Required");
 		d.put(compName + ".Editable", new OComboBoxEditableState());
 		d.put(compName + ".forceOpaque", Boolean.TRUE);
 		d.put(compName + ".buttonWhenNotEditable", Boolean.TRUE);
@@ -1548,38 +1852,40 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + ".squareButton", Boolean.FALSE);
 		d.put(compName + ".popupInsets", new InsetsUIResource(-2, 2, 0, 2));
 		d.put(compName + ".padding", new InsetsUIResource(0, 0, 0, 0));
-		
-		d.put(compName + ".numBorders", new Integer(4));
-		
-		setColor(d, compName, "background", "#FFFFFF");
-		setColorUIResource(d, compName, "foreground", "#335971");
-		setColorUIResource(d, compName, "disabled", "#FFFFFF7D");
-		setColorUIResource(d, compName, "disabledText", "#8F9CA4");
-		setColor(d, compName, "selectionForeground", "#FFFFFF");
-		setColor(d, compName, "selectionBackground", "#36627F");
 
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF7D");
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
-		setColorUIResource(d, compName, "[Focused].background", "#FFFFFF");
-		setColorUIResource(d, compName, "[Required].background", "#89A5B9");
-		setColorUIResource(d, compName, "[Focused+MouseOver].background", "#FFFFFF");
-		setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
-		setColorUIResource(d, compName, "[Pressed].background", "#FFFFFF");
-		setColorUIResource(d, compName, "[Focused+Pressed].background", "#FFFFFF");
-		
+		d.put(compName + ".numBorders", new Integer(4));
+
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", "#FFFFFF7D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", "#8F9CA4");
+		OntimizeLookAndFeel.setColor(d, compName, "selectionForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColor(d, compName, "selectionBackground", "#36627F");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF7D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].background", "#89A5B9");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Required].background", "#89A5B9");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+MouseOver].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Pressed].background", "#FFFFFF");
+
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
 		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
 
-		String pClass = "com.ontimize.plaf.painter.OComboBoxPainter";
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 13 2 4"), new Dimension(83, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, 2.0);
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OComboBoxPainter");
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 13 2 4"), new Dimension(83, 24), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, 2.0);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Disabled+Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED_PRESSED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_ENABLED, ctx));
@@ -1595,111 +1901,169 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Editable+MouseOver].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER_EDITABLE, ctx));
 		d.put(compName + "[Editable+Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED_EDITABLE, ctx));
 
-		// ************ComboBox.TextField*******************************
-		compName = "ComboBox:\"ComboBox.textField\"";
-		pClass = "com.ontimize.plaf.painter.OComboBoxTextFieldPainter";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
-//		d.put(compName + "[Selected].textForeground", new Color(0xFFFFFF));
-		
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF7D");
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
-		setColorUIResource(d, compName, "[Selected].background", "#FFFFFF");
+	}
 
-		ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(64, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, 2.0);
+	protected void defineComboBoxTextField(UIDefaults d) {
+		String compName = "ComboBox:\"ComboBox.textField\"";
+		this.defineComboBoxTextField(compName, d);
+	}
+
+	protected void defineComboBoxTextField(String compName, UIDefaults d) {
+		// ************ComboBox.TextField*******************************
+		if (compName == null) {
+			compName = "ComboBox:\"ComboBox.textField\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OComboBoxTextFieldPainter");
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF7D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].background", "#89A5B9");
+
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(64, 24), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, 2.0);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OComboBoxTextFieldPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OComboBoxTextFieldPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OComboBoxTextFieldPainter.BACKGROUND_SELECTED, ctx));
+	}
 
+	protected void defineComboBoxArrow(UIDefaults d) {
+		String compName = "ComboBox:\"ComboBox.arrowButton\"";
+		this.defineComboBoxArrow(compName, d);
+	}
+
+	protected void defineComboBoxArrow(String compName, UIDefaults d) {
 		// *************ComboBox.Arrow******************************
-		compName = "ComboBox:\"ComboBox.arrowButton\"";
+		if (compName == null) {
+			compName = "ComboBox:\"ComboBox.arrowButton\"";
+		}
 		d.put(compName + ".contentMargins", new InsetsUIResource(1, 1, 1, 1));
 		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Disabled,Editable");
 		d.put(compName + ".Editable", new OComboBoxArrowButtonEditableState());
 		d.put(compName + ".size", new Integer(21));
-		
-		/*
-		 *Note: background arrow button is painted into OComboBoxPainter. 
-		 */
-		setColorUIResource(d, compName, "[Disabled].background", "#263945");
-		setColorUIResource(d, compName, "[Enabled].background", "#263945");
-		setColorUIResource(d, compName, "[Focused].background", "#263945");
-		setColorUIResource(d, compName, "[MouseOver].background", "#263945");
-		setColorUIResource(d, compName, "[Pressed].background", "#263945");
-		
-		setColorUIResource(d, compName, "[Disabled+Editable].background", "#263945");
-		setColorUIResource(d, compName, "[Editable+Enabled].background", "#263945");
-		setColorUIResource(d, compName, "[Editable+Focused].background", "#263945");
-		setColorUIResource(d, compName, "[Editable+MouseOver].background", "#263945");
-		setColorUIResource(d, compName, "[Editable+Pressed].background", "#263945");
-		
-		setColor(d, compName, "[Disabled].foreground", "#FFFFFF");
-		setColor(d, compName, "[Enabled].foreground", "#FFFFFF");
-		setColor(d, compName, "[Selected].foreground", "#000000");
-		setColor(d, compName, "[MouseOver].foreground", "#000000");
-		setColor(d, compName, "[Pressed].foreground", "#000000");
 
-		pClass = "com.ontimize.plaf.painter.OComboBoxArrowButtonPainter";
-		ctx = new PaintContext(new Insets(1, 1, 1, 1), new Dimension(20, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, 2.0);
-		//because it is registered into NimbusDefaults
+		/*
+		 * Note: background arrow button is painted into OComboBoxPainter.
+		 */
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].background", "#263945");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Editable].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Enabled].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Focused].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+MouseOver].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Pressed].background", "#263945");
+
+		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].foreground", "#FFFFFF");
+		OntimizeLookAndFeel.setColor(d, compName, "[Enabled].foreground", "#FFFFFF");
+		OntimizeLookAndFeel.setColor(d, compName, "[Selected].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[MouseOver].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[Pressed].foreground", "#000000");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OComboBoxArrowButtonPainter");
+		PaintContext ctx = new PaintContext(new Insets(1, 1, 1, 1), new Dimension(20, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING,
+				Double.POSITIVE_INFINITY, 2.0);
+		// because it is registered into NimbusDefaults
 		d.remove(compName + "[Disabled+Editable].backgroundPainter");
 		d.remove(compName + "[Editable+Enabled].backgroundPainter");
 		d.remove(compName + "[Editable+MouseOver].backgroundPainter");
 		d.remove(compName + "[Editable+Pressed].backgroundPainter");
 		d.remove(compName + "[Editable+Selected].backgroundPainter");
-		
+
 		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_ENABLED, ctx));
 		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
 		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_DISABLED, ctx));
 		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_PRESSED, ctx));
 		d.put(compName + "[Selected].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_SELECTED, ctx));
+	}
 
+	protected void defineComboBoxListRenderer(UIDefaults d) {
+		String compName = "ComboBox:\"ComboBox.listRenderer\"";
+		this.defineComboBoxListRenderer(compName, d);
+	}
+
+	protected void defineComboBoxListRenderer(String compName, UIDefaults d) {
 		// **************ComboBox.ListRenderer****************
-		compName = "ComboBox:\"ComboBox.listRenderer\"";
-		setInsetsUIResource(d, compName, "contentMargins", "2 10 2 6");
-		setBoolean(d, compName, "opaque", "true");
-		setColor(d, compName, "background", "#ffffff");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
-		setColor(d, compName, "[Selected].textForeground", "#ffffff");
-		setColorUIResource(d, compName, "[Selected].background", "#36627F");
+		if (compName == null) {
+			compName = "ComboBox:\"ComboBox.listRenderer\"";
+		}
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 10 2 6");
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#ffffff");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
+		OntimizeLookAndFeel.setColor(d, compName, "[Selected].textForeground", "#ffffff");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#36627F");
+	}
 
+	protected void defineComboBoxRenderer(UIDefaults d) {
+		String compName = "ComboBox:\"ComboBox.renderer\"";
+		this.defineComboBoxRenderer(compName, d);
+	}
+
+	protected void defineComboBoxRenderer(String compName, UIDefaults d) {
 		// *************ComboBox.Renderer*************************
-		compName = "ComboBox:\"ComboBox.renderer\"";
-		setInsetsUIResource(d, compName, "contentMargins", "2 4 2 4");
-		setColorUIResource(d, compName, "background", "#ffffff");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
-		setColor(d, compName, "[Selected].textForeground", "#ffffff");
-		setColorUIResource(d, compName, "[Selected].background", "#36627F");
+		if (compName == null) {
+			compName = "ComboBox:\"ComboBox.renderer\"";
+		}
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 4 2 4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
+		OntimizeLookAndFeel.setColor(d, compName, "[Selected].textForeground", "#ffffff");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#36627F");
+	}
 
+	protected void defineComboBoxScrollPane(UIDefaults d) {
+		String compName = "\"ComboBox.scrollPane\"";
+		this.defineComboBoxScrollPane(compName, d);
+	}
+
+	protected void defineComboBoxScrollPane(String compName, UIDefaults d) {
 		// *************ComboBox.scrollPane*************************
-		d.put("\"ComboBox.scrollPane\".contentMargins", new InsetsUIResource(0, 0, 0, 0));
-		ColorUIResource borderColor = StyleUtil.getColorUI( "\"ComboBox.scrollPane\"" , "border", "#8CA0AD");
+		if (compName == null) {
+			compName = "\"ComboBox.scrollPane\"";
+		}
+		d.put(compName + ".contentMargins", new InsetsUIResource(0, 0, 0, 0));
+		ColorUIResource borderColor = StyleUtil.getColorUI(compName, "border", "#8CA0AD");
 		Border cBorder = BorderFactory.createLineBorder(borderColor, 2);
-		d.put("\"ComboBox.scrollPane\".border", cBorder); 
-		
+		d.put(compName + ".border", cBorder);
 	}
 
 	protected void defineMenu(UIDefaults d) {
-
-		// Menu:
 		String compName = "Menu";
+		this.defineMenu(compName, d);
+	}
+
+	protected void defineMenu(String compName, UIDefaults d) {
+		// Menu:
+		if (compName == null) {
+			compName = "Menu";
+		}
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
 
 		d.put(compName + "[Disabled].textForeground", StyleUtil.getColorUI(compName, "[Disabled].textForeground", "#FFFFFF7D"));
 		d.put(compName + "[Enabled].textForeground", StyleUtil.getColorUI(compName, "[Enabled].textForeground", "#FFFFFF"));
 		d.put(compName + "[Enabled+Selected].textForeground", StyleUtil.getColorUI(compName, "[Enabled+Selected].textForeground", "#426a84"));
 
-		String pClass = "com.ontimize.plaf.painter.OMenuPainter";
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OMenuPainter");
 		// Background...
 		d.put(compName + ".contentMargins", StyleUtil.getInsetsUI(compName, "contentMargins", "3 10 3 10"));
 		d.put(compName + "[Enabled+Selected].background", StyleUtil.getColor(compName, "[Enabled+Selected].background", "#86adbf"));
 		d.put(compName + "[Enabled+Selected].border", StyleUtil.getColor(compName, "[Enabled+Selected].border", "#c6dfe3"));
 
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "3 10 3 10"), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "3 10 3 10"), new Dimension(100, 30),
+				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
 		d.put(compName + "[Enabled+Selected].backgroundPainter", new LazyPainter(pClass, OMenuPainter.BACKGROUND_ENABLED_SELECTED, ctx));
 
 		// Arrow...
@@ -1709,95 +2073,130 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		d.put(compName + ".arrowBackground_upperShadow", StyleUtil.getColor(compName, "arrowBackground_upperShadow", "#00000033"));
 		d.put(compName + ".arrowBackground_bottomShadow", StyleUtil.getColor(compName, "arrowBackground_bottomShadow", "#ffffff7d"));
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 1, 1, 1), new Dimension(6, 13), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
+		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 1, 1, 1), new Dimension(6, 13), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
 		d.put(compName + "[Disabled].arrowIconPainter", new LazyPainter(pClass, OMenuPainter.ARROWICON_DISABLED, ctx));
 		d.put(compName + "[Enabled].arrowIconPainter", new LazyPainter(pClass, OMenuPainter.ARROWICON_ENABLED, ctx));
 		d.put(compName + "[Enabled+Selected].arrowIconPainter", new LazyPainter(pClass, OMenuPainter.ARROWICON_ENABLED_SELECTED, ctx));
 	}
 
 	protected void defineMenuBar(UIDefaults d) {
+		String compName = "MenuBar";
+		this.defineMenuBar(compName, d);
+	}
+
+	protected void defineMenuBar(String compName, UIDefaults d) {
 
 		// MenuBar:
-		String compName = "MenuBar";
-		String pClass = "com.ontimize.plaf.painter.OMenuBarPainter";
+		if (compName == null) {
+			compName = "MenuBar";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OMenuBarPainter");
 
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setInsetsUIResource(d, compName, "contentMargins", "1 5 0 5");
-		
-		setColorUIResource(d, compName, "background", "#1C304B");
-		setColorUIResource(d, compName, "[Enabled].background", "#1C304B");
-		setColorUIResource(d, compName, "[Enabled].border", "#1C304B");
-		
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 5 0 5"), new Dimension(18, 22), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "1 5 0 5");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#1C304B");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#1C304B");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].border", "#1C304B");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 5 0 5"), new Dimension(18, 22),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OMenuBarPainter.BACKGROUND_ENABLED, ctx));
 
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 5 0 5"), new Dimension(30, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
+		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 5 0 5"), new Dimension(30, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
 		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OMenuBarPainter.BORDER_ENABLED, ctx));
-		
-		
-		//MenuBar:Menu
-		compName = "MenuBar:Menu";
-		pClass = "com.ontimize.plaf.painter.OMenuBarMenuPainter";
-		
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#B3CAd8");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#B3CAd87D");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#1C304B");
-		
-		setColorUIResource(d, compName, "[Selected].background", "#86ADBF");
-		setColorUIResource(d, compName, "[Selected].border", "#C6DFE3");
-		
-		setFontUIResource(d, compName, "font", null);
-		setInsetsUIResource(d, compName, "contentMargins", "3 15 0 15");
-		
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "3 15 0 15"), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+
+	}
+
+	protected void defineMenuBarMenu(UIDefaults d) {
+		String compName = "MenuBar:Menu";
+		this.defineMenuBarMenu(compName, d);
+	}
+
+	protected void defineMenuBarMenu(String compName, UIDefaults d) {
+		// MenuBar:Menu
+		if (compName == null) {
+			compName = "MenuBar:Menu";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OMenuBarMenuPainter");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#B3CAd8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#B3CAd87D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#1C304B");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#86ADBF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].border", "#C6DFE3");
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "3 15 0 15");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "3 15 0 15"), new Dimension(100, 30),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OMenuBarMenuPainter.BACKGROUND_SELECTED, ctx));
 	}
 
 	protected void defineMenuItem(UIDefaults d) {
-
-		// MenuItem:
 		String compName = "MenuItem";
+		this.defineMenuItem(compName, d);
+	}
+
+	protected void defineMenuItem(String compName, UIDefaults d) {
+		// MenuItem:
+		if (compName == null) {
+			compName = "MenuItem";
+		}
+
 		d.put(compName + ".States", "Enabled,MouseOver,Disabled");
-		setInteger(d, compName, "textIconGap", "5");
-		setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setInteger(d, compName, "textIconGap", "5");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
 
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7F");
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[MouseOver].textForeground", "#426A84");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].textForeground", "#426A84");
 
-		setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF01");
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF01");
-		setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
 
-		String pClass = "com.ontimize.plaf.painter.OMenuItemPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 10 2 10"), new Dimension(100, 3), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OMenuItemPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 10 2 10"), new Dimension(100, 3),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 		d.put(compName + ".contentMargins", StyleUtil.getInsetsUI(compName, "contentMargins", "2 10 2 10"));
 		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OMenuItemPainter.BACKGROUND_MOUSEOVER, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OMenuItemPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OMenuItemPainter.BACKGROUND_DISABLED, ctx));
-		
-		//MenuItemAccelerator
-		setColorUIResource(d, compName, ":MenuItemAccelerator[Disabled].textForeground", "#FFFFFF7F");
-		setColorUIResource(d, compName, ":MenuItemAccelerator[Enabled].textForeground", "#FFFFFF7F");
-		setColorUIResource(d, compName, ":MenuItemAccelerator[MouseOver].textForeground", "#426A84");
 
+		// MenuItemAccelerator
+		OntimizeLookAndFeel.setColorUIResource(d, compName, ":MenuItemAccelerator[Disabled].textForeground", "#FFFFFF7F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, ":MenuItemAccelerator[Enabled].textForeground", "#FFFFFF7F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, ":MenuItemAccelerator[MouseOver].textForeground", "#426A84");
 	}
 
 	protected void definePopupItem(UIDefaults d) {
 		String compName = "\"PopupItem\"";
+		this.definePopupItem(compName, d);
+	}
+
+	protected void definePopupItem(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"PopupItem\"";
+		}
 		d.put(compName + ".States", "Enabled,MouseOver,Disabled");
 		d.put(compName + ".textIconGap", new Integer(5));
 
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7F");
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[MouseOver].textForeground", "#426A84");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].textForeground", "#426A84");
 
-		setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF01");
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF01");
-		setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
 
-		String pClass = "com.ontimize.plaf.painter.OPopupItemPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 10 1 10"), new Dimension(100, 3), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OPopupItemPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 10 1 10"), new Dimension(100, 3),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 		d.put(compName + ".contentMargins", StyleUtil.getInsetsUI(compName, "contentMargins", "1 10 1 10"));
 		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OPopupItemPainter.BACKGROUND_MOUSEOVER, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OPopupItemPainter.BACKGROUND_ENABLED, ctx));
@@ -1808,35 +2207,45 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	protected void defineRadioButtonMenuItem(UIDefaults d) {
 		// RadioButtonMenuItem:
 		String compName = "RadioButtonMenuItem";
-		String pClass = "com.ontimize.plaf.painter.ORadioButtonMenuItemPainter";
+		this.defineRadioButtonMenuItem(compName, d);
+	}
+
+	protected void defineRadioButtonMenuItem(String compName, UIDefaults d) {
+		// RadioButtonMenuItem:
+		if (compName == null) {
+			compName = "RadioButtonMenuItem";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.ORadioButtonMenuItemPainter");
 		String iconBasePath = "com/ontimize/plaf/images/radio/";
 
-		setFontUIResource(d, compName, "font", null);
-		setInsetsUIResource(d, compName, "contentMargins", "2 10 2 10");
-		setInteger(d, compName, "textIconGap", null);
-		
-		setColorUIResource(d, compName, "foreground", null);
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7D");
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[MouseOver].textForeground", "#426A84");
-		setColorUIResource(d, compName, "[MouseOver+Selected].textForeground", "#426A84");
-		
-		setColorUIResource(d, compName, "background", "#FFFFFF");
-		setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF01");
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF01");
-		setColorUIResource(d, compName, "[Selected].background", "#FFFFFF01");
-		setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
-		setColorUIResource(d, compName, "[MouseOver+Selected].background", "#FFFFFF");
-		
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 10 2 10"), new Dimension(100, 3), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 10 2 10");
+		OntimizeLookAndFeel.setInteger(d, compName, "textIconGap", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].textForeground", "#426A84");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver+Selected].textForeground", "#426A84");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#FFFFFF01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver+Selected].background", "#FFFFFF");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 10 2 10"), new Dimension(100, 3),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_MOUSEOVER, ctx));
 		d.put(compName + "[MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_DISABLED, ctx));
 
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 10 1 10"), new Dimension(18, 18), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 10 1 10"), new Dimension(18, 18), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 
 		String path = StyleUtil.getIconPath(compName, "[Disabled].icon", iconBasePath + "18x18_ico_radiobutton_disabled.png");
 		d.put(compName + "[Disabled].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_DISABLED, ctx, path));
@@ -1879,42 +2288,53 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		path = StyleUtil.getIconPath(compName, "[Disabled+Selected].icon", iconBasePath + "18x18_ico_radiobutton_disabled-selected.png");
 		d.put(compName + "[Disabled+Selected].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_DISABLED_SELECTED, ctx, path));
-		
+
 	}
 
 	protected void defineCheckBoxMenuItem(UIDefaults d) {
 
 		// CheckBoxMenuItem :
 		String compName = "CheckBoxMenuItem";
-		String pClass = "com.ontimize.plaf.painter.OCheckBoxMenuItemPainter";
+		this.defineCheckBoxMenuItem(compName, d);
+	}
+
+	protected void defineCheckBoxMenuItem(String compName, UIDefaults d) {
+
+		// CheckBoxMenuItem
+		if (compName == null) {
+			compName = "CheckBoxMenuItem";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OCheckBoxMenuItemPainter");
 		String iconBasePath = "com/ontimize/plaf/images/check/";
 
-		setFontUIResource(d, compName, "font", null);
-		setInsetsUIResource(d, compName, "contentMargins", "2 10 2 10");
-		setInteger(d, compName, "textIconGap", null);
-		
-		setColorUIResource(d, compName, "foreground", null);
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7D");
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[MouseOver].textForeground", "#426A84");
-		setColorUIResource(d, compName, "[MouseOver+Selected].textForeground", "#426A84");
-		
-		setColorUIResource(d, compName, "background", null);
-		setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF01");
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF01");
-		setColorUIResource(d, compName, "[Selected].background", "#FFFFFF01");
-		setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
-		setColorUIResource(d, compName, "[MouseOver+Selected].background", "#FFFFFF");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 10 2 10");
+		OntimizeLookAndFeel.setInteger(d, compName, "textIconGap", null);
 
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 10 2 10"), new Dimension(100, 3), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].textForeground", "#426A84");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver+Selected].textForeground", "#426A84");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#FFFFFF01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver+Selected].background", "#FFFFFF");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 10 2 10"), new Dimension(100, 3),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_MOUSEOVER, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_SELECTED, ctx));
 		d.put(compName + "[MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
 
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 10 1 10"), new Dimension(18, 18), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 10 1 10"), new Dimension(18, 18), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 		String path = StyleUtil.getIconPath(compName, "[Disabled].icon", iconBasePath + "18x18_ico_checkbox_disabled.png");
 		d.put(compName + "[Disabled].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_DISABLED, ctx, path));
 
@@ -1947,7 +2367,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-pressed-focused.png");
 		d.put(compName + "[Focused+Pressed+Selected].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
-		
+
 		path = StyleUtil.getIconPath(compName, "[MouseOver+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-mouseover.png");
 		d.put(compName + "[MouseOver+Selected].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_MOUSEOVER_SELECTED, ctx, path));
 
@@ -1962,321 +2382,350 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	protected void defineList(UIDefaults d) {
 		// Initialize List
 		String compName = "List";
-		setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
-
-		setBoolean(d, compName, "opaque", "true");
-		setBoolean(d, compName, "rendererUseListColors", "true");
-		setBoolean(d, compName, "rendererUseUIBorder", "true");
-		
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setColor(d, compName, "background", "#FFFFFF");//setColorUIResource
-		setColor(d, compName, "foreground", "#335971");//setColorUIResource
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "dropLineColor", "#73a4d1");
-		setColorUIResource(d, compName, "disabled", "#39698a");
-		setColorUIResource(d, compName, "disabledText", "#8e8f91");
-		
-		setColor(d, compName, "[Selected].textForeground", "#FFFFFF");
-		setColor(d, compName, "[Selected].textBackground", "#36627F");
-		setColor(d, compName, "[Disabled+Selected].textBackground", "#36627F");
-		setColor(d, compName, "[Disabled].textForeground", "#8e8f91");
-		
-		//List.cellRenderer...
-		compName = "List:\"List.cellRenderer\"";
-		setInsetsUIResource(d, compName, "contentMargins", "2 6 2 6");
-		
-		Insets in = StyleUtil.getInsets(compName, "contentMargins", "2 6 2 6");
-		d.put(compName + ".cellNoFocusBorder",	new BorderUIResource(BorderFactory.createEmptyBorder(in.top, in.left, in.bottom, in.right)));
-		ListDataField.defaultNoFocusBorder = BorderFactory.createEmptyBorder(in.top, in.left, in.bottom, in.right);
-		d.put(compName + ".focusCellHighlightBorder", new BorderUIResource(new PainterBorder(
-				"Tree:TreeCell[Enabled+Focused].backgroundPainter", in)));
-		
-		setBoolean(d, compName, "opaque", "true");
-		setColorUIResource(d, compName, "background", "#FFFFFF");
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
-		setColor(d, compName, "[Disabled].background", "#39698a");
+		this.defineList(compName, d);
 	}
-	
-	protected void definePanel(UIDefaults d){
-		
-		// Panel
+
+	protected void defineList(String compName, UIDefaults d) {
+		// Initialize List
+		if (compName == null) {
+			compName = "List";
+		}
+		// OntimizeLookAndFeel.setInsetsUIResource(d, compName,
+		// "contentMargins", "0 0 0 0");
+		Insets in = StyleUtil.getInsets(compName, "contentMargins", "2 6 2 6");
+		d.put(compName + ".cellNoFocusBorder", new BorderUIResource(BorderFactory.createEmptyBorder(in.top, in.left, in.bottom, in.right)));
+
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "rendererUseListColors", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "rendererUseUIBorder", "true");
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");// setColorUIResource
+		OntimizeLookAndFeel.setColor(d, compName, "foreground", "#335971");// setColorUIResource
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "dropLineColor", "#73a4d1");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", "#39698a");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", "#8e8f91");
+
+		OntimizeLookAndFeel.setColor(d, compName, "[Selected].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColor(d, compName, "[Selected].textBackground", "#36627F");
+		OntimizeLookAndFeel.setColor(d, compName, "[Disabled+Selected].textBackground", "#36627F");
+		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].textForeground", "#8e8f91");
+
+		// List.cellRenderer...
+		compName = "List:\"List.cellRenderer\"";
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 6 2 6");
+
+		in = StyleUtil.getInsets(compName, "contentMargins", "2 6 2 6");
+		d.put(compName + ".cellNoFocusBorder", new BorderUIResource(BorderFactory.createEmptyBorder(in.top, in.left, in.bottom, in.right)));
+		ListDataField.defaultNoFocusBorder = BorderFactory.createEmptyBorder(in.top, in.left, in.bottom, in.right);
+		d.put(compName + ".focusCellHighlightBorder", new BorderUIResource(new PainterBorder("Tree:TreeCell[Enabled+Focused].backgroundPainter", in)));
+
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
+		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].background", "#39698a");
+	}
+
+	protected void definePanel(UIDefaults d) {
 		String compName = "Panel";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
-		setBoolean(d, compName, "opaque", "true");
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		
-		setColorUIResource(d, compName, "background", "#366581");
-		setColor(d, compName, "disabled", null);
-		setColor(d, compName, "foreground", null);
-		setColor(d, compName, "disabledText", null);
-		
+		this.definePanel(compName, d);
+	}
+
+	protected void definePanel(String compName, UIDefaults d) {
+		// Panel
+		if (compName == null) {
+			compName = "Panel";
+		}
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#366581");
+		OntimizeLookAndFeel.setColor(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColor(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColor(d, compName, "disabledText", null);
+
 	}
 
 	protected void definePopupMenu(UIDefaults d) {
-
-		// Popup Menu:
 		String compName = "PopupMenu";
+		this.definePopupMenu(compName, d);
+	}
 
-		setInsetsUIResource(d, compName, "contentMargins", "18 9 16 9");
-		setBoolean(d, compName, "opaque", "false");
-		setBoolean(d, compName, "consumeEventOnClose", "true");
-		
-		setFontUIResource(d, compName, "font", null);
-		setColorUIResource(d, compName, "foreground", "#ffffff");
-		setColorUIResource(d, compName, "background", "#8cbec6");
-		
-		setColorUIResource(d, compName, "[Disabled].background", "#8cbec6");
-		setColorUIResource(d, compName, "[Enabled].background", "#86adbf");
-		setColorUIResource(d, compName, "[Disabled].border", "#c6dfe3");
-		setColorUIResource(d, compName, "[Enabled].border", "#c6dfe3");
+	protected void definePopupMenu(String compName, UIDefaults d) {
+		// Popup Menu:
+		if (compName == null) {
+			compName = "PopupMenu";
+		}
 
-		String pClass = "com.ontimize.plaf.painter.OPopupMenuPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "18 9 16 9"), new Dimension(220, 313), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "18 9 16 9");
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		OntimizeLookAndFeel.setBoolean(d, compName, "consumeEventOnClose", "true");
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#ffffff");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#8cbec6");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#8cbec6");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#86adbf");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].border", "#c6dfe3");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].border", "#c6dfe3");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OPopupMenuPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "18 9 16 9"), new Dimension(220, 313),
+				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OPopupMenuPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OPopupMenuPainter.BACKGROUND_ENABLED, ctx));
 
 	}
 
 	protected void definePopupMenuSeparator(UIDefaults d) {
-		// Popup Menu Separator:
 		String compName = "PopupMenuSeparator";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "5 0 5 0");
-		setFontUIResource(d, compName, "font", null);
-		setColorUIResource(d, compName, "foreground", null);
-		setColorUIResource(d, compName, "background", null);
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		
-		setColorUIResource(d, compName, "bottomshadowcolor", "#FFFFFF33");
-		setColorUIResource(d, compName, "uppershadowcolor", "#00000033");
+		this.definePopupMenuSeparator(compName, d);
+	}
 
-		String pClass = "com.ontimize.plaf.painter.OPopupMenuSeparatorPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 0 5 0"), new Dimension(100, 2), true, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+	protected void definePopupMenuSeparator(String compName, UIDefaults d) {
+		// Popup Menu Separator:
+		if (compName == null) {
+			compName = "PopupMenuSeparator";
+		}
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "5 0 5 0");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "bottomshadowcolor", "#FFFFFF33");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "uppershadowcolor", "#00000033");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OPopupMenuSeparatorPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 0 5 0"), new Dimension(100, 2),
+				true, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OPopupMenuSeparatorPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineSeparator(UIDefaults d) {
-
-		// Separator:
 		String compName = "Separator";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "5 5 5 5");
-		setColorUIResource(d, compName, "[Enabled].background", "00000033");
-		setColorUIResource(d, compName, "[Enabled].backgroundShadow", "FFFFFF33");
+		this.defineSeparator(compName, d);
+	}
 
-		String pClass = "com.ontimize.plaf.painter.OSeparatorPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(100, 2), true, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
+	protected void defineSeparator(String compName, UIDefaults d) {
+		// Separator:
+		if (compName == null) {
+			compName = "Separator";
+		}
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "5 5 5 5");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "00000033");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].backgroundShadow", "FFFFFF33");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OSeparatorPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(100, 2),
+				true, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
 		d.put("Separator[Enabled].backgroundPainter", new LazyPainter(pClass, OSeparatorPainter.BACKGROUND_ENABLED, ctx));
 
 	}
-	
-	protected void defineProgressBar(UIDefaults d){
-		// JProgressBar...
-		d.put("ProgressBar.Indeterminate", new OProgressBarIndeterminateState());
-		d.put("ProgressBar.Finished", new OProgressBarFinishedState());
-		
+
+	protected void defineProgressBar(UIDefaults d) {
+		String compName = "ProgressBar";
+		this.defineProgressBar(compName, d);
 	}
 
-	/**
-	 * Initialize the slider settings.
-	 * 
-	 * @param d
-	 *            the UI defaults map.
-	 */
-	protected void defineSliders(UIDefaults d) {
-		// d.put("sliderTrackBorderBase", new Color(0x898989));
-		// d.put("sliderTrackInteriorBase", new Color(0xd8d8d8));
-		//
-		// String p = "Slider";
-		//
-		// d.put(p + ".ArrowShape", new SliderArrowShapeState());
-		// d.put(p + ":SliderThumb.ArrowShape", new SliderArrowShapeState());
-		// d.put(p + ":SliderTrack.ArrowShape", new SliderArrowShapeState());
-		// d.put(p + ".thumbWidth", new Integer(17));
-		// d.put(p + ".thumbHeight", new Integer(20));
-		// d.put(p + ".trackBorder", new Integer(0));
-		// d.put(p + ".trackHeight", new Integer(5));
-		// d.put(p + ".font", defaultFont.deriveFont(11.0f));
-		//
-		// p = "Slider:SliderThumb";
-		// String c = PAINTER_PREFIX + "SliderThumbPainter";
-		//
-		// d.put(p + "[Disabled].backgroundPainter", new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_DISABLED));
-		// d.put(p + "[Enabled].backgroundPainter", new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_ENABLED));
-		// d.put(p + "[Focused].backgroundPainter", new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_FOCUSED));
-		// d.put(p + "[Focused+MouseOver].backgroundPainter",
-		// new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_FOCUSED_MOUSEOVER));
-		// d.put(p + "[Focused+Pressed].backgroundPainter",
-		// new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_FOCUSED_PRESSED));
-		// d.put(p + "[MouseOver].backgroundPainter",
-		// new LazyPainter(c, SliderThumbPainter.Which.BACKGROUND_MOUSEOVER));
-		// d.put(p + "[Pressed].backgroundPainter", new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_PRESSED));
-		// d.put(p + "[ArrowShape+Enabled].backgroundPainter",
-		// new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_ENABLED_ARROWSHAPE));
-		// d.put(p + "[ArrowShape+Disabled].backgroundPainter",
-		// new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_DISABLED_ARROWSHAPE));
-		// d.put(p + "[ArrowShape+MouseOver].backgroundPainter",
-		// new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_MOUSEOVER_ARROWSHAPE));
-		// d.put(p + "[ArrowShape+Pressed].backgroundPainter",
-		// new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_PRESSED_ARROWSHAPE));
-		// d.put(p + "[ArrowShape+Focused].backgroundPainter",
-		// new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_FOCUSED_ARROWSHAPE));
-		// d.put(p + "[ArrowShape+Focused+MouseOver].backgroundPainter",
-		// new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_FOCUSED_MOUSEOVER_ARROWSHAPE));
-		// d.put(p + "[ArrowShape+Focused+Pressed].backgroundPainter",
-		// new LazyPainter(c,
-		// SliderThumbPainter.Which.BACKGROUND_FOCUSED_PRESSED_ARROWSHAPE));
-		//
-		// p = "Slider:SliderTrack";
-		// c = PAINTER_PREFIX + "SliderTrackPainter";
-		// d.put(p + "[Disabled].backgroundPainter", new LazyPainter(c,
-		// SliderTrackPainter.Which.BACKGROUND_DISABLED));
-		// d.put(p + "[Enabled].backgroundPainter", new LazyPainter(c,
-		// SliderTrackPainter.Which.BACKGROUND_ENABLED));
+	protected void defineProgressBar(String compName, UIDefaults d) {
+		// JProgressBar...
+		if (compName == null) {
+			compName = "ProgressBar";
+		}
+		d.put(compName + ".Indeterminate", new OProgressBarIndeterminateState());
+		d.put(compName + ".Finished", new OProgressBarFinishedState());
 
+	}
+
+	protected void defineSliders(UIDefaults d) {
 		String compName = "Slider";
+		this.defineSliders(compName, d);
+	}
+
+	protected void defineSliders(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "Slider";
+		}
 		d.put(compName + ".ArrowShape", new OSliderThumbArrowShapeState());
 		d.put(compName + ":SliderThumb.ArrowShape", new OSliderThumbArrowShapeState());
 		d.put(compName + ":SliderTrack.ArrowShape", new OSliderThumbArrowShapeState());
 	}
 
 	protected void defineSplitPane(UIDefaults d) {
-
-		// SplitPane:
 		String compName = "SplitPane";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
-		setInteger(d, compName, "size", "12");
-		setInteger(d, compName, "dividerSize", "12");
-		
-		setBoolean(d, compName, "centerOneTouchButtons", "true");
-		setBoolean(d, compName, "oneTouchExpandable", "false");
-		setBoolean(d, compName, "continuousLayout", "true");
-		setInteger(d, compName, "oneTouchButtonOffset", "30");
-		
-		setFontUIResource(d, compName, "font", null);
-		setColorUIResource(d, compName, "foreground", null);
-		setColorUIResource(d, compName, "background", null);
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		
-		d.put("SplitPane.States", "Enabled,MouseOver,Pressed,Disabled,Focused,Selected,Vertical");
-		d.put("SplitPane.Vertical", new OSplitPaneVerticalState());
-		
-		
-		//SplitPane: SplitPaneDivider :
-		compName = "SplitPane:SplitPaneDivider";
-		String pClass = "com.ontimize.plaf.painter.OSplitPaneDividerPainter";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "3 0 3 0");
-		d.put(compName+".States", "Enabled,MouseOver,Pressed,Disabled,Focused,Selected,Vertical");
-		d.put(compName+".Vertical", new OSplitPaneDividerVerticalState());
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#E6E6E6");
-		setColorUIResource(d, compName, "[Focused].background", "#E6E6E6");
-		
-		setColorUIResource(d, compName, "[Enabled].foreground", "#AAAAAA7D");
-		setColorUIResource(d, compName, "[Enabled+Vertical].foreground", "#AAAAAA7D");
-		setColorUIResource(d, compName, "[Enabled].foregroundBorder", "#FFFFFF");
-		setColorUIResource(d, compName, "[Enabled+Vertical].foregroundBorder", "#FFFFFF");
-		
-		Insets in = StyleUtil.getInsets(compName, "contentMargins", "3 0 3 0");
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(in, new Dimension(68, 10), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName+"[Enabled].backgroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName+"[Focused].backgroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.BACKGROUND_FOCUSED, ctx));
+		this.defineSplitPane(compName, d);
+	}
 
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 1, 0, 1), new Dimension(92, 12), true, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
-		d.put(compName+"[Enabled].foregroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.FOREGROUND_ENABLED, ctx));
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 0, 1, 0), new Dimension(12, 90), true, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
-		d.put(compName+"[Enabled+Vertical].foregroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.FOREGROUND_ENABLED_VERTICAL, ctx));
+	protected void defineSplitPane(String compName, UIDefaults d) {
+		// SplitPane:
+		if (compName == null) {
+			compName = "SplitPane";
+		}
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+		OntimizeLookAndFeel.setInteger(d, compName, "size", "12");
+		OntimizeLookAndFeel.setInteger(d, compName, "dividerSize", "12");
+
+		OntimizeLookAndFeel.setBoolean(d, compName, "centerOneTouchButtons", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "oneTouchExpandable", "false");
+		OntimizeLookAndFeel.setBoolean(d, compName, "continuousLayout", "true");
+		OntimizeLookAndFeel.setInteger(d, compName, "oneTouchButtonOffset", "30");
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+
+		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Disabled,Focused,Selected,Vertical");
+		d.put(compName + ".Vertical", new OSplitPaneVerticalState());
+
+	}
+
+	protected void defineSplitPaneDivider(UIDefaults d) {
+		String compName = "SplitPane:SplitPaneDivider";
+		this.defineSplitPaneDivider(compName, d);
+	}
+
+	protected void defineSplitPaneDivider(String compName, UIDefaults d) {
+		// SplitPane: SplitPaneDivider :
+		if (compName == null) {
+			compName = "SplitPane:SplitPaneDivider";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OSplitPaneDividerPainter");
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "3 0 3 0");
+		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Disabled,Focused,Selected,Vertical");
+		d.put(compName + ".Vertical", new OSplitPaneDividerVerticalState());
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#E6E6E6");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#E6E6E6");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].foreground", "#AAAAAA7D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled+Vertical].foreground", "#AAAAAA7D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].foregroundBorder", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled+Vertical].foregroundBorder", "#FFFFFF");
+
+		Insets in = StyleUtil.getInsets(compName, "contentMargins", "3 0 3 0");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(in, new Dimension(68, 10), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.BACKGROUND_FOCUSED, ctx));
+
+		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 1, 0, 1), new Dimension(92, 12), true,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
+		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.FOREGROUND_ENABLED, ctx));
+		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 0, 1, 0), new Dimension(12, 90), true,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
+		d.put(compName + "[Enabled+Vertical].foregroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.FOREGROUND_ENABLED_VERTICAL, ctx));
 
 	}
 
 	protected void defineTree(UIDefaults d) {
-
 		String compName = "Tree";
-		
-		setBoolean(d, compName, "rendererFillBackground", "false");
-		setBoolean(d, compName, "drawHorizontalLines", "true");
-		setBoolean(d, compName, "drawVerticalLines", "true");
-		d.put("Tree.linesStyle", "dashed");
-		setBoolean(d, compName, "lineTypeCurved", "true");
-		setBoolean(d, compName, "paintLines", "true");
-		setColorUIResource(d, compName, "lineColor", "#C5D1DA");
-		setColorUIResource(d, compName, "lineSelectionColor", "#517286");
-		setInteger(d, compName, "rightChildIndent", "10");
-		setIcon(d, compName, "expandedIcon", "com/ontimize/plaf/images/11x11_tree_open.png");
-		setIcon(d, compName, "collapsedIcon", "com/ontimize/plaf/images/11x11_tree_close.png");
-		setColorUIResource(d, compName, "selectionBackground", "#517286");
-		setColor(d, compName, "selectionForeground", "#E4EDF0");
-		setColor(d, compName, "textForeground", "#94A4B0");
-		
+		this.defineTree(compName, d);
+	}
 
+	protected void defineTree(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "Tree";
+		}
+
+		OntimizeLookAndFeel.setBoolean(d, compName, "rendererFillBackground", "false");
+		OntimizeLookAndFeel.setBoolean(d, compName, "drawHorizontalLines", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "drawVerticalLines", "true");
+		d.put(compName + ".linesStyle", "dashed");
+		OntimizeLookAndFeel.setBoolean(d, compName, "lineTypeCurved", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "paintLines", "true");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "lineColor", "#C5D1DA");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "lineSelectionColor", "#517286");
+		OntimizeLookAndFeel.setInteger(d, compName, "rightChildIndent", "10");
+		OntimizeLookAndFeel.setIcon(d, compName, "expandedIcon", "com/ontimize/plaf/images/11x11_tree_open.png");
+		OntimizeLookAndFeel.setIcon(d, compName, "collapsedIcon", "com/ontimize/plaf/images/11x11_tree_close.png");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "selectionBackground", "#517286");
+		OntimizeLookAndFeel.setColor(d, compName, "selectionForeground", "#E4EDF0");
+		OntimizeLookAndFeel.setColor(d, compName, "textForeground", "#94A4B0");
+
+	}
+
+	protected void defineTreeCellRenderer(UIDefaults d) {
+		String compName = "Tree:\"Tree.cellRenderer\"";
+		this.defineTreeCellRenderer(compName, d);
+	}
+
+	protected void defineTreeCellRenderer(String compName, UIDefaults d) {
 		// OTreeCellRendererPainter
-		compName = "Tree:\"Tree.cellRenderer\"";
+		if (compName == null) {
+			compName = "Tree:\"Tree.cellRenderer\"";
+		}
 
-		setBoolean(d, compName, "opaque", "true");
-		setInsetsUIResource(d, compName, "contentMargins", "0 2 0 30");
-		setInteger(d, compName, "iconTextGap", "10");
-		Font tCRFont = getDefaultFont();
-		tCRFont = tCRFont.deriveFont((float)tCRFont.getSize()-1);
-		setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(tCRFont));
-		setColorUIResource(d, compName, "textForeground", "#517286");
-		
-		setColorUIResource(d, compName, "background", "#E4EDF0");
-		setColorUIResource(d, compName, "backgroundSelectionParent", "#ABC7D8");
-		setColorUIResource(d, compName, "backgroundSelection", "#517286");
-		setColorUIResource(d, compName, "topBackgroundSelection", "#638092");
-		setColorUIResource(d, compName, "bottomBackgroundSelection", "#496678");
-		setColorUIResource(d, compName, "backgroundChildCount", "#36627F");
-		setColorUIResource(d, compName, "foregroundChildCount", "#E4EDF0");
-		setColorUIResource(d, compName, "backgroundSelectionCount", "#E4EDF0");
-		setColorUIResource(d, compName, "foregroundSelectionChildCount", "#517286");
-		
-		String pClass = "com.ontimize.plaf.painter.OTreeCellRendererPainter";
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 2 0 30"), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 2 0 30");
+		OntimizeLookAndFeel.setInteger(d, compName, "iconTextGap", "10");
+		Font tCRFont = this.getDefaultFont();
+		tCRFont = tCRFont.deriveFont((float) tCRFont.getSize() - 1);
+		OntimizeLookAndFeel.setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(tCRFont));
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#517286");
+		OntimizeLookAndFeel.setColor(d, compName, "rootForeground", "#4AAEE3");
+		OntimizeLookAndFeel.setColor(d, compName, "rootSelectionForeground", "#396F8A");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#E4EDF0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "backgroundSelectionParent", "#ABC7D8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "backgroundSelection", "#517286");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "topBackgroundSelection", "#638092");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "bottomBackgroundSelection", "#496678");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "backgroundChildCount", "#36627F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foregroundChildCount", "#E4EDF0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "backgroundSelectionCount", "#E4EDF0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foregroundSelectionChildCount", "#517286");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTreeCellRendererPainter");
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 2 0 30"), new Dimension(100, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
 		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTreeCellRendererPainter.BACKGROUND_ENABLED, ctx));
-		
-		
-		//Initialize \"Tree.cellEditor\"
-		compName = "\"Tree.cellEditor\"";
-        d.put(compName + ".contentMargins", new InsetsUIResource(2, 5, 2, 5));
-        d.put(compName + ".opaque", Boolean.TRUE);
-        tCRFont = getDefaultFont();
-		tCRFont = tCRFont.deriveFont((float)tCRFont.getSize()-1);
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(tCRFont));
-        setColorUIResource(d, compName, "background", "#ffffff");
-        setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-        setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-        setColorUIResource(d, compName, "[Selected].textForeground", "#ffffff");
-        
-        pClass = "com.ontimize.plaf.painter.OTreeCellEditorPainter";
-		ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 5 2 5"), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+	}
+
+	protected void defineTreeCellEditor(UIDefaults d) {
+		String compName = "\"Tree.cellEditor\"";
+		this.defineTreeCellEditor(compName, d);
+	}
+
+	protected void defineTreeCellEditor(String compName, UIDefaults d) {
+		// Initialize \"Tree.cellEditor\"
+		if (compName == null) {
+			compName = "\"Tree.cellEditor\"";
+		}
+		d.put(compName + ".contentMargins", new InsetsUIResource(2, 5, 2, 5));
+		d.put(compName + ".opaque", Boolean.TRUE);
+		Font tCRFont = this.getDefaultFont();
+		tCRFont = tCRFont.deriveFont((float) tCRFont.getSize() - 1);
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(tCRFont));
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#ffffff");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTreeCellEditorPainter");
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 5 2 5"), new Dimension(100, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Enabled].backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTreeCellEditorPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Enabled+Focused].backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTreeCellEditorPainter.BACKGROUND_ENABLED_FOCUSED, ctx));
-		
-
 	}
 
 	protected void defineDiagramToolBar(UIDefaults d) {
 		String compName = "\"DiagramToolBar\"";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 1, 1, 1), new Dimension(30, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 3.0, 3.0);
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 1, 1, 1), new Dimension(30, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 3.0, 3.0);
 		d.put(compName + "[East].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.EastOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[North].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.NorthODiagramToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[South].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.SouthOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
@@ -2284,27 +2733,34 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	}
 
 	protected void defineToolBar(UIDefaults d) {
-
-		defineDiagramToolBar(d);
+		this.defineDiagramToolBar(d);
 		String compName = "ToolBar";
+		this.defineToolBar(compName, d);
+	}
+
+	protected void defineToolBar(String compName, UIDefaults d) {
 		// Toolbar:
+		if (compName == null) {
+			compName = "ToolBar";
+		}
+
 		d.put(compName + ".States", "North,East,West,South");
 		d.put(compName + ".North", new OToolBarNorthState());
 		d.put(compName + ".East", new OToolBarEastState());
 		d.put(compName + ".West", new OToolBarWestState());
 		d.put(compName + ".South", new OToolBarSouthState());
-		
-		setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
-		setBoolean(d, compName, "opaque", "true");
-		setBoolean(d, compName, "useTextureImage", "true");
-		d.put(compName + ".backgroundImage", StyleUtil.getProperty(compName, "backgroundImage", "com/ontimize/plaf/images/toolbarbackground.png"));
-		setPaint(d, compName, "bgpaint", null);
 
-		setFontUIResource(d, compName, "font", null);
-		setColorUIResource(d,compName,"foreground",null);
-		setColorUIResource(d,compName,"disabledText",null);
-		setColorUIResource(d,compName,"background",null);
-		setColorUIResource(d,compName,"disabled",null);
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "useTextureImage", "true");
+		d.put(compName + ".backgroundImage", StyleUtil.getProperty(compName, "backgroundImage", "com/ontimize/plaf/images/toolbarbackground.png"));
+		OntimizeLookAndFeel.setPaint(d, compName, "bgpaint", null);
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
 
 		// WARNING: There is an important BUG in class NimbusDefaults in Nimbus.
 		// The TOOLBAR (not other components inside the toolbar such as
@@ -2321,8 +2777,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		// Enabled value to the existing ones (North,East,West,South).
 		// In Ontimize L&F we choose the first one, because the status for the
 		// toolbar is always enabled.
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(30, 30), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		String pClass = "com.ontimize.plaf.painter.OToolBarPainter";
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(30, 30),
+				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolBarPainter");
 		d.put(compName + "[East].borderPainter", new LazyPainter(pClass, OToolBarPainter.BORDER_EAST, ctx));
 		d.put(compName + "[North].borderPainter", new LazyPainter(pClass, OToolBarPainter.BORDER_NORTH, ctx));
 		d.put(compName + "[South].borderPainter", new LazyPainter(pClass, OToolBarPainter.BORDER_SOUTH, ctx));
@@ -2338,94 +2795,117 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		// (OToolBarPainter), we change the not-valid key
 		// (ToolBar[Enabled].handleIconPainter) for a valid key
 		// (ToolBar[East].backgroundPainter).
-		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 1, 1, 1), new Dimension(30, 30), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 3.0, 3.0);
-		d.put(compName + "[East].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.EastOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[North].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.NorthOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[South].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.SouthOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[West].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.WestOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 1, 1, 1), new Dimension(30, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 3.0, 3.0);
+		pClass = StyleUtil.getProperty(compName, "[East].painterClass", "com.ontimize.plaf.painter.EastOToolBarPainter");
+		d.put(compName + "[East].backgroundPainter", new LazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		pClass = StyleUtil.getProperty(compName, "[North].painterClass", "com.ontimize.plaf.painter.NorthOToolBarPainter");
+		d.put(compName + "[North].backgroundPainter", new LazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		pClass = StyleUtil.getProperty(compName, "[South].painterClass", "com.ontimize.plaf.painter.SouthOToolBarPainter");
+		d.put(compName + "[South].backgroundPainter", new LazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		pClass = StyleUtil.getProperty(compName, "[West].painterClass", "com.ontimize.plaf.painter.WestOToolBarPainter");
+		d.put(compName + "[West].backgroundPainter", new LazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
 
 		Integer height = StyleUtil.getInteger(compName, "height", "50");
 		ApplicationToolBar.DEFAULT_TOOLBAR_HEIGHT = height;
-		
+
 	}
-	
-	protected void defineToolBarButton(UIDefaults d){
+
+	protected void defineToolBarButton(UIDefaults d) {
 		// ToolBar: Button:
 		String compName = "ToolBar:Button";
-		
-		setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setInsetsUIResource(d, compName, "contentMargins", "0 8 0 8");
-		setInteger(d, compName, "size", "32");
-		setColorUIResource(d,compName,"textForeground","#FFFFFF");
-		
-		setColorUIResource(d, compName, "background", "#817F7F7F");
-		
-		setFloat(d, compName, "[Default].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Default+Focused].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Default+MouseOver].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Default+Focused+MouseOver].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Default+Pressed].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Default+Focused+Pressed].alphaTransparency", "1.0");
-		
-		setFloat(d, compName, "[Disabled].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Enabled].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Focused].alphaTransparency", "1.0");
-		setFloat(d, compName, "[MouseOver].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Pressed].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Focused+Pressed].alphaTransparency", "1.0");
-		
-		String pClass = "com.ontimize.plaf.painter.OToolBarButtonPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 8 0 8"), new Dimension(32, 32), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, OToolBarButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OToolBarButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, OToolBarButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, OToolBarButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, OToolBarButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OToolBarButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OToolBarButtonPainter.BACKGROUND_DISABLED, ctx));
+		this.defineToolBarButton(compName, d);
+	}
+
+	protected void defineToolBarButton(String compName, UIDefaults d) {
+		// ToolBar: Button:
+		if (compName == null) {
+			compName = "ToolBar:Button";
+		}
+
+		OntimizeLookAndFeel.setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 8 0 8");
+		OntimizeLookAndFeel.setInteger(d, compName, "size", "32");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#817F7F7F");
+
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default+Focused].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default+MouseOver].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default+Focused+MouseOver].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default+Pressed].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Default+Focused+Pressed].alphaTransparency", "1.0");
+
+		OntimizeLookAndFeel.setFloat(d, compName, "[Disabled].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Enabled].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Pressed].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Pressed].alphaTransparency", "1.0");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolBarButtonPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 8 0 8"), new Dimension(32, 32),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
 
 		Integer size = StyleUtil.getInteger(compName, "size", "32");
 		ApplicationToolBar.DEFAULT_BUTTON_SIZE = size;
 		ApToolBarNavigator.defaultButtonsBorder = BorderFactory.createEmptyBorder();
 	}
-	
-	protected void defineToolBarToggleButton(UIDefaults d){
+
+	protected void defineToolBarToggleButton(UIDefaults d) {
 		// ToolBar: ToggleButton:
 		String compName = "ToolBar:ToggleButton";
-		setInsetsUIResource(d, compName, "contentMargins", "0 8 0 8");
-		setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setColorUIResource(d,compName,"textForeground","#FFFFFF");
-		
-		setColorUIResource(d, compName, "background", "#817F7F7F");
-		
-		setFloat(d, compName, "[Disabled].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Enabled].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Focused].alphaTransparency", "1.0");
-		setFloat(d, compName, "[MouseOver].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Pressed].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Focused+Pressed].alphaTransparency", "1.0");
-		
-		setFloat(d, compName, "[Selected].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Disabled+Selected].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Focused+Selected].alphaTransparency", "1.0");
-		setFloat(d, compName, "[MouseOver+Selected].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Focused+MouseOver+Selected].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Pressed+Selected].alphaTransparency", "1.0");
-		setFloat(d, compName, "[Focused+Pressed+Selected].alphaTransparency", "1.0");
-		
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 8 0 8"), new Dimension(32, 32), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, Double.POSITIVE_INFINITY);
-		String pClass = "com.ontimize.plaf.painter.OToolBarToggleButtonPainter";
+		this.defineToolBarToggleButton(compName, d);
+	}
 
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
-		
+	protected void defineToolBarToggleButton(String compName, UIDefaults d) {
+		// ToolBar: ToggleButton:
+		if (compName == null) {
+			compName = "ToolBar:ToggleButton";
+		}
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 8 0 8");
+		OntimizeLookAndFeel.setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#817F7F7F");
+
+		OntimizeLookAndFeel.setFloat(d, compName, "[Disabled].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Enabled].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Pressed].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Pressed].alphaTransparency", "1.0");
+
+		OntimizeLookAndFeel.setFloat(d, compName, "[Selected].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Disabled+Selected].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Selected].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver+Selected].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver+Selected].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Pressed+Selected].alphaTransparency", "1.0");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Pressed+Selected].alphaTransparency", "1.0");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 8 0 8"), new Dimension(32, 32),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, Double.POSITIVE_INFINITY);
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolBarToggleButtonPainter");
+
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_SELECTED, ctx));
 		d.put(compName + "[Focused+Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
 		d.put(compName + "[Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_PRESSED_SELECTED, ctx));
@@ -2435,58 +2915,84 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Disabled+Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_DISABLED_SELECTED, ctx));
 
 	}
-	
-	protected void defineToolBarSeparator(UIDefaults d){
-		// ToolBarSeparator:
+
+	protected void defineToolBarSeparator(UIDefaults d) {
 		String compName = "ToolBarSeparator";
-		String pClass = "com.ontimize.plaf.painter.OToolBarSeparatorPainter";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF4C");
+		this.defineToolBarSeparator(compName, d);
+	}
+
+	protected void defineToolBarSeparator(String compName, UIDefaults d) {
+		// ToolBarSeparator:
+		if (compName == null) {
+			compName = "ToolBarSeparator";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolBarSeparatorPainter");
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF4C");
 
 		Insets insets = StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0");
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(38, 7), true, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(38, 7), true,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OToolBarSeparatorPainter.BACKGROUND_ENABLED, ctx));
 	}
-	
-	protected void defineToolTip(UIDefaults d){
-		// ToolTip
+
+	protected void defineToolTip(UIDefaults d) {
 		String compName = "ToolTip";
-		
-		setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		setInsetsUIResource(d, compName, "contentMargins", "5 9 6 9");
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		
-		setColorUIResource(d, compName, "background", "#86ADBF");
-		setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF01");
-		
-		setColorUIResource(d, compName, "textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "border", "#C6DFE3");
-		
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 9 6 9"), new Dimension(10, 10), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.OToolTipPainter", OToolTipPainter.BACKGROUND_ENABLED, ctx));
+		this.defineToolTip(compName, d);
+	}
+
+	protected void defineToolTip(String compName, UIDefaults d) {
+		// ToolTip
+		if (compName == null) {
+			compName = "ToolTip";
+		}
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "5 9 6 9");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#86ADBF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF01");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "border", "#C6DFE3");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 9 6 9"), new Dimension(10, 10),
+				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolTipPainter");
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OToolTipPainter.BACKGROUND_ENABLED, ctx));
 
 	}
 
 	protected void defineRadioButton(UIDefaults d) {
 		// Initialize RadioButton
 		String compName = "RadioButton";
-		String pClass = "com.ontimize.plaf.painter.ORadioButtonPainter";
+		this.defineRadioButton(compName, d);
+	}
+
+	protected void defineRadioButton(String compName, UIDefaults d) {
+		// Initialize RadioButton
+		if (compName == null) {
+			compName = "RadioButton";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.ORadioButtonPainter");
 		String iconBasePath = "com/ontimize/plaf/images/radio/";
-		
-		setColorUIResource(d, compName, "background", "#ffffff01");
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "foreground", "#335971");
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7D");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#FFFFFF");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(18, 18), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff01");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(18, 18), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 
 		d.put(compName + ".contentMargins", StyleUtil.getInsetsUI(compName, "contentMargins", "0 0 0 0"));
 
@@ -2534,99 +3040,149 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	}
 
 	protected void defineRow(UIDefaults d) {
-		String prefix = "\"Row\"";
+		String compName = "\"Row\"";
+		this.defineRow(compName, d);
+	}
 
-		setColorUIResource(d, prefix, "background", "#FFFFFF14");
-		setPaint(d, prefix, "bgpaint", null);
-		setBoolean(d, prefix, "opaque", "false");
-		setInsetsUIResource(d, prefix, "contentMargins", "0 0 0 0");
+	protected void defineRow(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"Row\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.ORowPanelPainter");
 
-		Insets insets = StyleUtil.getInsets(prefix, "contentMargins", "0 0 0 0");
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#FFFFFF14");
+		OntimizeLookAndFeel.setPaint(d, compName, "bgpaint", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
 
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.ORowPanelPainter", ORowPanelPainter.BACKGROUND_ENABLED, ctx));
+		Insets insets = StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, ORowPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineColumn(UIDefaults d) {
-		String prefix = "\"Column\"";
-
-		setColorUIResource(d, prefix, "background", "#FFFFFF14");
-		setPaint(d, prefix, "bgpaint", null);
-		setBoolean(d, prefix, "opaque", "false");
-		setInsetsUIResource(d, prefix, "contentMargins", "0 0 0 0");
-
-		Insets insets = StyleUtil.getInsets(prefix, "contentMargins", "0 0 0 0");
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.OColumnPanelPainter", OColumnPanelPainter.BACKGROUND_ENABLED, ctx));
+		String compName = "\"Column\"";
+		this.defineColumn(compName, d);
 	}
-	
+
+	protected void defineColumn(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"Column\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OColumnPanelPainter");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#FFFFFF14");
+		OntimizeLookAndFeel.setPaint(d, compName, "bgpaint", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+
+		Insets insets = StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OColumnPanelPainter.BACKGROUND_ENABLED, ctx));
+	}
+
 	protected void defineCardPanel(UIDefaults d) {
-		String prefix = "\"CardPanel\"";
+		String compName = "\"CardPanel\"";
+		this.defineCardPanel(compName, d);
+	}
 
-		setColorUIResource(d, prefix, "background", "#FFFFFF14");
-		setBoolean(d, prefix, "opaque", "false");
-		setInsetsUIResource(d, prefix, "contentMargins", "0 0 0 0");
+	protected void defineCardPanel(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"CardPanel\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OCardPanelPainter");
 
-		Insets insets = StyleUtil.getInsets(prefix, "contentMargins", "0 0 0 0");
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#FFFFFF14");
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
 
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.OCardPanelPainter", OCardPanelPainter.BACKGROUND_ENABLED, ctx));
+		Insets insets = StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
+
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OCardPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineGrid(UIDefaults d) {
-		String prefix = "\"Grid\"";
+		String compName = "\"Grid\"";
+		this.defineGrid(compName, d);
+	}
 
-		setColorUIResource(d, prefix, "background", "#FFFFFF14");
-		setPaint(d, prefix, "bgpaint", null);
-		setBoolean(d, prefix, "opaque", "false");
-		Grid.defaultOpaque = StyleUtil.getBoolean(prefix, "opaque", "false");
-		setInsetsUIResource(d, prefix, "contentMargins", "5 5 5 5");
+	protected void defineGrid(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"Grid\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OGridPanelPainter");
 
-		Insets insets = StyleUtil.getInsets(prefix, "contentMargins", "5 5 5 5");
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#FFFFFF14");
+		OntimizeLookAndFeel.setPaint(d, compName, "bgpaint", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		Grid.defaultOpaque = StyleUtil.getBoolean(compName, "opaque", "false");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "5 5 5 5");
 
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.OGridPanelPainter", OGridPanelPainter.BACKGROUND_ENABLED, ctx));
+		Insets insets = StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OGridPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineTitleBorder(UIDefaults d) {
 		String compName = "TitledBorder";
-		d.put(compName+".position", "BELOW_TOP");
+		this.defineTitleBorder(compName, d);
+	}
+
+	protected void defineTitleBorder(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "TitledBorder";
+		}
+		d.put(compName + ".position", "BELOW_TOP");
 		Insets insets = StyleUtil.getInsets(compName, "contentMargins", "10 10 10 10");
 		Integer radius = StyleUtil.getInteger(compName, "radius", null);
 		Integer titleSize = StyleUtil.getInteger(compName, "titleSize", null);
-		
-		d.put(compName+".border", new BorderUIResource(new OLoweredBorder(insets, titleSize, radius)));
+
+		d.put(compName + ".border", new BorderUIResource(new OLoweredBorder(insets, titleSize, radius)));
 		Font tBFont = this.getDefaultFont();
-		tBFont = tBFont.deriveFont(Font.BOLD, (float)tBFont.getSize()+2);
-		setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(tBFont));
-		
-		setColor(d, compName, "titleColor", "#3b3b3b");
+		tBFont = tBFont.deriveFont(Font.BOLD, (float) tBFont.getSize() + 2);
+		OntimizeLookAndFeel.setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(tBFont));
+
+		OntimizeLookAndFeel.setColor(d, compName, "titleColor", "#3b3b3b");
 	}
 
 	protected void defineTableButton(UIDefaults d) {
 		String compName = "\"TableButton\"";
+		this.defineTableButton(compName, d);
+	}
+
+	protected void defineTableButton(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"TableButton\"";
+		}
 
 		TableButton.defaultPaintFocus = true;
 		TableButton.defaultContentAreaFilled = true;
 		TableButton.defaultCapable = true;
-		
-		setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
-		setFontUIResource(d, compName, "font", null);
-		setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-		setColorUIResource(d, compName,"disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		setColor(d, compName, "background", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		
-		setColorUIResource(d, compName, "[Focused].background", "#366581");
-		setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
 
-		String pClass = "com.ontimize.plaf.painter.OTableButtonPainter";
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(33, 33), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTableButtonPainter");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(33, 33),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
@@ -2644,70 +3200,112 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	}
 
 	protected void defineTableButtonPanel(UIDefaults d) {
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 0, 0, 0), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-
-		String prefix = "\"TableButtonPanel\"";
-
-		setColor(d, prefix, "topBackgroundColor", "#DAE7ED");
-		setColor(d, prefix, "bottomBackgroundColor", "#A2ABB0");
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.OTableButtonPanelPainter", OTableButtonPanelPainter.BACKGROUND_ENABLED, ctx));
+		String compName = "\"TableButtonPanel\"";
+		this.defineTableButtonPanel(compName, d);
 	}
-	
+
+	protected void defineTableButtonPanel(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"TableButtonPanel\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTableButtonPanelPainter");
+
+		OntimizeLookAndFeel.setColor(d, compName, "topBackgroundColor", "#DAE7ED");
+		OntimizeLookAndFeel.setColor(d, compName, "bottomBackgroundColor", "#A2ABB0");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 0, 0, 0), new Dimension(100, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTableButtonPanelPainter.BACKGROUND_ENABLED, ctx));
+	}
+
 	protected void defineTableButtonFooterPanel(UIDefaults d) {
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 0, 0, 0), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		String compName = "\"TableButtonFooterPanel\"";
+		this.defineTableButtonFooterPanel(compName, d);
+	}
 
-		String prefix = "\"TableButtonFooterPanel\"";
+	protected void defineTableButtonFooterPanel(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"TableButtonFooterPanel\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTableButtonFooterPanelPainter");
 
-		setColor(d, prefix, "topBackgroundColor", "#A2ABB0");
-		setColor(d, prefix, "bottomBackgroundColor", "#DAE7ED");
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.OTableButtonFooterPanelPainter", OTableButtonFooterPanelPainter.BACKGROUND_ENABLED, ctx));
+		OntimizeLookAndFeel.setColor(d, compName, "topBackgroundColor", "#A2ABB0");
+		OntimizeLookAndFeel.setColor(d, compName, "bottomBackgroundColor", "#DAE7ED");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 0, 0, 0), new Dimension(100, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTableButtonFooterPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineFormButtonPanel(UIDefaults d) {
-		String prefix = "\"FormButtonPanel\"";
+		String compName = "\"FormButtonPanel\"";
+		this.defineFormButtonPanel(compName, d);
+	}
 
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(5, 5, 5, 5), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+	protected void defineFormButtonPanel(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"FormButtonPanel\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFormButtonPanelPainter");
 
-		setColor(d, prefix, "topBackgroundColor", "#AAB8BF");
-		setColor(d, prefix, "bottomBackgroundColor", "#E6EFF2");
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.OFormButtonPanelPainter", OFormBodyPanelPainter.BACKGROUND_ENABLED, ctx));
+		OntimizeLookAndFeel.setColor(d, compName, "topBackgroundColor", "#AAB8BF");
+		OntimizeLookAndFeel.setColor(d, compName, "bottomBackgroundColor", "#E6EFF2");
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#000000");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(5, 5, 5, 5), new Dimension(100, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OFormButtonPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineFormBodyPanel(UIDefaults d) {
-		String prefix = "\"FormBodyPanel\"";
-		
-		setPaint(d, prefix, "bgpaint", null);
+		String compName = "\"FormBodyPanel\"";
+		this.defineFormBodyPanel(compName, d);
+	}
 
-		OFormBodyPanelPainter.BG_IMAGE = StyleUtil.getProperty(prefix, "backgroundImage", "com/ontimize/plaf/images/backgroundDarkBlue.jpg");
-		Form.DEFAULT_FORM_MARGIN = StyleUtil.getInsets(prefix, "contentMargins", "5 5 5 5");
+	protected void defineFormBodyPanel(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"FormBodyPanel\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFormBodyPanelPainter");
 
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(prefix, "contentMargins", "5 5 5 5"), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		OntimizeLookAndFeel.setPaint(d, compName, "bgpaint", null);
+		OFormBodyPanelPainter.BG_IMAGE = StyleUtil.getProperty(compName, "backgroundImage", "com/ontimize/plaf/images/backgroundDarkBlue.jpg");
+		Form.DEFAULT_FORM_MARGIN = StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5");
 
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.OFormBodyPanelPainter", OFormBodyPanelPainter.BACKGROUND_ENABLED, ctx));
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(100, 30),
+				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OFormBodyPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineFieldButton(UIDefaults d) {
 		String compName = "\"FieldButton\"";
-		String pClass = "com.ontimize.plaf.painter.OFieldButtonPainter";
+		this.defineFieldButton(compName, d);
+	}
+
+	protected void defineFieldButton(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"FieldButton\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFieldButtonPainter");
 
 		FieldButton.defaultContentAreaFilled = true;
 		FieldButton.defaultPaintFocus = true;
 		FieldButton.defaultCapable = true;
-		
-		setFontUIResource(d, compName, "font", null);
-		setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-		setColorUIResource(d, compName,"disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		setColor(d, compName, "background", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		
-		setColorUIResource(d, compName, "[Focused].background", "#366581");
-		setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
 
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(16, 16, 16, 16), new Dimension(33, 33), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(16, 16, 16, 16), new Dimension(33, 33), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
 		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
@@ -2725,27 +3323,34 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 	protected void defineFormButton(UIDefaults d) {
 		String compName = "\"FormButton\"";
-		String pClass = "com.ontimize.plaf.painter.OFormButtonPainter";
+		this.defineFormButton(compName, d);
+	}
+
+	protected void defineFormButton(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"FormButton\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFormButtonPainter");
 
 		Form.defaultFormButtonSize = 26;
 		FormButton.defaultContentAreaFilled = true;
 		FormButton.defaultPaintFocus = true;
 		FormButton.defaultCapable = true;
-		
-		setFontUIResource(d, compName, "font", null);
-		setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-		setColorUIResource(d, compName,"disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		setColor(d, compName, "background", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		
-		setColorUIResource(d, compName, "[Focused].background", "#366581");
-		setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
-		
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(16, 16, 16, 16), new Dimension(33, 33), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
+
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(16, 16, 16, 16), new Dimension(33, 33), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
 		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
@@ -2762,7 +3367,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	}
 
 	protected void defineFormHeader(UIDefaults d) {
-		
+
 		ImageManager.INSERT = "com/ontimize/plaf/images/formheader/insert.png";
 		ImageManager.CONFIRM_INSERT = "com/ontimize/plaf/images/formheader/confirminsert.png";
 		ImageManager.UPDATE = "com/ontimize/plaf/images/formheader/update.png";
@@ -2787,28 +3392,34 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 	protected void defineFormHeaderButton(UIDefaults d) {
 		String compName = "\"FormHeaderButton\"";
-		String pClass = "com.ontimize.plaf.painter.OFormHeaderButtonPainter";
+		this.defineFormHeaderButton(compName, d);
+	}
+
+	protected void defineFormHeaderButton(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"FormHeaderButton\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFormHeaderButtonPainter");
 
 		FormHeaderButton.defaultCapable = true;
 		FormHeaderButton.defaultContentAreaFilled = true;
 		FormHeaderButton.defaultPaintFocus = true;
-		
-//		setInsetsUIResource(d, compName, "contentMargins", "16 16 16 16");
-		setFontUIResource(d, compName, "font", null);
-		setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-		setColorUIResource(d, compName,"disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		setColor(d, compName, "background", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		
-		setColorUIResource(d, compName, "[Focused].background", "#366581");
-		setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
-		
 
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(16, 16, 16, 16), new Dimension(33, 33), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
+		// setInsetsUIResource(d, compName, "contentMargins", "16 16 16 16");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(16, 16, 16, 16), new Dimension(33, 33), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
@@ -2824,46 +3435,54 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
 		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
-	
+
 	protected void defineFormHeaderPopupButton(UIDefaults d) {
-		
 		String compName = "\"FormHeaderPopupButton\"";
-		
+		this.defineFormHeaderPopupButton(compName, d);
+	}
+
+	protected void defineFormHeaderPopupButton(String compName, UIDefaults d) {
+
+		if (compName == null) {
+			compName = "\"FormHeaderPopupButton\"";
+		}
+
 		FormHeaderPopupButton.defaultCapable = true;
 		FormHeaderPopupButton.defaultContentAreaFilled = true;
 		FormHeaderPopupButton.defaultPaintFocus = true;
-		
-//		setInsetsUIResource(d, compName, "contentMargins", "16 16 16 16");
-		setFontUIResource(d, compName, "font", null);
-		setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-		setColorUIResource(d, compName,"disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		setColor(d, compName, "background", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		
-		setColorUIResource(d, compName, "[Focused].background", "#366581");
-		setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
-		
-		setFloat(d, compName, "[Disabled].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Enabled].alphaTransparency", "0.3");
-//		setFloat(d, compName, "[Focused].alphaTransparency", "0.3");
-		setFloat(d, compName, "[MouseOver].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Pressed].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+Pressed].alphaTransparency", "0.5");
-		
-		setFloat(d, compName, "[Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Disabled+Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[MouseOver+Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+MouseOver+Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Pressed+Selected].alphaTransparency", "0.5");
-		setFloat(d, compName, "[Focused+Pressed+Selected].alphaTransparency", "0.5");
-		
-		String pClass = "com.ontimize.plaf.painter.OFormHeaderPopupButtonPainter";
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 7 7"), new Dimension(104, 33), false, PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+
+		// setInsetsUIResource(d, compName, "contentMargins", "16 16 16 16");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+
+		OntimizeLookAndFeel.setFloat(d, compName, "[Disabled].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Enabled].alphaTransparency", "0.3");
+		// setFloat(d, compName, "[Focused].alphaTransparency", "0.3");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Pressed].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Pressed].alphaTransparency", "0.5");
+
+		OntimizeLookAndFeel.setFloat(d, compName, "[Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Disabled+Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver+Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver+Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Pressed+Selected].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+Pressed+Selected].alphaTransparency", "0.5");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFormHeaderPopupButtonPainter");
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 7 7"), new Dimension(104, 33), false, PaintContext.CacheMode.NO_CACHING,
+				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
@@ -2871,7 +3490,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
 		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
 		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
-		
+
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED, ctx));
 		d.put(compName + "[Disabled+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_DISABLED_SELECTED, ctx));
 		d.put(compName + "[Focused+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
@@ -2879,32 +3498,39 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED_FOCUSED, ctx));
 		d.put(compName + "[Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED, ctx));
 		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED_FOCUSED, ctx));
-		
+
 	}
 
 	protected void defineButtonSelection(UIDefaults d) {
-		// ButtonSelection...
 		String compName = "\"ButtonSelection\"";
+		this.defineButtonSelection(compName, d);
+	}
+
+	protected void defineButtonSelection(String compName, UIDefaults d) {
+		// ButtonSelection...
+		if (compName == null) {
+			compName = "\"ButtonSelection\"";
+		}
 
 		ButtonSelection.defaultButtonSelectionCapable = true;
 		ButtonSelection.defaultButtonSelectionPaintFocus = true;
 
-		setInsetsUIResource(d, compName, "contentMargins", "16 16 16 16");
-		setFontUIResource(d, compName, "font", null);
-		setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-		setColorUIResource(d, compName,"disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		setColor(d, compName, "background", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		
-		setColorUIResource(d, compName, "[Focused].background", "#366581");
-		setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "16 16 16 16");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
 
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
 
-		String pClass = "com.ontimize.plaf.painter.OButtonSelectionPainter";
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "16 16 16 16"), new Dimension(33, 33), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OButtonSelectionPainter");
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "16 16 16 16"), new Dimension(33, 33), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
@@ -2920,36 +3546,44 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
 		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
-	
+
 	protected void defineMenuButtonSelection(UIDefaults d) {
-		// MenuButtonSelection...
 		String compName = "\"MenuButtonSelection\"";
-		
+		this.defineMenuButtonSelection(compName, d);
+	}
+
+	protected void defineMenuButtonSelection(String compName, UIDefaults d) {
+		// MenuButtonSelection...
+		if (compName == null) {
+			compName = "\"MenuButtonSelection\"";
+		}
+
 		ButtonSelection.defaultMenuButtonSelectionCapable = true;
 		ButtonSelection.defaultMenuButtonSelectionPaintFocus = true;
 		ButtonSelection.defaultMenuButtonSelectionContentAreaFilled = true;
 
-		setInsetsUIResource(d, compName, "contentMargins", "10 0 10 0");
-		setFontUIResource(d, compName, "font", null);
-		setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-		setColorUIResource(d, compName,"disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		setColor(d, compName, "background", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		
-		setColorUIResource(d, compName, "[Focused].background", "#366581");
-		setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
-		
-		setColor(d, compName, "[Disabled].foreground", "#000000");
-		setColor(d, compName, "[Enabled].foreground", "#000000");
-		setColor(d, compName, "[Focused].foreground", "#000000");
-		setColor(d, compName, "[MouseOver].foreground", "#000000");
-		setColor(d, compName, "[Pressed].foreground", "#000000");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "10 0 10 0");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
 
-		String pClass = "com.ontimize.plaf.painter.OMenuButtonSelectionPainter";
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "10 0 10 0"), new Dimension(33, 33), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+
+		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[Enabled].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[Focused].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[MouseOver].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[Pressed].foreground", "#000000");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OMenuButtonSelectionPainter");
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "10 0 10 0"), new Dimension(33, 33), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
@@ -2965,36 +3599,44 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
 		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
-	
+
 	protected void defineToolbarNavigatorMenuButtonSelection(UIDefaults d) {
-		// MenuButtonSelection...
 		String compName = "\"ToolbarNavigatorMenuButtonSelection\"";
-		
+		this.defineToolbarNavigatorMenuButtonSelection(compName, d);
+	}
+
+	protected void defineToolbarNavigatorMenuButtonSelection(String compName, UIDefaults d) {
+		// MenuButtonSelection...
+		if (compName == null) {
+			compName = "\"ToolbarNavigatorMenuButtonSelection\"";
+		}
+
 		ButtonSelection.defaultMenuButtonSelectionCapable = true;
 		ButtonSelection.defaultMenuButtonSelectionPaintFocus = true;
 		ButtonSelection.defaultMenuButtonSelectionContentAreaFilled = true;
 
-		setInsetsUIResource(d, compName, "contentMargins", "8 8 8 0");
-		setFontUIResource(d, compName, "font", null);
-		setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-		setColorUIResource(d, compName,"disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		setColor(d, compName, "background", "#FFFFFF");
-		
-		setColorUIResource(d, compName, "textForeground", "#335971");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
-		
-		setColorUIResource(d, compName, "[Focused].background", "#366581");
-		setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
-		
-		setColor(d, compName, "[Disabled].foreground", "#929292");
-		setColor(d, compName, "[Enabled].foreground", "#000000");
-		setColor(d, compName, "[Focused].foreground", "#000000");
-		setColor(d, compName, "[MouseOver].foreground", "#000000");
-		setColor(d, compName, "[Pressed].foreground", "#000000");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "8 8 8 0");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
 
-		String pClass = "com.ontimize.plaf.painter.OToolbarNavigatorMenuButtonSelectionPainter";
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "8 0 8 0"), new Dimension(33, 33), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+
+		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].foreground", "#929292");
+		OntimizeLookAndFeel.setColor(d, compName, "[Enabled].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[Focused].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[MouseOver].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[Pressed].foreground", "#000000");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolbarNavigatorMenuButtonSelectionPainter");
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "8 0 8 0"), new Dimension(33, 33), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
@@ -3012,140 +3654,190 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	}
 
 	protected void defineCollapsibleButtonPanel(UIDefaults d) {
-		String prefix = "\"CollapsibleButtonPanel\"";
+		String compName = "\"CollapsibleButtonPanel\"";
+		this.defineCollapsibleButtonPanel(compName, d);
+	}
 
-		setBoolean(d, prefix, "opaque", "false");
-		setInsetsUIResource(d, prefix, "contentMargins", "2 3 2 6");
-		
-		
-		setColor(d, prefix, "lineBorderColor", "#90999E");
-		setColor(d, prefix, "backgroundColor", "#FFFFFF");
+	protected void defineCollapsibleButtonPanel(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"CollapsibleButtonPanel\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OCollapsibleButtonPanelPainter");
+
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 3 2 6");
+
+		OntimizeLookAndFeel.setColor(d, compName, "lineBorderColor", "#90999E");
+		OntimizeLookAndFeel.setColor(d, compName, "backgroundColor", "#FFFFFF");
 		CollapsibleButtonPanel.backgroundColor = null;
 		CollapsibleButtonPanel.lineBorderColor = null;
-		CollapsibleButtonPanel.leftIconPath = StyleUtil.getIconPath(prefix, "arrowLeftIcon", "com/ontimize/plaf/images/allleftarrow.png");
-		CollapsibleButtonPanel.rightIconPath = StyleUtil.getIconPath(prefix, "arrowRightIcon", "com/ontimize/plaf/images/allrightarrow.png");
-		
-		Insets in = StyleUtil.getInsets(prefix, "contentMargins", "2 3 1 4");
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(in, new Dimension(20, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.OCollapsibleButtonPanelPainter", OCollapsibleButtonPanelPainter.BACKGROUND_ENABLED, ctx));
+		CollapsibleButtonPanel.leftIconPath = StyleUtil.getIconPath(compName, "arrowLeftIcon", "com/ontimize/plaf/images/allleftarrow.png");
+		CollapsibleButtonPanel.rightIconPath = StyleUtil.getIconPath(compName, "arrowRightIcon", "com/ontimize/plaf/images/allrightarrow.png");
+
+		Insets in = StyleUtil.getInsets(compName, "contentMargins", "2 3 1 4");
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(in, new Dimension(20, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OCollapsibleButtonPanelPainter.BACKGROUND_ENABLED, ctx));
 
 	}
 
 	protected void defineCollapsiblePanel(UIDefaults d) {
-		// Assigning CurveMattedDeployableBorder to collapsible panel.
-		String prefix = "CollapsiblePanel";
-		Font cPFont = this.getDefaultFont();
-		cPFont = cPFont.deriveFont(Font.BOLD, (float)cPFont.getSize()+1);
-		CurveMattedDeployableBorder.defaultFont = StyleUtil.getFont(prefix, "font", OntimizeLAFParseUtils.fontToString(cPFont) );
-		CollapsiblePanel.borderClass = "com.ontimize.gui.container.CurveMattedDeployableBorder";
-		CurveMattedDeployableBorder.defaultRectTitleColor = StyleUtil.getColor(prefix, "titleBackground", "#2a3c48");
-		CurveMattedDeployableBorder.defaultFontColor = StyleUtil.getColor(prefix, "foreground", "#e1e1e1");
-		CurveMattedDeployableBorder.defaultFontShadowColor = StyleUtil.getColor(prefix, "foregroundShadow", "#22303a");
-		CurveMattedDeployableBorder.defaultSolidBandColor = StyleUtil.getColor(prefix, "background", "#eef4f6");
-		CurveMattedDeployableBorder.defaultGradientBandInitColor = StyleUtil.getColor(prefix, "backgroundGradientInit", "#dae8ec");
-		CurveMattedDeployableBorder.defaultGradientBandEndColor = StyleUtil.getColor(prefix, "backgroundGradientEnd", "#e3ecf0");
-
-		CurveMattedDeployableBorder.ARROW_DOWN_ICON_PATH = StyleUtil.getIconPath(prefix, "arrowDownIcon", "com/ontimize/plaf/images/border/curvematted/arrow_down.png");
-		CurveMattedDeployableBorder.ARROW_LEFT_ICON_PATH = StyleUtil.getIconPath(prefix, "arrowLeftIcon", "com/ontimize/plaf/images/border/curvematted/arrow_left.png");
-		CurveMattedDeployableBorder.ARROW_RIGHT_ICON_PATH = StyleUtil.getIconPath(prefix, "arrowRightIcon", "com/ontimize/plaf/images/border/curvematted/arrow_right.png");
-		CurveMattedDeployableBorder.ARROW_UP_ICON_PATH = StyleUtil.getIconPath(prefix, "arrowUpIcon", "com/ontimize/plaf/images/border/curvematted/arrow_up.png");
-		
+		String compName = "CollapsiblePanel";
+		this.defineCollapsibleButtonPanel(compName, d);
 	}
 
+	protected void defineCollapsiblePanel(String compName, UIDefaults d) {
+		// Assigning CurveMattedDeployableBorder to collapsible panel.
+		if (compName == null) {
+			compName = "CollapsiblePanel";
+		}
+		Font cPFont = this.getDefaultFont();
+		cPFont = cPFont.deriveFont(Font.BOLD, (float) cPFont.getSize() + 1);
+		CurveMattedDeployableBorder.defaultFont = StyleUtil.getFont(compName, "font", OntimizeLAFParseUtils.fontToString(cPFont));
+		CollapsiblePanel.borderClass = "com.ontimize.gui.container.CurveMattedDeployableBorder";
+		CurveMattedDeployableBorder.defaultRectTitleColor = StyleUtil.getColor(compName, "titleBackground", "#2a3c48");
+		CurveMattedDeployableBorder.defaultFontColor = StyleUtil.getColor(compName, "foreground", "#e1e1e1");
+		CurveMattedDeployableBorder.defaultFontShadowColor = StyleUtil.getColor(compName, "foregroundShadow", "#22303a");
+		CurveMattedDeployableBorder.defaultSolidBandColor = StyleUtil.getColor(compName, "background", "#eef4f6");
+		CurveMattedDeployableBorder.defaultGradientBandInitColor = StyleUtil.getColor(compName, "backgroundGradientInit", "#dae8ec");
+		CurveMattedDeployableBorder.defaultGradientBandEndColor = StyleUtil.getColor(compName, "backgroundGradientEnd", "#e3ecf0");
+
+		CurveMattedDeployableBorder.ARROW_DOWN_ICON_PATH = StyleUtil.getIconPath(compName, "arrowDownIcon", "com/ontimize/plaf/images/border/curvematted/arrow_down.png");
+		CurveMattedDeployableBorder.ARROW_LEFT_ICON_PATH = StyleUtil.getIconPath(compName, "arrowLeftIcon", "com/ontimize/plaf/images/border/curvematted/arrow_left.png");
+		CurveMattedDeployableBorder.ARROW_RIGHT_ICON_PATH = StyleUtil.getIconPath(compName, "arrowRightIcon", "com/ontimize/plaf/images/border/curvematted/arrow_right.png");
+		CurveMattedDeployableBorder.ARROW_UP_ICON_PATH = StyleUtil.getIconPath(compName, "arrowUpIcon", "com/ontimize/plaf/images/border/curvematted/arrow_up.png");
+
+	}
 
 	protected void defineComponentToolBar(UIDefaults d) {
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(5, 5, 5, 5), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		String compName = "\"ComponentToolBar\"";
+		this.defineComponentToolBar(compName, d);
+	}
 
-		String prefix = "\"ComponentToolBar\"";
+	protected void defineComponentToolBar(String compName, UIDefaults d) {
+		if (compName == null) {
+			compName = "\"ComponentToolBar\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OComponentToolBarPainter");
 
-		d.put(prefix + ".topBackgroundColor", OntimizeLAFParseUtils.parseColor("#DAE7ED", Color.black));
-		d.put(prefix + ".downBackgroundColor", OntimizeLAFParseUtils.parseColor("#A2ABB0", Color.black));
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.OComponentToolBarPainter", OTableButtonPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".topBackgroundColor", OntimizeLAFParseUtils.parseColor("#DAE7ED", Color.black));
+		d.put(compName + ".downBackgroundColor", OntimizeLAFParseUtils.parseColor("#A2ABB0", Color.black));
+
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(5, 5, 5, 5), new Dimension(100, 30), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTableButtonPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineFormTitle(UIDefaults d) {
+		String compName = "\"FormTitle\"";
+		this.defineFormTitle(compName, d);
+	}
 
-		String prefix = "\"FormTitle\"";
-		String pClass = "com.ontimize.plaf.painter.OFormTitlePainter";
+	protected void defineFormTitle(String compName, UIDefaults d) {
 
-		d.put(prefix + ".contentMargins", new InsetsUIResource(1, 60, 2, 60));
-		
+		if (compName == null) {
+			compName = "\"FormTitle\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFormTitlePainter");
+
+		d.put(compName + ".contentMargins", new InsetsUIResource(1, 60, 2, 60));
+
 		Font fTFont = this.getDefaultFont();
-		fTFont = fTFont.deriveFont(Font.BOLD, (float)fTFont.getSize()+5);
-		d.put(prefix + ".font", StyleUtil.getFont(prefix, "font", OntimizeLAFParseUtils.fontToString(fTFont)));
-		setColorUIResource(d, prefix, "textForeground", "#E9ECEE");
-		setColorUIResource(d, prefix, "textForegroundShadow", "#616C73");
-		setColorUIResource(d, prefix, "background", "#91A2AC");
-		setPaint(d, prefix, "bgpaint", null);
-		setColorUIResource(d, prefix, "shadow", "#00000033");
+		fTFont = fTFont.deriveFont(Font.BOLD, (float) fTFont.getSize() + 5);
+		d.put(compName + ".font", StyleUtil.getFont(compName, "font", OntimizeLAFParseUtils.fontToString(fTFont)));
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#E9ECEE");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForegroundShadow", "#616C73");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#91A2AC");
+		OntimizeLookAndFeel.setPaint(d, compName, "bgpaint", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "shadow", "#00000033");
 
 		PaintContext ctx = new PaintContext(new Insets(5, 60, 5, 60), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put(prefix + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OFormTitlePainter.BACKGROUND_ENABLED, ctx));
-		d.put(prefix + ".borderPainter", new OntimizeDefaults.LazyPainter(pClass, OFormTitlePainter.BORDER_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OFormTitlePainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".borderPainter", new OntimizeDefaults.LazyPainter(pClass, OFormTitlePainter.BORDER_ENABLED, ctx));
 
 	}
 
 	protected void defineTabbedPane(UIDefaults d) {
-
-		// TabbedPane:
 		String compName = "TabbedPane";
+		this.defineTabbedPane(compName, d);
+	}
+
+	protected void defineTabbedPane(String compName, UIDefaults d) {
+		// TabbedPane:
+		if (compName == null) {
+			compName = "TabbedPane";
+		}
 
 		d.put(compName + ".States", "Enabled,Disabled");
-		setInsetsUIResource(d, compName, "contentMargins", "8 12 12 12");
-		FontUIResource font = StyleUtil.getFontUIResource(compName, "font", OntimizeLAFParseUtils.fontToString(getDefaultFont()));
-		d.put("TabbedPane.font", font);
-		setBoolean(d, compName, "opaque", "false");
-		setInteger(d, compName, "textIconGap", "3");
-		
-		setColorUIResource(d, compName, "foreground", null);
-		setColorUIResource(d, compName, "textForeground", "#263945");
-		setColorUIResource(d, compName, "background", "#517286");
-		setColorUIResource(d, compName, "darkShadow", null);
-		setColorUIResource(d, compName, "disabled", null);
-		setColorUIResource(d, compName, "disabledText", null);
-		setColorUIResource(d, compName, "highlight", null);
-		setColorUIResource(d, compName, "shadow", null);
-		setBoolean(d, compName, "isTabRollover", null);
-		setInteger(d, compName, "tabRunOverlay", null);
-		setInteger(d, compName, "tabOverlap", null);
-		setBoolean(d, compName, "extendTabsToBase", null);
-		setBoolean(d, compName, "tabAreaStatesMatchSelectedTab", null);
-		setBoolean(d, compName, "nudgeSelectedLabel", null);
-		
-		
-		setColorUIResource(d, compName, "[Enabled].border", "#000000");
-		setColorUIResource(d, compName, "[Disabled].border", "#000000");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "8 12 12 12");
+		FontUIResource font = StyleUtil.getFontUIResource(compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		d.put(compName + ".font", font);
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		OntimizeLookAndFeel.setInteger(d, compName, "textIconGap", "3");
 
-		String pClass = "com.ontimize.plaf.painter.OTabbedPanePainter";
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "8 12 12 12"), new Dimension(68, 10), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put("TabbedPane[Enabled].borderPainter", new LazyPainter(pClass, OTabbedPanePainter.BORDER_ENABLED, ctx));
-		d.put("TabbedPane[Disabled].borderPainter", new LazyPainter(pClass, OTabbedPanePainter.BORDER_DISABLED, ctx));
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#517286");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "darkShadow", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "highlight", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "shadow", null);
+		OntimizeLookAndFeel.setBoolean(d, compName, "isTabRollover", null);
+		OntimizeLookAndFeel.setInteger(d, compName, "tabRunOverlay", "2");
+		OntimizeLookAndFeel.setInteger(d, compName, "tabOverlap", "-1");
+		OntimizeLookAndFeel.setBoolean(d, compName, "extendTabsToBase", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "tabAreaStatesMatchSelectedTab", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "nudgeSelectedLabel", "false");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].border", "#000000");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].border", "#000000");
+
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTabbedPanePainter");
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "8 12 12 12"), new Dimension(68, 10), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTabbedPanePainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OTabbedPanePainter.BORDER_DISABLED, ctx));
+
+	}
+
+	protected void defineTabbedPaneTab(UIDefaults d) {
+		String compName = "TabbedPane:TabbedPaneTab";
+		this.defineTabbedPaneTab(compName, d);
+	}
+
+	protected void defineTabbedPaneTab(String compName, UIDefaults d) {
 
 		// Tab...
-		compName = "TabbedPane:TabbedPaneTab";
-		pClass = "com.ontimize.plaf.painter.OTabbedPaneTabPainter";
-		
-		setInsetsUIResource(d, compName, "contentMargins", "1 1 1 1");
-		d.put("TabbedPane:TabbedPaneTab.font", font);//It must be the same font that TabbedPane!
-		
-		setColorUIResource(d, compName, "[Enabled].textForeground", "#263945");
-		setColorUIResource(d, compName, "[Disabled].textForeground", "#263945");
-		setColorUIResource(d, compName, "[Selected].textForeground", "#263945");
-		setColorUIResource(d, compName, "[Focused].textForeground", "#263945");
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#E4E4E4");
-		setColorUIResource(d, compName, "[Enabled+MouseOver].background", "#CCCCCC");
-		setColorUIResource(d, compName, "[Enabled+Pressed].background", "#77ACD0");
-		setColorUIResource(d, compName, "[Disabled].background", "#969396");
-		setColorUIResource(d, compName, "[Disabled+Selected].background", "#969396");
-		setColorUIResource(d, compName, "[Selected].background", "#77acd0");
-		setColorUIResource(d, compName, "[MouseOver+Selected].background", "#77acd0");
-		setColorUIResource(d, compName, "[Pressed+Selected].background", "#77acd0");
-		setColorUIResource(d, compName, "[Focused+Selected].background", "#628ca9");
-		setColorUIResource(d, compName, "[Focused+MouseOver+Selected].background", "#77acd0");
-		setColorUIResource(d, compName, "[Focused+Pressed+Selected].background", "#77acd0");
-		
-		ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 1 1 1"), new Dimension(44, 21), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		if (compName == null) {
+			compName = "TabbedPane:TabbedPaneTab";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTabbedPaneTabPainter");
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "1 1 1 1");
+		// It must be the same font that TabbedPane!
+		FontUIResource font = StyleUtil.getFontUIResource("TabbedPane", "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		d.put("TabbedPane:TabbedPaneTab.font", font);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#263945");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#E4E4E4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled+MouseOver].background", "#CCCCCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled+Pressed].background", "#77ACD0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#969396");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Selected].background", "#969396");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#77acd0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver+Selected].background", "#77acd0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed+Selected].background", "#77acd0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Selected].background", "#628ca9");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+MouseOver+Selected].background", "#77acd0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Pressed+Selected].background", "#77acd0");
+
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 1 1 1"), new Dimension(44, 21), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Enabled+MouseOver].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_ENABLED_MOUSEOVER, ctx));
 		d.put(compName + "[Enabled+Pressed].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_ENABLED_PRESSED, ctx));
@@ -3157,89 +3849,236 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Focused+Selected].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
 		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER_FOCUSED, ctx));
 		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED_FOCUSED, ctx));
+	}
 
-		// *********************************************************************
+	protected void defineTabbedPaneTabArea(UIDefaults d) {
+		String compName = "TabbedPane:TabbedPaneTabArea";
+		this.defineTabbedPaneTabArea(compName, d);
+	}
+
+	protected void defineTabbedPaneTabArea(String compName, UIDefaults d) {
 		// TabArea...
-		compName = "TabbedPane:TabbedPaneTabArea";
-		pClass = "com.ontimize.plaf.painter.OTabbedPaneTabAreaPainter";
+		if (compName == null) {
+			compName = "TabbedPane:TabbedPaneTabArea";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTabbedPaneTabAreaPainter");
 
-		setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
-		
-		ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(5, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(5, 24), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled+MouseOver].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_ENABLED_MOUSEOVER, ctx));
 		d.put(compName + "[Enabled+Pressed].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_ENABLED_PRESSED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_ENABLED, ctx));
+	}
+
+	protected void defineTabbedPaneContent(UIDefaults d) {
+		String compName = "TabbedPane:TabbedPaneContent";
+		this.defineTabbedPaneContent(compName, d);
+	}
+
+	protected void defineTabbedPaneContent(String compName, UIDefaults d) {
+		// Tab Content...
+		if (compName == null) {
+			compName = "TabbedPane:TabbedPaneContent";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTabbedPaneContentPainter");
+
+		d.put(compName + ".States", "Enabled,Disabled");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "5 2 5 2");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#517286");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#517286");
+
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 2 5 2"), new Dimension(68, 10), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneContentPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneContentPainter.BACKGROUND_DISABLED, ctx));
+	}
+
+	protected void defineTabbedPaneTabAreaButton(UIDefaults d) {
+		String compName = "TabbedPane:TabbedPaneTabArea:\"TabbedPaneTabArea.button\"";
+		this.defineTabbedPaneTabAreaButton(compName, d);
+	}
+
+	protected void defineTabbedPaneTabAreaButton(String compName, UIDefaults d) {
+
+		// Tab Buttons...
+		if (compName == null) {
+			compName = "TabbedPane:TabbedPaneTabArea:\"TabbedPaneTabArea.button\"";
+		}
+		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTabbedPaneArrowButtonPainter");
+
+		d.put(compName + ".States", "Enabled,Pressed,Disabled,MouseOver");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].foreground", "#BDBDBD");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].foreground", "#D0DAE2");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].foreground", "#9D9D9D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].foreground", "#517286");
+
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 1 1 1"), new Dimension(68, 10), false,
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_ENABLED, ctx));
+		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_PRESSED, ctx));
+		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
+
+	}
+
+	protected void defineFormTabbedPane(UIDefaults d) {
+
+		// TabbedPane:
+		String name = "FormTabbedPane";
+		String compName = name;
+
+		d.put(compName + ".States", "Enabled,Disabled");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		OntimizeLookAndFeel.setInteger(d, compName, "textIconGap", "3");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#517286");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "darkShadow", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "highlight", null);
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "shadow", null);
+
+		OntimizeLookAndFeel.setBoolean(d, compName, "isTabRollover", null);
+		OntimizeLookAndFeel.setInteger(d, compName, "tabRunOverlay", "2");
+		OntimizeLookAndFeel.setInteger(d, compName, "tabOverlap", "-1");
+		OntimizeLookAndFeel.setBoolean(d, compName, "extendTabsToBase", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "useBasicArrows", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "tabAreaStatesMatchSelectedTab", "true");
+		OntimizeLookAndFeel.setBoolean(d, compName, "nudgeSelectedLabel", "false");
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].border", "#000000");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].border", "#000000");
+
+		// Tab...
+		compName = name + ":TabbedPaneTab";
+		String pClass = OFormTabbedPaneTabPainter.class.getName();
+
+		// It must be the same font that TabbedPane!
+		FontUIResource font = StyleUtil.getFontUIResource("FormTabbedPane", "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
+		d.put("FormTabbedPane:TabbedPaneTab.font", font);
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 8 3 8");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#E4E4E4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled+MouseOver].background", "#CCCCCC");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled+Pressed].background", "#77ACD0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#969396");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Selected].background", "#969396");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#77acd0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver+Selected].background", "#77acd0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed+Selected].background", "#77acd0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Selected].background", "#77acd0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+MouseOver+Selected].background", "#77acd0");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Pressed+Selected].background", "#77acd0");
+
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 1 7"), new Dimension(44, 20), false,
+				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled+MouseOver].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_ENABLED_MOUSEOVER, ctx));
+		d.put(compName + "[Enabled+Pressed].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_ENABLED_PRESSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_DISABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED, ctx));
+		d.put(compName + "[MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
+		d.put(compName + "[Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED, ctx));
+		d.put(compName + "[Focused+Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED_FOCUSED,
+				ctx));
+
+		// Tab Label
+		compName = name + ":TabbedPaneTab:\"TabbedPaneTab.label\"";
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#ffffff");
+
+		// *********************************************************************
+		// TabArea...
+		compName = name + ":TabbedPaneTabArea";
+		pClass = OFormTabbedPaneTabAreaPainter.class.getName();
+
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
+		OntimizeLookAndFeel.setPaint(d, compName, "[Enabled].background", "#ffffff22");
+		OntimizeLookAndFeel.setPaint(d, compName, "[Disabled].background", "#aaaaaa33");
+
+		ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(5, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING,
+				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabAreaPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabAreaPainter.BACKGROUND_ENABLED, ctx));
 
 		// *********************************************************************
 		// Content...
-		compName = "TabbedPane:TabbedPaneContent";
-		pClass = "com.ontimize.plaf.painter.OTabbedPaneContentPainter";
-
+		compName = name + ":TabbedPaneContent";
 		d.put(compName + ".States", "Enabled,Disabled");
-		setInsetsUIResource(d, compName, "contentMargins", "5 2 5 2");
-		
-		setColorUIResource(d, compName, "[Enabled].background", "#517286");
-		setColorUIResource(d, compName, "[Disabled].background", "#517286");
-		
-		ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 2 5 2"), new Dimension(68, 10), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneContentPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneContentPainter.BACKGROUND_DISABLED, ctx));
-		// *********************************************************************
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "1 1 1 1");
 
-		// Buttons...
-		String painterClass = "com.ontimize.plaf.painter.OTabbedPaneArrowButtonPainter";
-		compName = "TabbedPane:TabbedPaneTabArea:\"TabbedPaneTabArea.button\"";
-		
+		// Tab Buttons...
+		compName = name + ":TabbedPaneTabArea:\"FormTabbedPaneTabArea.button\"";
+		pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFormTabbedPaneArrowButtonPainter");
+
 		d.put(compName + ".States", "Enabled,Pressed,Disabled,MouseOver");
-		setColorUIResource(d, compName, "[Enabled].foreground", "#BDBDBD");
-		setColorUIResource(d, compName, "[Disabled].foreground", "#D0DAE2");
-		setColorUIResource(d, compName, "[Pressed].foreground", "#9D9D9D");
-		setColorUIResource(d, compName, "[MouseOver].foreground", "#517286");
-		
-		ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 1 1 1"), new Dimension(68, 10), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(painterClass, OTabbedPaneArrowButtonPainter.FOREGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(painterClass, OTabbedPaneArrowButtonPainter.FOREGROUND_ENABLED, ctx));
-		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(painterClass, OTabbedPaneArrowButtonPainter.FOREGROUND_PRESSED, ctx));
-		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(painterClass, OTabbedPaneArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].foreground", "#BDBDBD");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].foreground", "#D0DAE2");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].foreground", "#9D9D9D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].foreground", "#517286");
 
+		ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 1 1 1"), new Dimension(68, 10), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES,
+				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_ENABLED, ctx));
+		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_PRESSED, ctx));
+		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
 	}
 
 	protected void defineOntimizeComponents(UIDefaults d) {
 		ApplicationManager.useOntimizePlaf = true;
-		
+
 		DataField.DEFAULT_BOTTOM_MARGIN = 0;
 		DataField.DEFAULT_TOP_MARGIN = 0;
 		DataField.DEFAULT_PARENT_MARGIN = 0;
 		DataField.DEFAULT_PARENT_MARGIN_FOR_SCROLL = 0;
 		DataField.DEFAULT_FIELD_LEFT_MARGIN = 0;
 		DataField.DEFAULT_FIELD_RIGHT_MARGIN = 0;
-		
+
 		Row.defaultFLayoutHGap = 1;
 		Row.defaultFLayoutVGap = 0;
 
 		Form.toUppercaseTitle = true;
 		Form.defaultBorderButtons = false;
-		
-		//Set the height in ReferenceExt table y Form Table View.
+
+		// Set the height in ReferenceExt table y Form Table View.
 		Form.defaultTableViewMinRowHeight = 22;
-		
+
 		Tree.enabledRowCount = true;
 
 		BasicTreeCellRenderer.firstNodeConfiguration = true;
-		BasicTreeCellRenderer.organizationalForegroundColor = d.getColor("\"Tree.cellRenderer\".textForeground");
+		BasicTreeCellRenderer.organizationalForegroundColor = d.getColor("Tree:\"Tree.cellRenderer\".textForeground");
 		BasicTreeCellRenderer.includeChildCount = false;
 
-		BasicTreeCellRenderer.rootNodeForegroundColor = OntimizeLAFParseUtils.parseColor("#4AAEE3", null);
-		BasicTreeCellRenderer.rootNodeSelectionForegroundColor = OntimizeLAFParseUtils.parseColor("#396F8A", null);
+		BasicTreeCellRenderer.rootNodeForegroundColor = d.getColor("Tree:\"Tree.cellRenderer\".rootForeground");
+		BasicTreeCellRenderer.rootNodeSelectionForegroundColor = d.getColor("Tree:\"Tree.cellRenderer\".rootSelectionForeground");
 
 		BooleanCellRenderer.USE_CHECKBOX = true;
 
 		FormHeaderButton.createRolloverIcon = true;
-		RolloverButton.createRolloverIcon = true;
+		com.ontimize.util.swing.RolloverButton.createRolloverIcon = true;
 		FormHeaderPopupButton.createRolloverIcon = true;
-		
-		//ImageDataField
+
+		// ImageDataField
 		Color borderColor = StyleUtil.getColorUI("Image", "border", "#ADC0CE");
 		BorderUIResource iBorder = new BorderUIResource(BorderFactory.createLineBorder(borderColor, 2));
 		BorderManager.putBorder(BorderManager.DEFAULT_IMAGE_BORDER_KEY, iBorder);
@@ -3255,7 +4094,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		Border border = new EmptyBorder(StyleUtil.getInsets("MenuItem", "contentMargins", "0 10 0 10"));
 		AttachmentListPopup.itemsBorder = border;
 		AttachmentComponent.componentBorder = border;
-		
+
 		// ApToolbarNavigator
 		ApToolBarNavigator.defaultPrevIconPath = "com/ontimize/plaf/images/toolbar/prev.png";
 		ApToolBarNavigator.defaultNextIconPath = "com/ontimize/plaf/images/toolbar/next.png";
@@ -3268,19 +4107,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		} catch (Throwable e) {
 
 		}
-		
-		//SumRowSetupDialog
+
+		// SumRowSetupDialog
 		SumRowSetupDialog.defaultSelectedItemBgColor = new Color(0x36627F);
 		SumRowSetupDialog.defaultItemFgColor = new Color(0x335971);
-		
-		//Popup_arrow
+
+		// Popup_arrow
 		ApToolBarPopupButton.popupArrowIcon = "com/ontimize/plaf/images/popuparrow_white.png";
 	}
 
 	protected void defineHTMLDataField(UIDefaults d) {
 		HTMLDataField.toolBarFiller = true;
-		HTMLDataField.DEFAULT_PARENT_MARGIN_FOR_SCROLL = 0;
-		HTMLDataField.DEFAULT_PARENT_MARGIN = 0;
+		DataField.DEFAULT_PARENT_MARGIN_FOR_SCROLL = 0;
+		DataField.DEFAULT_PARENT_MARGIN = 0;
 		ImageManager.BOLD_FONT = "com/ontimize/plaf/images/html/text_bold.png";
 		ImageManager.ITALIC_FONT = "com/ontimize/plaf/images/html/text_italic.png";
 		ImageManager.UNDERLINE_FONT = "com/ontimize/plaf/images/html/text_underline.png";
@@ -3293,18 +4132,16 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		ImageManager.LIST_UNORDERED = "com/ontimize/plaf/images/html/listunordered.png";
 		ImageManager.IMAGE = "com/ontimize/plaf/images/html/html_image.png";
 		ImageManager.HTML_TABLE = "com/ontimize/plaf/images/html/html_table.png";
-		
+
 		try {
 			com.ontimize.gui.field.HTMLShefDataField.defaultHTMLToolbarButtonHeight = 32;
-		} catch (Throwable e) {
-		}
+		} catch (Throwable e) {}
 	}
 
 	protected void defineODMSComponents(UIDefaults d) {
 		try {
 			System.setProperty("com.ontimize.dms.client.gui.COLOR_CONFIGURATION_FILE", "com/ontimize/plaf/odms/color.properties");
-		} catch (Throwable e) {
-		}
+		} catch (Throwable e) {}
 	}
 
 	protected void defineGanttComponent(UIDefaults d) {
@@ -3313,8 +4150,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			com.ontimize.gantt.treetable.JTreeTable.fillRowSelectedColor = false;
 			com.ontimize.gantt.treetable.JTreeTable.defaultTextSelectionColor = Color.white;
 			com.ontimize.gantt.gui.GanttChartGUI.MIN_ROW_HEIGHT = 22;
-		} catch (Throwable e) {
-		}
+		} catch (Throwable e) {}
 	}
 
 	protected void defineAgendaComponent(UIDefaults d) {
@@ -3325,10 +4161,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			com.ontimize.agenda.CenterPanel.REFRESH_ICON = "com/ontimize/plaf/images/agenda/24x24_table_actualizar.png";
 			com.ontimize.agenda.CenterPanel.PREFERENCE_ICON = "com/ontimize/plaf/images/agenda/24x24_table_agenda_conf.png";
 			com.ontimize.agenda.CenterPanel.PRINT_ICON = "com/ontimize/plaf/images/table/print.png";
-			com.ontimize.agenda.gui.AgendaGUI.toolBarFiller = false;
+			CenterPanel.toolBarFiller = false;
 			com.ontimize.agenda.gui.AgendaGUI.defaultToolBarHeight = 40;
-		} catch (Throwable e) {
-		}
+		} catch (Throwable e) {}
 	}
 
 	protected void defineDiagramComponent(UIDefaults d) {
@@ -3342,33 +4177,32 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		}
 
 	}
-	
+
 	protected void defineGISComponent(UIDefaults d) {
-      try {
-         com.ontimize.util.gis.client.gui.panels.DraggableToolbar.toolbarHeight = 40;
-         com.ontimize.util.gis.client.gui.panels.DraggableToolbar.paintToolbarBorder = false;
-         
-         com.ontimize.util.gis.client.gui.panels.DraggableToolbar.defaultBorderButtons=true;
-         com.ontimize.util.gis.client.gui.panels.DraggableToolbar.defaultcontentAreaFilled=true;
-         com.ontimize.util.gis.client.gui.panels.DraggableToolbar.defaultOpaqueButtons=false;
-         
-         com.ontimize.util.gis.client.gui.panels.components.BasicToolbarButton.buttonHeight = 28;
-      } catch (Throwable ex) {
+		try {
+			com.ontimize.util.gis.client.gui.panels.DraggableToolbar.toolbarHeight = 40;
+			com.ontimize.util.gis.client.gui.panels.DraggableToolbar.paintToolbarBorder = false;
 
-      }
+			com.ontimize.util.gis.client.gui.panels.DraggableToolbar.defaultBorderButtons = true;
+			com.ontimize.util.gis.client.gui.panels.DraggableToolbar.defaultcontentAreaFilled = true;
+			com.ontimize.util.gis.client.gui.panels.DraggableToolbar.defaultOpaqueButtons = false;
 
-   }
-	
+			com.ontimize.util.gis.client.gui.panels.components.BasicToolbarButton.buttonHeight = 28;
+		} catch (Throwable ex) {
+
+		}
+
+	}
 
 	/**
 	 * Initialize the root pane settings.
-	 * 
+	 *
 	 * @param d
 	 *            the UI defaults map.
 	 */
 	protected void defineRootPanes(UIDefaults d) {
 
-		decorated = true;
+		this.decorated = true;
 
 		// ***********************
 		// FROM Ontimize
@@ -3413,179 +4247,224 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 	/**
 	 * This method is override in order to populate the uidefaults object with
-	 * the configuration information provided by the CSS file or the default one.
-	 * For that fact, information is put in that
-	 * UIDefaults Object by using the put(key, value) method.
-	 * 
+	 * the configuration information provided by the CSS file or the default
+	 * one. For that fact, information is put in that UIDefaults Object by using
+	 * the put(key, value) method.
+	 *
 	 */
 	@Override
 	public UIDefaults getDefaults() {
-		if (!initialized) {
-			initialized = true;
+		if (!this.initialized) {
+			this.initialized = true;
 			UIDefaults uidefaults = super.getDefaults();
 
 			// Define customized UI's...
-			defineUI(uidefaults, "ComboBox");
-			
-			defineUI(uidefaults, "Label");
+			this.defineUI(uidefaults, "ComboBox");
 
-			defineUI(uidefaults, "List");
-			
-//			defineUI(uidefaults, "Panel");
-			
-			defineUI(uidefaults, "PasswordField");
+			this.defineUI(uidefaults, "Label");
+
+			this.defineUI(uidefaults, "List");
+
+			// defineUI(uidefaults, "Panel");
+
+			this.defineUI(uidefaults, "PasswordField");
 
 			// defineUI(uidefaults, "RootPane");
 
-			defineUI(uidefaults, "ScrollBar");
-			
-			defineUI(uidefaults, "ScrollPane");
+			this.defineUI(uidefaults, "ScrollBar");
 
-			defineUI(uidefaults, "TabbedPane");
-			
-			defineUI(uidefaults, "Table");
+			this.defineUI(uidefaults, "ScrollPane");
 
-			defineUI(uidefaults, "TableHeader");
+			this.defineUI(uidefaults, "TabbedPane");
 
-			defineUI(uidefaults, "TextField");
-			
-			defineUI(uidefaults, "TextArea");
+			this.defineUI(uidefaults, "FormTabbedPane");
 
-			defineUI(uidefaults, "ToolBar");
-			
-			defineUI(uidefaults, "ToolTip");
-			
-			defineUI(uidefaults, "Tree");
+			this.defineUI(uidefaults, "Table");
 
-			defineUI(uidefaults, "Viewport");
+			this.defineUI(uidefaults, "TableHeader");
+
+			this.defineUI(uidefaults, "TextField");
+
+			this.defineUI(uidefaults, "TextArea");
+
+			this.defineUI(uidefaults, "ToolBar");
+
+			this.defineUI(uidefaults, "ToolTip");
+
+			this.defineUI(uidefaults, "Tree");
+
+			this.defineUI(uidefaults, "Viewport");
 
 			// Set the default font.
-			defineDefaultFont(uidefaults);
+			this.defineDefaultFont(uidefaults);
 
 			// Define painter components configuration...
-			defineButton(uidefaults);
+			this.defineButton(uidefaults);
 
-			defineCheckBox(uidefaults);
+			this.defineCheckBox(uidefaults);
 
-			defineCheckBoxMenuItem(uidefaults);
+			this.defineCheckBoxMenuItem(uidefaults);
 
-			defineComboBox(uidefaults);
+			this.defineComboBox(uidefaults);
 
-			defineEditorPane(uidefaults);
-			
-			defineFileChooser(uidefaults);
+			this.defineComboBoxArrow(uidefaults);
 
-			defineLabel(uidefaults);
+			this.defineComboBoxTextField(uidefaults);
 
-			defineList(uidefaults);
+			this.defineComboBoxListRenderer(uidefaults);
 
-			defineMenu(uidefaults);
+			this.defineComboBoxRenderer(uidefaults);
 
-			defineMenuBar(uidefaults);
+			this.defineComboBoxScrollPane(uidefaults);
 
-			defineMenuItem(uidefaults);
-			
-			defineOptionPane(uidefaults);
-			
-			definePanel(uidefaults);
-			
-			definePassword(uidefaults);
+			this.defineEditorPane(uidefaults);
 
-			definePopupMenu(uidefaults);
+			this.defineFileChooser(uidefaults);
 
-			definePopupItem(uidefaults);
+			this.defineLabel(uidefaults);
 
-			definePopupMenuSeparator(uidefaults);
-			
-			defineProgressBar(uidefaults);
+			this.defineList(uidefaults);
 
-			defineRadioButtonMenuItem(uidefaults);
+			this.defineMenu(uidefaults);
+
+			this.defineMenuBar(uidefaults);
+
+			this.defineMenuBarMenu(uidefaults);
+
+			this.defineMenuItem(uidefaults);
+
+			this.defineOptionPane(uidefaults);
+
+			this.definePanel(uidefaults);
+
+			this.definePassword(uidefaults);
+
+			this.definePopupMenu(uidefaults);
+
+			this.definePopupItem(uidefaults);
+
+			this.definePopupMenuSeparator(uidefaults);
+
+			this.defineProgressBar(uidefaults);
+
+			this.defineRadioButtonMenuItem(uidefaults);
 
 			// defineRootPanes(uidefaults);
 
-			defineScrollBar(uidefaults);
+			this.defineScrollBar(uidefaults);
 
-			defineScrollPane(uidefaults);
-			
-			defineSeparator(uidefaults);
+			this.defineScrollBarButton(uidefaults);
 
-			defineSliders(uidefaults);
+			this.defineScrollBarThumb(uidefaults);
 
-			defineSplitPane(uidefaults);
+			this.defineScrollBarTrack(uidefaults);
 
-			defineTabbedPane(uidefaults);
+			this.defineScrollPane(uidefaults);
 
-			defineTextFields(uidefaults);
-			
-			defineTextPane(uidefaults);
-			
-			defineToggleButton(uidefaults);
+			this.defineSeparator(uidefaults);
 
-			defineToolBar(uidefaults);
-			
-			defineToolBarButton(uidefaults);
-			
-			defineToolBarToggleButton(uidefaults);
-			
-			defineToolBarSeparator(uidefaults);
-			
-			defineToolTip(uidefaults);
+			this.defineSliders(uidefaults);
 
-			defineTree(uidefaults);
+			this.defineSplitPane(uidefaults);
+
+			this.defineSplitPaneDivider(uidefaults);
+
+			this.defineTabbedPane(uidefaults);
+
+			this.defineTabbedPaneTab(uidefaults);
+
+			this.defineTabbedPaneTabArea(uidefaults);
+
+			this.defineTabbedPaneContent(uidefaults);
+
+			this.defineTabbedPaneTabAreaButton(uidefaults);
+
+			this.defineTextFields(uidefaults);
+
+			this.defineTextArea(uidefaults);
+
+			this.defineTextPane(uidefaults);
+
+			this.defineToggleButton(uidefaults);
+
+			this.defineToolBar(uidefaults);
+
+			this.defineToolBarButton(uidefaults);
+
+			this.defineToolBarToggleButton(uidefaults);
+
+			this.defineToolBarSeparator(uidefaults);
+
+			this.defineToolTip(uidefaults);
+
+			this.defineTree(uidefaults);
+
+			this.defineTreeCellRenderer(uidefaults);
+
+			this.defineTreeCellEditor(uidefaults);
 
 			// defineViewport(uidefaults);
 
 			// Ontimize components...
-			defineCardPanel(uidefaults);
-			defineCollapsibleButtonPanel(uidefaults);
-			defineCollapsiblePanel(uidefaults);
-			defineColumn(uidefaults);
-			defineELabel(uidefaults);
-			defineFieldButton(uidefaults);
-			defineFormTitle(uidefaults);
-			defineFormButton(uidefaults);
-			defineFormButtonPanel(uidefaults);
-			defineFormBodyPanel(uidefaults);
-			defineFormHeader(uidefaults);
-			defineFormHeaderButton(uidefaults);
-			defineFormHeaderPopupButton(uidefaults);
-			defineHTMLDataField(uidefaults);
-			defineButtonSelection(uidefaults);
-			defineMenuButtonSelection(uidefaults);
-			defineToolbarNavigatorMenuButtonSelection(uidefaults);
-			defineRadioButton(uidefaults);
-			defineQuickFilter(uidefaults);
-			defineRow(uidefaults);
-			defineSelectableItem(uidefaults);
-			defineTable(uidefaults);
-			defineTableButton(uidefaults);
-			defineTableButtonPanel(uidefaults);
-			defineTableButtonFooterPanel(uidefaults);
-			defineTableCellRenderer(uidefaults);
-			defineTableCellEditor(uidefaults);
-			defineTableHeader(uidefaults);
-			defineTableHeaderRenderer(uidefaults);
-			defineTitleBorder(uidefaults);
-			defineOntimizeComponents(uidefaults);
-			defineODMSComponents(uidefaults);
-			defineGanttComponent(uidefaults);
-			defineGrid(uidefaults);
-			defineAgendaComponent(uidefaults);
-			defineComponentToolBar(uidefaults);
-			defineDiagramComponent(uidefaults);
-			defineGISComponent(uidefaults);
-			defineReferenceExtComponent(uidefaults);
+			this.defineCardPanel(uidefaults);
+			this.defineCollapsibleButtonPanel(uidefaults);
+			this.defineCollapsiblePanel(uidefaults);
+			this.defineColumn(uidefaults);
+			this.defineELabel(uidefaults);
+			this.defineFieldButton(uidefaults);
+			this.defineFormTabbedPane(uidefaults);
+			this.defineFormTitle(uidefaults);
+			this.defineFormButton(uidefaults);
+			this.defineFormButtonPanel(uidefaults);
+			this.defineFormBodyPanel(uidefaults);
+			this.defineFormScrollPanel(uidefaults);
+			this.defineTreeScrollPanel(uidefaults);
+			this.defineFormHeader(uidefaults);
+			this.defineFormHeaderButton(uidefaults);
+			this.defineFormHeaderPopupButton(uidefaults);
+			this.defineHTMLDataField(uidefaults);
+			this.defineButtonSelection(uidefaults);
+			this.defineMenuButtonSelection(uidefaults);
+			this.defineToolbarNavigatorMenuButtonSelection(uidefaults);
+			this.defineRadioButton(uidefaults);
+			this.defineQuickFilter(uidefaults);
+			this.defineRow(uidefaults);
+			this.defineSelectableItem(uidefaults);
+			this.defineTable(uidefaults);
+			this.defineTableButton(uidefaults);
+			this.defineTableButtonPanel(uidefaults);
+			this.defineTableButtonFooterPanel(uidefaults);
+			this.defineTableCellRenderer(uidefaults);
+			this.defineTableRowHeadCellRenderer(uidefaults);
+			this.defineTableSumCellRenderer(uidefaults);
+			this.defineTableVisualCalendarCellRenderer(uidefaults);
+			this.defineTableCellEditor(uidefaults);
+			this.defineTableHeader(uidefaults);
+			this.defineTableHeaderRenderer(uidefaults);
+			this.defineVisualCalendarTableHeaderRenderer(uidefaults);
+			this.defineTitleBorder(uidefaults);
+			this.defineOntimizeComponents(uidefaults);
+			this.defineODMSComponents(uidefaults);
+			this.defineGanttComponent(uidefaults);
+			this.defineGrid(uidefaults);
+			this.defineAgendaComponent(uidefaults);
+			this.defineComponentToolBar(uidefaults);
+			this.defineDiagramComponent(uidefaults);
+			this.defineGISComponent(uidefaults);
+			this.defineReferenceExtComponent(uidefaults);
+			this.defineReferenceExtCodeComponent(uidefaults);
+			this.defineResultCountLabel(uidefaults);
 
+			uidefaults.put("\"FrameButton\".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.ButtonPainter", ButtonPainter.BACKGROUND_DEFAULT,
+					"com/ontimize/plaf/images/closeIcon.png"));
 
-			uidefaults.put("\"FrameButton\".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.ButtonPainter", ButtonPainter.BACKGROUND_DEFAULT, "com/ontimize/plaf/images/closeIcon.png"));
+			uidefaults.put("InternalFrame.maximizeIcon", this.createFrameMaximizeIcon());
+			uidefaults.put("InternalFrame.minimizeIcon", this.createFrameIconifyIcon());
+			uidefaults.put("InternalFrame.iconifyIcon", this.createFrameIconifyIcon());
+			uidefaults.put("InternalFrame.closeIcon", this.createFrameCloseIcon());
 
-			uidefaults.put("InternalFrame.maximizeIcon", createFrameMaximizeIcon());
-			uidefaults.put("InternalFrame.minimizeIcon", createFrameIconifyIcon());
-			uidefaults.put("InternalFrame.iconifyIcon", createFrameIconifyIcon());
-			uidefaults.put("InternalFrame.closeIcon", createFrameCloseIcon());
-
-			JFrame.setDefaultLookAndFeelDecorated(decorated);
-			JDialog.setDefaultLookAndFeelDecorated(decorated);
+			JFrame.setDefaultLookAndFeelDecorated(this.decorated);
+			JDialog.setDefaultLookAndFeelDecorated(this.decorated);
 
 		}
 		return super.getDefaults();
@@ -3593,20 +4472,20 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 	protected void defineUI(UIDefaults d, String uiName) {
 		uiName = uiName + "UI";
-		d.put(uiName, UI_PACKAGE_PREFIX + uiName);
+		d.put(uiName, OntimizeLookAndFeel.UI_PACKAGE_PREFIX + uiName);
 	}
 
 	/**
 	 * Registers the given region and prefix. The prefix, if it contains quoted
 	 * sections, refers to certain named components. If there are not quoted
 	 * sections, then the prefix refers to a generic component type.
-	 * 
+	 *
 	 * <p>
 	 * If the given region/prefix combo has already been registered, then it
 	 * will not be registered twice. The second registration attempt will fail
 	 * silently.
 	 * </p>
-	 * 
+	 *
 	 * @param region
 	 *            The Synth Region that is being registered. Such as Button, or
 	 *            ScrollBarThumb.
@@ -3615,6 +4494,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 *            named components, "MyComboBox", or even something like
 	 *            ToolBar:"MyComboBox":"ComboBox.arrowButton"
 	 */
+	@Override
 	public void register(Region region, String prefix) {
 		super.register(region, prefix);
 	}
@@ -3622,7 +4502,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	/**
 	 * Locate the style associated with the given region and component. This is
 	 * called from OntimizeLookAndFeel in the SynthStyleFactory implementation.
-	 * 
+	 *
 	 * <p>
 	 * Lookup occurs as follows:<br/>
 	 * Check the map of styles <code>styleMap</code>. If the map contains no
@@ -3631,7 +4511,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 * looking for the best match, based on prefix. If a match was made, then
 	 * return that SynthStyle. Otherwise, return the defaultStyle.
 	 * </p>
-	 * 
+	 *
 	 * @param c
 	 *            The component associated with this region. For example, if the
 	 *            Region is Region.Button then the component will be a JButton.
@@ -3641,23 +4521,22 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 *            It may not be null.
 	 * @param r
 	 *            The region we are looking for a style for. May not be null.
-	 * 
+	 *
 	 * @return the style associated with the given region and component.
 	 */
 	public static SynthStyle getOntimizeStyle(JComponent c, Region r) {
-		return  SynthLookAndFeel.getStyle(c, r);
+		return SynthLookAndFeel.getStyle(c, r);
 	}
-	
 
 	/**
 	 * A convience method that will reset the Style of StyleContext if
 	 * necessary.
-	 * 
+	 *
 	 * @param context
 	 *            the SynthContext corresponding to the current state.
 	 * @param ui
 	 *            the UI delegate.
-	 * 
+	 *
 	 * @return the new, updated style.
 	 */
 	public static SynthStyle updateStyle(SynthContext context, SynthUI ui) {
@@ -3672,7 +4551,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 			ReflectionUtils.invoke(context, "setStyle", newStyle);
 			if (newStyle instanceof OntimizeStyle) {
-				((OntimizeStyle) newStyle).installDefaults(context, ui);
+				((OntimizeStyle<?>) newStyle).installDefaults(context, ui);
 			} else {
 				newStyle.installDefaults(context);
 			}
@@ -3690,16 +4569,16 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	public static int getComponentState(Component c) {
 		if (c.isEnabled()) {
 			if (c.isFocusOwner()) {
-				return SynthUI.ENABLED | SynthUI.FOCUSED;
+				return SynthConstants.ENABLED | SynthConstants.FOCUSED;
 			}
-			return SynthUI.ENABLED;
+			return SynthConstants.ENABLED;
 		}
-		return SynthUI.DISABLED;
+		return SynthConstants.DISABLED;
 	}
 
 	/**
 	 * Returns the Region for the JComponent <code>c</code>.
-	 * 
+	 *
 	 * @param c
 	 *            JComponent to fetch the Region for
 	 * @return Region corresponding to <code>c</code>
@@ -3711,21 +4590,21 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	/**
 	 * A convenience method that handles painting of the background. All SynthUI
 	 * implementations should override update and invoke this method.
-	 * 
+	 *
 	 * @param state
 	 *            the SynthContext describing the current component and state.
 	 * @param g
 	 *            the Graphics context to use to paint the component.
 	 */
 	public static void update(SynthContext state, Graphics g) {
-		paintRegion(state, g, null);
+		OntimizeLookAndFeel.paintRegion(state, g, null);
 	}
 
 	/**
 	 * A convenience method that handles painting of the background for
 	 * subregions. All SynthUI's that have subregions should invoke this method,
 	 * than paint the foreground.
-	 * 
+	 *
 	 * @param state
 	 *            the SynthContext describing the component, region, and state.
 	 * @param g
@@ -3734,12 +4613,12 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 *            the bounds to paint in.
 	 */
 	public static void updateSubregion(SynthContext state, Graphics g, Rectangle bounds) {
-		paintRegion(state, g, bounds);
+		OntimizeLookAndFeel.paintRegion(state, g, bounds);
 	}
 
 	/**
 	 * Paint a region.
-	 * 
+	 *
 	 * @param state
 	 *            the SynthContext describing the current component, region, and
 	 *            state.
@@ -3773,12 +4652,12 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		// TODO Review if fillRect is necessary.
 		if ((subregion && style.isOpaque(state)) || (!subregion && c.isOpaque())) {
-			
+
 			if (!(c instanceof JTextField)) {
 				g.setColor(style.getColor(state, ColorType.BACKGROUND));
 				g.fillRect(x, y, width, height);
 			}
-			if(c instanceof JTextField && "Tree.cellEditor".equals(c.getName())){
+			if ((c instanceof JTextField) && "Tree.cellEditor".equals(c.getName())) {
 				g.setColor(style.getColor(state, ColorType.BACKGROUND));
 				g.fillRect(x, y, width, height);
 			}
@@ -3789,10 +4668,10 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 * Returns true if the Style should be updated in response to the specified
 	 * PropertyChangeEvent. This forwards to <code>
 	 * shouldUpdateStyleOnAncestorChanged</code> as necessary.
-	 * 
+	 *
 	 * @param event
 	 *            the property change event.
-	 * 
+	 *
 	 * @return {@code true} if the style should be updated as a result of this
 	 *         property change, {@code false} otherwise.
 	 */
@@ -3807,20 +4686,20 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 			// Always update on a component orientation change
 			return true;
-		} else if ("ancestor" == eName && event.getNewValue() != null) {
+		} else if (("ancestor" == eName) && (event.getNewValue() != null)) {
 
 			// Only update on an ancestor change when getting a valid
 			// parent and the LookAndFeel wants this.
 			LookAndFeel laf = UIManager.getLookAndFeel();
 
-			return (laf instanceof SynthLookAndFeel && ((SynthLookAndFeel) laf).shouldUpdateStyleOnAncestorChanged());
+			return ((laf instanceof SynthLookAndFeel) && ((SynthLookAndFeel) laf).shouldUpdateStyleOnAncestorChanged());
 		}
 		/*
-		 * Note: The following two Ontimize based overrides should be
-		 * refactored to be in the Ontimize LAF. Due to constraints in an update
-		 * release, we couldn't actually provide the public API necessary to
-		 * allow OntimizeLookAndFeel (a subclass of SynthLookAndFeel) to provide
-		 * its own rules for shouldUpdateStyle.
+		 * Note: The following two Ontimize based overrides should be refactored
+		 * to be in the Ontimize LAF. Due to constraints in an update release,
+		 * we couldn't actually provide the public API necessary to allow
+		 * OntimizeLookAndFeel (a subclass of SynthLookAndFeel) to provide its
+		 * own rules for shouldUpdateStyle.
 		 */
 		else if ("Ontimize.Overrides" == eName) {
 
@@ -3837,12 +4716,12 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			// Always update when the JComponent.sizeVariant
 			// client property has changed
 			return true;
-		} else if (eName != null && (eName.startsWith("JButton.") || eName.startsWith("JTextField."))) {
+		} else if ((eName != null) && (eName.startsWith("JButton.") || eName.startsWith("JTextField."))) {
 
 			// Always update when an Apple-style variant client property has
 			// changed.
 			return true;
-		} 
+		}
 
 		return false;
 	}
@@ -3855,7 +4734,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		super.initialize();
 		final SynthStyleFactory styleFactory = SynthLookAndFeel.getStyleFactory();
 		// create synth style factory
-		setStyleFactory(new SynthStyleFactory() {
+		SynthLookAndFeel.setStyleFactory(new SynthStyleFactory() {
 			@Override
 			public SynthStyle getStyle(JComponent c, Region r) {
 				SynthStyle style = styleFactory.getStyle(c, r);
@@ -3867,8 +4746,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 				return style;
 			}
 		});
-		
-		//Create popup Factory.
+
+		// Create popup Factory.
 		PopupFactory.setSharedInstance(new OntimizePopupFactory());
 	}
 
@@ -3878,168 +4757,176 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	@Override
 	public void uninitialize() {
 		super.uninitialize();
-//		uidefaults.clear();
-//		OntimizeStyle.uninitialize();
+		this.initialized = false;
 		com.ontimize.plaf.utils.ImageCache.getInstance().flush();
-//		styleMap.clear();
-//		registeredRegions.clear();
-		setStyleFactory(null);
+		SynthLookAndFeel.setStyleFactory(null);
 	}
 
 	/**
 	 * Initialize the map of styles.
 	 */
 	protected void registerStyles() {
-		register(Region.ARROW_BUTTON, "ArrowButton");
-		register(Region.BUTTON, "Button");
-		register(Region.TOGGLE_BUTTON, "ToggleButton");
-		register(Region.RADIO_BUTTON, "RadioButton");
-		register(Region.CHECK_BOX, "CheckBox");
-		register(Region.COLOR_CHOOSER, "ColorChooser");
-		register(Region.PANEL, "ColorChooser:\"ColorChooser.previewPanelHolder\"");
-		register(Region.LABEL, "ColorChooser:\"ColorChooser.previewPanelHolder\":\"OptionPane.label\"");
-		register(Region.COMBO_BOX, "ComboBox");
-		register(Region.TEXT_FIELD, "ComboBox:\"ComboBox.textField\"");
-		register(Region.ARROW_BUTTON, "ComboBox:\"ComboBox.arrowButton\"");
-		register(Region.LABEL, "ComboBox:\"ComboBox.listRenderer\"");
-		register(Region.LABEL, "ComboBox:\"ComboBox.renderer\"");
-		register(Region.SCROLL_PANE, "\"ComboBox.scrollPane\"");
-		register(Region.FILE_CHOOSER, "FileChooser");
-		register(Region.INTERNAL_FRAME_TITLE_PANE, "InternalFrameTitlePane");
-		register(Region.INTERNAL_FRAME, "InternalFrame");
-		register(Region.INTERNAL_FRAME_TITLE_PANE, "InternalFrame:InternalFrameTitlePane");
-		register(Region.BUTTON, "InternalFrame:InternalFrameTitlePane:\"InternalFrameTitlePane.menuButton\"");
-		register(Region.BUTTON, "InternalFrame:InternalFrameTitlePane:\"InternalFrameTitlePane.iconifyButton\"");
-		register(Region.BUTTON, "InternalFrame:InternalFrameTitlePane:\"InternalFrameTitlePane.maximizeButton\"");
-		register(Region.BUTTON, "InternalFrame:InternalFrameTitlePane:\"InternalFrameTitlePane.closeButton\"");
-		register(Region.DESKTOP_ICON, "DesktopIcon");
-		register(Region.DESKTOP_PANE, "DesktopPane");
-		register(Region.LABEL, "Label");
-		register(Region.LIST, "List");
-		register(Region.LABEL, "List:\"List.cellRenderer\"");
-		register(Region.MENU_BAR, "MenuBar");
-		register(Region.MENU, "MenuBar:Menu");
-		register(Region.MENU_ITEM_ACCELERATOR, "MenuBar:Menu:MenuItemAccelerator");
-		register(Region.MENU_ITEM, "MenuItem");
-		register(Region.MENU_ITEM_ACCELERATOR, "MenuItem:MenuItemAccelerator");
-		register(Region.RADIO_BUTTON_MENU_ITEM, "RadioButtonMenuItem");
-		register(Region.MENU_ITEM_ACCELERATOR, "RadioButtonMenuItem:MenuItemAccelerator");
-		register(Region.CHECK_BOX_MENU_ITEM, "CheckBoxMenuItem");
-		register(Region.MENU_ITEM_ACCELERATOR, "CheckBoxMenuItem:MenuItemAccelerator");
-		register(Region.MENU, "Menu");
-		register(Region.MENU_ITEM_ACCELERATOR, "Menu:MenuItemAccelerator");
-		register(Region.POPUP_MENU, "PopupMenu");
-		register(Region.POPUP_MENU_SEPARATOR, "PopupMenuSeparator");
-		register(Region.OPTION_PANE, "OptionPane");
-		register(Region.SEPARATOR, "OptionPane:\"OptionPane.separator\"");
-		register(Region.PANEL, "OptionPane:\"OptionPane.messageArea\"");
-		register(Region.LABEL, "OptionPane:\"OptionPane.messageArea\":\"OptionPane.label\"");
-		register(Region.PANEL, "Panel");
-		register(Region.PROGRESS_BAR, "ProgressBar");
-		register(Region.SEPARATOR, "Separator");
-		register(Region.SCROLL_BAR, "ScrollBar");
-		register(Region.ARROW_BUTTON, "ScrollBar:\"ScrollBar.button\"");
-		register(Region.SCROLL_BAR_THUMB, "ScrollBar:ScrollBarThumb");
-		register(Region.SCROLL_BAR_TRACK, "ScrollBar:ScrollBarTrack");
-		register(Region.SCROLL_PANE, "ScrollPane");
-		register(Region.VIEWPORT, "Viewport");
-		register(Region.SLIDER, "Slider");
-		register(Region.SLIDER_THUMB, "Slider:SliderThumb");
-		register(Region.SLIDER_TRACK, "Slider:SliderTrack");
-		register(Region.SPINNER, "Spinner");
-		register(Region.PANEL, "Spinner:\"Spinner.editor\"");
-		register(Region.FORMATTED_TEXT_FIELD, "Spinner:Panel:\"Spinner.formattedTextField\"");
-		register(Region.ARROW_BUTTON, "Spinner:\"Spinner.previousButton\"");
-		register(Region.ARROW_BUTTON, "Spinner:\"Spinner.nextButton\"");
-		register(Region.SPLIT_PANE, "SplitPane");
-		register(Region.SPLIT_PANE_DIVIDER, "SplitPane:SplitPaneDivider");
-		register(Region.TABBED_PANE, "TabbedPane");
-		register(Region.TABBED_PANE_TAB, "TabbedPane:TabbedPaneTab");
-		register(Region.TABBED_PANE_TAB_AREA, "TabbedPane:TabbedPaneTabArea");
-		register(Region.TABBED_PANE_CONTENT, "TabbedPane:TabbedPaneContent");
+		this.register(Region.ARROW_BUTTON, "ArrowButton");
+		this.register(Region.BUTTON, "Button");
+		this.register(Region.TOGGLE_BUTTON, "ToggleButton");
+		this.register(Region.RADIO_BUTTON, "RadioButton");
+		this.register(Region.CHECK_BOX, "CheckBox");
+		this.register(Region.COLOR_CHOOSER, "ColorChooser");
+		this.register(Region.PANEL, "ColorChooser:\"ColorChooser.previewPanelHolder\"");
+		this.register(Region.LABEL, "ColorChooser:\"ColorChooser.previewPanelHolder\":\"OptionPane.label\"");
+		this.register(Region.COMBO_BOX, "ComboBox");
+		this.register(Region.TEXT_FIELD, "ComboBox:\"ComboBox.textField\"");
+		this.register(Region.ARROW_BUTTON, "ComboBox:\"ComboBox.arrowButton\"");
+		this.register(Region.LABEL, "ComboBox:\"ComboBox.listRenderer\"");
+		this.register(Region.LABEL, "ComboBox:\"ComboBox.renderer\"");
+		this.register(Region.SCROLL_PANE, "\"ComboBox.scrollPane\"");
+		this.register(Region.FILE_CHOOSER, "FileChooser");
+		this.register(Region.INTERNAL_FRAME_TITLE_PANE, "InternalFrameTitlePane");
+		this.register(Region.INTERNAL_FRAME, "InternalFrame");
+		this.register(Region.INTERNAL_FRAME_TITLE_PANE, "InternalFrame:InternalFrameTitlePane");
+		this.register(Region.BUTTON, "InternalFrame:InternalFrameTitlePane:\"InternalFrameTitlePane.menuButton\"");
+		this.register(Region.BUTTON, "InternalFrame:InternalFrameTitlePane:\"InternalFrameTitlePane.iconifyButton\"");
+		this.register(Region.BUTTON, "InternalFrame:InternalFrameTitlePane:\"InternalFrameTitlePane.maximizeButton\"");
+		this.register(Region.BUTTON, "InternalFrame:InternalFrameTitlePane:\"InternalFrameTitlePane.closeButton\"");
+		this.register(Region.DESKTOP_ICON, "DesktopIcon");
+		this.register(Region.DESKTOP_PANE, "DesktopPane");
+		this.register(Region.LABEL, "Label");
+		this.register(Region.LIST, "List");
+		this.register(Region.LABEL, "List:\"List.cellRenderer\"");
+		this.register(Region.MENU_BAR, "MenuBar");
+		this.register(Region.MENU, "MenuBar:Menu");
+		this.register(Region.MENU_ITEM_ACCELERATOR, "MenuBar:Menu:MenuItemAccelerator");
+		this.register(Region.MENU_ITEM, "MenuItem");
+		this.register(Region.MENU_ITEM_ACCELERATOR, "MenuItem:MenuItemAccelerator");
+		this.register(Region.RADIO_BUTTON_MENU_ITEM, "RadioButtonMenuItem");
+		this.register(Region.MENU_ITEM_ACCELERATOR, "RadioButtonMenuItem:MenuItemAccelerator");
+		this.register(Region.CHECK_BOX_MENU_ITEM, "CheckBoxMenuItem");
+		this.register(Region.MENU_ITEM_ACCELERATOR, "CheckBoxMenuItem:MenuItemAccelerator");
+		this.register(Region.MENU, "Menu");
+		this.register(Region.MENU_ITEM_ACCELERATOR, "Menu:MenuItemAccelerator");
+		this.register(Region.POPUP_MENU, "PopupMenu");
+		this.register(Region.POPUP_MENU_SEPARATOR, "PopupMenuSeparator");
+		this.register(Region.OPTION_PANE, "OptionPane");
+		this.register(Region.SEPARATOR, "OptionPane:\"OptionPane.separator\"");
+		this.register(Region.PANEL, "OptionPane:\"OptionPane.messageArea\"");
+		this.register(Region.LABEL, "OptionPane:\"OptionPane.messageArea\":\"OptionPane.label\"");
+		this.register(Region.PANEL, "Panel");
+		this.register(Region.PROGRESS_BAR, "ProgressBar");
+		this.register(Region.SEPARATOR, "Separator");
+		this.register(Region.SCROLL_BAR, "ScrollBar");
+		this.register(Region.ARROW_BUTTON, "ScrollBar:\"ScrollBar.button\"");
+		this.register(Region.SCROLL_BAR_THUMB, "ScrollBar:ScrollBarThumb");
+		this.register(Region.SCROLL_BAR_TRACK, "ScrollBar:ScrollBarTrack");
+		this.register(Region.SCROLL_PANE, "ScrollPane");
+		this.register(Region.VIEWPORT, "Viewport");
+		this.register(Region.SLIDER, "Slider");
+		this.register(Region.SLIDER_THUMB, "Slider:SliderThumb");
+		this.register(Region.SLIDER_TRACK, "Slider:SliderTrack");
+		this.register(Region.SPINNER, "Spinner");
+		this.register(Region.PANEL, "Spinner:\"Spinner.editor\"");
+		this.register(Region.FORMATTED_TEXT_FIELD, "Spinner:Panel:\"Spinner.formattedTextField\"");
+		this.register(Region.ARROW_BUTTON, "Spinner:\"Spinner.previousButton\"");
+		this.register(Region.ARROW_BUTTON, "Spinner:\"Spinner.nextButton\"");
+		this.register(Region.SPLIT_PANE, "SplitPane");
+		this.register(Region.SPLIT_PANE_DIVIDER, "SplitPane:SplitPaneDivider");
+		this.register(Region.TABBED_PANE, "TabbedPane");
+		this.register(Region.TABBED_PANE_TAB, "TabbedPane:TabbedPaneTab");
+		this.register(Region.TABBED_PANE_TAB_AREA, "TabbedPane:TabbedPaneTabArea");
+		this.register(Region.TABBED_PANE_CONTENT, "TabbedPane:TabbedPaneContent");
 
-		register(Region.ARROW_BUTTON, "TabbedPane:TabbedPaneTabArea:\"TabbedPaneTabArea.button\"");
+		this.register(Region.ARROW_BUTTON, "TabbedPane:TabbedPaneTabArea:\"TabbedPaneTabArea.button\"");
 
-		register(Region.TABLE, "Table");
-		register(Region.LABEL, "Table:\"Table.cellRenderer\"");
-		register(Region.LABEL, "Table:\"VisualCalendar:Table.cellRenderer\"");
-		register(Region.TABLE_HEADER, "TableHeader");
-		register(Region.LABEL, "TableHeader:\"TableHeader.renderer\"");
-		register(Region.LABEL, "TableHeader:\"VisualCalendar:TableHeader.renderer\"");
-		register(Region.TEXT_FIELD, "\"Table.editor\"");
-		register(Region.TEXT_FIELD, "\"Tree.cellEditor\"");
-		register(Region.TEXT_FIELD, "TextField");
-		register(Region.FORMATTED_TEXT_FIELD, "FormattedTextField");
-		register(Region.PASSWORD_FIELD, "PasswordField");
-		register(Region.TEXT_AREA, "TextArea");
-		register(Region.TEXT_PANE, "TextPane");
-		register(Region.EDITOR_PANE, "EditorPane");
-		register(Region.TOOL_BAR, "ToolBar");
-		register(Region.BUTTON, "ToolBar:Button");
-		register(Region.TOGGLE_BUTTON, "ToolBar:ToggleButton");
-		register(Region.TOOL_BAR_SEPARATOR, "ToolBarSeparator");
-		register(Region.TOOL_TIP, "ToolTip");
-		register(Region.TREE, "Tree");
-		register(Region.TREE_CELL, "Tree:TreeCell");
-		register(Region.ROOT_PANE, "RootPane");
+		this.register(Region.TABLE, "Table");
+		this.register(Region.LABEL, "Table:\"Table.cellRenderer\"");
+		this.register(Region.LABEL, "Table:\"VisualCalendar:Table.cellRenderer\"");
+		this.register(Region.TABLE_HEADER, "TableHeader");
+		this.register(Region.LABEL, "TableHeader:\"TableHeader.renderer\"");
+		this.register(Region.LABEL, "TableHeader:\"VisualCalendar:TableHeader.renderer\"");
+		this.register(Region.TEXT_FIELD, "\"Table.editor\"");
+		this.register(Region.TEXT_FIELD, "\"Tree.cellEditor\"");
+		this.register(Region.TEXT_FIELD, "TextField");
+		this.register(Region.FORMATTED_TEXT_FIELD, "FormattedTextField");
+		this.register(Region.PASSWORD_FIELD, "PasswordField");
+		this.register(Region.TEXT_AREA, "TextArea");
+		this.register(Region.TEXT_PANE, "TextPane");
+		this.register(Region.EDITOR_PANE, "EditorPane");
+		this.register(Region.TOOL_BAR, "ToolBar");
+		this.register(Region.BUTTON, "ToolBar:Button");
+		this.register(Region.TOGGLE_BUTTON, "ToolBar:ToggleButton");
+		this.register(Region.TOOL_BAR_SEPARATOR, "ToolBarSeparator");
+		this.register(Region.TOOL_TIP, "ToolTip");
+		this.register(Region.TREE, "Tree");
+		this.register(Region.TREE_CELL, "Tree:TreeCell");
+		this.register(Region.ROOT_PANE, "RootPane");
 
 		// ********************************************************************
 		// Ontimize Components.
 		// ***************************************************************
-		register(Region.BUTTON, "\"FormButton\"");
-		register(Region.BUTTON, "\"FrameButton\"");
-		register(Region.BUTTON, "\"FormHeaderButton\"");
-		register(Region.BUTTON, "\"TableButton\"");
-		register(Region.BUTTON, "\"ButtonSelection\"");
-		register(Region.BUTTON, "\"MenuButtonSelection\"");
-		register(Region.BUTTON, "\"ToolbarNavigatorMenuButtonSelection\"");
-		register(Region.BUTTON, "\"QueryFilterButton\"");
-		register(Region.BUTTON, "\"FieldButton\"");
-		
-		register(Region.CHECK_BOX, "\"SelectableItem\"");
-		
-		register(Region.TOGGLE_BUTTON, "\"FormHeaderPopupButton\"");
-		register(Region.TOGGLE_BUTTON, "\"TableButton\"");
+		this.register(Region.BUTTON, "\"FormButton\"");
+		this.register(Region.BUTTON, "\"FrameButton\"");
+		this.register(Region.BUTTON, "\"FormHeaderButton\"");
+		this.register(Region.BUTTON, "\"TableButton\"");
+		this.register(Region.BUTTON, "\"ButtonSelection\"");
+		this.register(Region.BUTTON, "\"MenuButtonSelection\"");
+		this.register(Region.BUTTON, "\"ToolbarNavigatorMenuButtonSelection\"");
+		this.register(Region.BUTTON, "\"QueryFilterButton\"");
+		this.register(Region.BUTTON, "\"FieldButton\"");
 
-		register(Region.PANEL, "\"Form\"");
-		register(Region.PANEL, "\"FormExt\"");
-		register(Region.PANEL, "\"Row\"");
-		register(Region.PANEL, "\"Column\"");
-		register(Region.PANEL, "\"CardPanel\"");
-		register(Region.PANEL, "\"Row\"");
-		register(Region.PANEL, "\"Grid\"");
-		register(Region.PANEL, "\"TableButtonPanel\"");
-		register(Region.PANEL, "\"TableButtonFooterPanel\"");
-		register(Region.PANEL, "\"FormButtonPanel\"");
-		register(Region.PANEL, "\"FormBodyPanel\"");
+		this.register(Region.CHECK_BOX, "\"SelectableItem\"");
 
-		register(Region.LABEL, "\"CollapsibleButtonPanel\"");
-		register(Region.LABEL, "\"ELabel\"");
-		register(Region.LABEL, "\"Tree.cellRenderer\"");
-		register(Region.LABEL, "\"PopupItem\"");
-		register(Region.LABEL, "\"PageFetcher.Label\"");
+		this.register(Region.TOGGLE_BUTTON, "\"FormHeaderPopupButton\"");
+		this.register(Region.TOGGLE_BUTTON, "\"TableButton\"");
 
-		register(Region.TEXT_FIELD, "\"FormTitle\"");
-		register(Region.TEXT_FIELD, "Table:\"Table.QuickFilter\"");
-		register(Region.TEXT_FIELD, "TextField:\"TextField.ReferenceExt\"");
-		register(Region.TEXT_FIELD, "TextField:\"TextField.ReferenceExtCode\"");
+		this.register(OntimizeRegion.FORM_TABBED_PANE, "FormTabbedPane");
+		this.register(OntimizeRegion.FORM_TABBED_PANE_TAB, "FormTabbedPane:TabbedPaneTab");
+		this.register(OntimizeRegion.FORM_TABBED_PANE_TAB_AREA, "FormTabbedPane:TabbedPaneTabArea");
+		this.register(OntimizeRegion.FORM_TABBED_PANE_CONTENT, "FormTabbedPane:TabbedPaneContent");
+		this.register(Region.LABEL, "FormTabbedPane:TabbedPaneTab:\"TabbedPaneTab.label\"");
+		this.register(Region.ARROW_BUTTON, "FormTabbedPane:TabbedPaneTabArea:\"FormTabbedPaneTabArea.button\"");
 
-		register(Region.TOOL_BAR, "\"ComponentToolBar\"");
+		this.register(Region.PANEL, "\"Form\"");
+		this.register(Region.PANEL, "\"FormExt\"");
+		this.register(Region.PANEL, "\"Row\"");
+		this.register(Region.PANEL, "\"Column\"");
+		this.register(Region.PANEL, "\"CardPanel\"");
+		this.register(Region.PANEL, "\"Row\"");
+		this.register(Region.PANEL, "\"Grid\"");
+		this.register(Region.PANEL, "\"TableButtonPanel\"");
+		this.register(Region.PANEL, "\"TableButtonFooterPanel\"");
+		this.register(Region.PANEL, "\"FormButtonPanel\"");
+		this.register(Region.PANEL, "\"FormBodyPanel\"");
+
+		this.register(Region.LABEL, "\"CollapsibleButtonPanel\"");
+		this.register(Region.LABEL, "\"ELabel\"");
+		this.register(Region.LABEL, "Tree:\"Tree.cellRenderer\"");
+		this.register(Region.LABEL, "\"PopupItem\"");
+		this.register(Region.LABEL, "\"PageFetcher.Label\"");
+		this.register(Region.LABEL, "\"ResultCountLabel\"");
+
+		this.register(Region.SCROLL_PANE, "\"FormScrollPane\"");
+		this.register(Region.SCROLL_PANE, "\"TreeScrollPane\"");
+
+		this.register(Region.TEXT_FIELD, "\"FormTitle\"");
+		this.register(Region.TEXT_FIELD, "Table:\"Table.QuickFilter\"");
+		this.register(Region.TEXT_FIELD, "TextField:\"TextField.ReferenceExt\"");
+		this.register(Region.TEXT_FIELD, "TextField:\"TextField.ReferenceExtCode\"");
+
+		this.register(Region.TOOL_BAR, "\"ComponentToolBar\"");
 	}
 
 	/**
 	 * Returns the ui that is of type <code>klass</code>, or null if one can not
 	 * be found.
-	 * 
+	 *
 	 * @param ui
 	 *            the UI delegate to be tested.
 	 * @param klass
 	 *            the class to test against.
-	 * 
+	 *
 	 * @return {@code ui} if {@code klass} is an instance of {@code ui},
 	 *         {@code null} otherwise.
 	 */
-	public static Object getUIOfType(ComponentUI ui, Class klass) {
+	public static Object getUIOfType(ComponentUI ui, Class<?> klass) {
 		if (klass.isInstance(ui)) {
 			return ui;
 		}
@@ -4054,23 +4941,23 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 * PAGE_START, PAGE_END, CENTER, or some other position, but will be
 	 * resolved to either NORTH,SOUTH,EAST, or WEST based on where the toolbar
 	 * actually IS, with CENTER being NORTH.
-	 * 
+	 *
 	 * <p/>
 	 * This code is used to determine where the border line should be drawn by
 	 * the custom toolbar states, and also used by OntimizeIcon to determine
 	 * whether the handle icon needs to be shifted to look correct.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * Toollbars are unfortunately odd in the way these things are handled, and
 	 * so this code exists to unify the logic related to toolbars so it can be
 	 * shared among the static files such as OntimizeIcon and generated files
 	 * such as the ToolBar state classes.
 	 * </p>
-	 * 
+	 *
 	 * @param toolbar
 	 *            a toolbar in the Swing hierarchy.
-	 * 
+	 *
 	 * @return the {@code BorderLayout} orientation of the toolbar, or
 	 *         {@code BorderLayout.NORTH} if none can be determined.
 	 */
@@ -4090,16 +4977,16 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 					BorderLayout b = (BorderLayout) m;
 					Object con = b.getConstraints(toolbar);
 
-					if (con == SOUTH || con == EAST || con == WEST) {
+					if ((con == BorderLayout.SOUTH) || (con == BorderLayout.EAST) || (con == BorderLayout.WEST)) {
 						return con;
 					}
 
-					return NORTH;
+					return BorderLayout.NORTH;
 				}
 			}
 		}
 
-		return NORTH;
+		return BorderLayout.NORTH;
 	}
 
 	/**
@@ -4109,7 +4996,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 * <code>selectedUI</code> (which this methods sets), if it does, then a
 	 * state as set by this method is set in the field {@code selectedUIState}.
 	 * This provides a way for labels to have a state other than selected.
-	 * 
+	 *
 	 * @param uix
 	 *            a UI delegate.
 	 * @param selected
@@ -4122,28 +5009,28 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 *            is the component's rollover state enabled?
 	 */
 	public static void setSelectedUI(ComponentUI uix, boolean selected, boolean focused, boolean enabled, boolean rollover) {
-		selectedUI = uix;
-		selectedUIState = 0;
+		OntimizeLookAndFeel.selectedUI = uix;
+		OntimizeLookAndFeel.selectedUIState = 0;
 
 		if (selected) {
-			selectedUIState = SynthConstants.SELECTED;
+			OntimizeLookAndFeel.selectedUIState = SynthConstants.SELECTED;
 
 			if (focused) {
-				selectedUIState |= SynthConstants.FOCUSED;
+				OntimizeLookAndFeel.selectedUIState |= SynthConstants.FOCUSED;
 			}
 		} else if (rollover && enabled) {
-			selectedUIState |= SynthConstants.MOUSE_OVER | SynthConstants.ENABLED;
+			OntimizeLookAndFeel.selectedUIState |= SynthConstants.MOUSE_OVER | SynthConstants.ENABLED;
 
 			if (focused) {
-				selectedUIState |= SynthConstants.FOCUSED;
+				OntimizeLookAndFeel.selectedUIState |= SynthConstants.FOCUSED;
 			}
 		} else {
 
 			if (enabled) {
-				selectedUIState |= SynthConstants.ENABLED;
-				selectedUIState = SynthConstants.FOCUSED;
+				OntimizeLookAndFeel.selectedUIState |= SynthConstants.ENABLED;
+				OntimizeLookAndFeel.selectedUIState = SynthConstants.FOCUSED;
 			} else {
-				selectedUIState |= SynthConstants.DISABLED;
+				OntimizeLookAndFeel.selectedUIState |= SynthConstants.DISABLED;
 			}
 		}
 	}
@@ -4152,7 +5039,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 * Clears out the selected UI that was last set in setSelectedUI.
 	 */
 	public static void resetSelectedUI() {
-		selectedUI = null;
+		OntimizeLookAndFeel.selectedUI = null;
 	}
 
 	public Image getImage(String key) {
@@ -4166,7 +5053,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	}
 
 	public static void clearReferences() {
-//		SynthContext.clearReferences();
+		// SynthContext.clearReferences();
 		OntimizeRegion.clearReferences();
 		OLoweredBorder.clearReferences();
 		ShapeFactory.clearReferences();
@@ -4176,8 +5063,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			Object value = map.get(null);
 			Method m = Map.class.getDeclaredMethod("clear", null);
 			m.invoke(value, null);
-		} catch (Throwable t) {
-		}
+		} catch (Throwable t) {}
 	}
 
 	public static class PainterBorder implements Border, UIResource {
@@ -4192,19 +5078,20 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		@Override
 		public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) {
-			if (painter == null) {
-				painter = (Painter) UIManager.get(painterKey);
-				if (painter == null)
+			if (this.painter == null) {
+				this.painter = (Painter) UIManager.get(this.painterKey);
+				if (this.painter == null) {
 					return;
+				}
 			}
 
 			g.translate(x, y);
-			if (g instanceof Graphics2D)
-				painter.paint((Graphics2D) g, c, w, h);
-			else {
+			if (g instanceof Graphics2D) {
+				this.painter.paint((Graphics2D) g, c, w, h);
+			} else {
 				BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 				Graphics2D gfx = img.createGraphics();
-				painter.paint(gfx, c, w, h);
+				this.painter.paint(gfx, c, w, h);
 				gfx.dispose();
 				g.drawImage(img, x, y, null);
 				img = null;
@@ -4214,7 +5101,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		@Override
 		public Insets getBorderInsets(Component c) {
-			return (Insets) insets.clone();
+			return (Insets) this.insets.clone();
 		}
 
 		@Override
@@ -4222,110 +5109,109 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			return false;
 		}
 	}
-	
-	public static void setColorUIResource(UIDefaults defaults, String name, String key,String defaultValue){
+
+	public static void setColorUIResource(UIDefaults defaults, String name, String key, String defaultValue) {
 		ColorUIResource color = StyleUtil.getColorUI(name, key, defaultValue);
-		if (color!=null){
-			if(key.startsWith("[") || key.startsWith(":")){
-				defaults.put(name+key, color);
-			}else{
-				defaults.put(name+"."+key, color);
+		if (color != null) {
+			if (key.startsWith("[") || key.startsWith(":")) {
+				defaults.put(name + key, color);
+			} else {
+				defaults.put(name + "." + key, color);
 			}
-		}
-	}
-	
-	public static void setColor(UIDefaults defaults, String name, String key,String defaultValue){
-		Color color = StyleUtil.getColor(name, key, defaultValue);
-		if (color!=null){
-			if(key.startsWith("[") || key.startsWith(":")){
-				defaults.put(name+key, color);
-			}else{
-				defaults.put(name+"."+key, color);
-			}
-		}
-	}
-	
-	public static void setPaint(UIDefaults defaults, String name, String key,String defaultValue){
-		Paint paint = StyleUtil.getPaint(name, key, defaultValue);
-		if (paint!=null){
-			if(key.startsWith("[") || key.startsWith(":")){
-				defaults.put(name+key, paint);
-			}else{
-				defaults.put(name+"."+key, paint);
-			}
-		}
-	}
-	
-	public static void setBoolean(UIDefaults defaults, String name, String key,String defaultValue){
-		Boolean boolValue = StyleUtil.getBoolean(name, key, defaultValue);
-		if (boolValue!=null){
-			if(key.startsWith("[") || key.startsWith(":")){
-				defaults.put(name+key, boolValue);
-			}else{
-				defaults.put(name+"."+key, boolValue);
-			}
-		}
-	}
-	
-	public static void setInteger(UIDefaults defaults, String name, String key,String defaultValue){
-		Integer intValue = StyleUtil.getInteger(name, key, defaultValue);
-		if (intValue!=null){
-			if(key.startsWith("[") || key.startsWith(":")){
-				defaults.put(name+key, intValue);
-			}else{
-				defaults.put(name+"."+key, intValue);
-			}
-		}
-	}
-	
-	public static void setFloat(UIDefaults defaults, String name, String key,String defaultValue){
-		Float floatValue = StyleUtil.getFloat(name, key, defaultValue);
-		if (floatValue!=null){
-			if(key.startsWith("[") || key.startsWith(":")){
-				defaults.put(name+key, floatValue);
-			}else{
-				defaults.put(name+"."+key, floatValue);
-			}
-		}
-	}
-	
-	public static void setDouble(UIDefaults defaults, String name, String key,String defaultValue){
-		Double doubleValue = StyleUtil.getDouble(name, key, defaultValue);
-		if (doubleValue!=null){
-			if(key.startsWith("[") || key.startsWith(":")){
-				defaults.put(name+key, doubleValue);
-			}else{
-				defaults.put(name+"."+key, doubleValue);
-			}
-		}
-	}
-	
-	public static void setInsetsUIResource(UIDefaults defaults, String name, String key,String defaultValue){
-		InsetsUIResource insets = StyleUtil.getInsetsUI(name, key, defaultValue);
-		if (insets!=null){
-			defaults.put(name+"."+key, insets);
 		}
 	}
 
-	
-	public static void setFontUIResource(UIDefaults defaults, String name, String key,String defaultValue){
+	public static void setColor(UIDefaults defaults, String name, String key, String defaultValue) {
+		Color color = StyleUtil.getColor(name, key, defaultValue);
+		if (color != null) {
+			if (key.startsWith("[") || key.startsWith(":")) {
+				defaults.put(name + key, color);
+			} else {
+				defaults.put(name + "." + key, color);
+			}
+		}
+	}
+
+	public static void setPaint(UIDefaults defaults, String name, String key, String defaultValue) {
+		Paint paint = StyleUtil.getPaint(name, key, defaultValue);
+		if (paint != null) {
+			if (key.startsWith("[") || key.startsWith(":")) {
+				defaults.put(name + key, paint);
+			} else {
+				defaults.put(name + "." + key, paint);
+			}
+		}
+	}
+
+	public static void setBoolean(UIDefaults defaults, String name, String key, String defaultValue) {
+		Boolean boolValue = StyleUtil.getBoolean(name, key, defaultValue);
+		if (boolValue != null) {
+			if (key.startsWith("[") || key.startsWith(":")) {
+				defaults.put(name + key, boolValue);
+			} else {
+				defaults.put(name + "." + key, boolValue);
+			}
+		}
+	}
+
+	public static void setInteger(UIDefaults defaults, String name, String key, String defaultValue) {
+		Integer intValue = StyleUtil.getInteger(name, key, defaultValue);
+		if (intValue != null) {
+			if (key.startsWith("[") || key.startsWith(":")) {
+				defaults.put(name + key, intValue);
+			} else {
+				defaults.put(name + "." + key, intValue);
+			}
+		}
+	}
+
+	public static void setFloat(UIDefaults defaults, String name, String key, String defaultValue) {
+		Float floatValue = StyleUtil.getFloat(name, key, defaultValue);
+		if (floatValue != null) {
+			if (key.startsWith("[") || key.startsWith(":")) {
+				defaults.put(name + key, floatValue);
+			} else {
+				defaults.put(name + "." + key, floatValue);
+			}
+		}
+	}
+
+	public static void setDouble(UIDefaults defaults, String name, String key, String defaultValue) {
+		Double doubleValue = StyleUtil.getDouble(name, key, defaultValue);
+		if (doubleValue != null) {
+			if (key.startsWith("[") || key.startsWith(":")) {
+				defaults.put(name + key, doubleValue);
+			} else {
+				defaults.put(name + "." + key, doubleValue);
+			}
+		}
+	}
+
+	public static void setInsetsUIResource(UIDefaults defaults, String name, String key, String defaultValue) {
+		InsetsUIResource insets = StyleUtil.getInsetsUI(name, key, defaultValue);
+		if (insets != null) {
+			defaults.put(name + "." + key, insets);
+		}
+	}
+
+	public static void setFontUIResource(UIDefaults defaults, String name, String key, String defaultValue) {
 		FontUIResource font = StyleUtil.getFontUIResource(name, key, defaultValue);
-		if (font!=null){
-			defaults.put(name+"."+key, font);
+		if (font != null) {
+			defaults.put(name + "." + key, font);
 		}
 	}
-	
-	public static void setFont(UIDefaults defaults, String name, String key,String defaultValue){
+
+	public static void setFont(UIDefaults defaults, String name, String key, String defaultValue) {
 		Font font = StyleUtil.getFont(name, key, defaultValue);
-		if (font!=null){
-			defaults.put(name+"."+key, font);
+		if (font != null) {
+			defaults.put(name + "." + key, font);
 		}
 	}
-	
-	public static void setIcon(UIDefaults defaults, String name, String key,String defaultValue){
+
+	public static void setIcon(UIDefaults defaults, String name, String key, String defaultValue) {
 		Icon icon = StyleUtil.getIcon(name, key, defaultValue);
-		if (icon!=null){
-			defaults.put(name+"."+key, icon);
+		if (icon != null) {
+			defaults.put(name + "." + key, icon);
 		}
 	}
 }
