@@ -62,7 +62,7 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     		OntimizeLookAndFeel.installColorsAndFont(c, "\"ELabel\".background", "\"ELabel\".foreground", "\"ELabel\".font");
     		LookAndFeel.installProperty(c, "opaque", Boolean.FALSE);
     	}else if(c instanceof BasicTreeCellRenderer){
-    		OntimizeLookAndFeel.installColorsAndFont(c, "\"Tree.cellRenderer\".background", "\"Tree.cellRenderer\".foreground", "\"Tree.cellRenderer\".font");
+    		OntimizeLookAndFeel.installColorsAndFont(c, "Tree:\"Tree.cellRenderer\".background", "Tree:\"Tree.cellRenderer\".foreground", "Tree:\"Tree.cellRenderer\".font");
             LookAndFeel.installProperty(c, "opaque", Boolean.FALSE);
     	} else if("PageFetcher.Label".equals(c.getName())){
     		OntimizeLookAndFeel.installColorsAndFont(c, "\"PageFetcher.Label\".background", "\"PageFetcher.Label\".foreground", "\"PageFetcher.Label\".font");
@@ -283,14 +283,14 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     	Color ant = g.getColor();
 
     	if (renderer.isSelected()){
-    		Object obj = UIManager.getLookAndFeelDefaults().get( "\"Tree.cellRenderer\".backgroundSelectionCount");
+    		Object obj = UIManager.getLookAndFeelDefaults().get( "Tree:\"Tree.cellRenderer\".backgroundSelectionCount");
     		if(obj instanceof Color){
     			g.setColor((Color)obj);
     		}else{
     			g.setColor(renderer.getBackgroundNonSelectionColor());
     		}
     	}else{
-    		Object obj = UIManager.getLookAndFeelDefaults().get( "\"Tree.cellRenderer\".backgroundChildCount");
+    		Object obj = UIManager.getLookAndFeelDefaults().get( "Tree:\"Tree.cellRenderer\".backgroundChildCount");
     		if(obj instanceof Paint){
     			g.setPaint((Paint)obj);
     		}else{
@@ -309,14 +309,14 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
     	g.fill(circle);
 
     	if (renderer.isSelected()){
-    		Object obj = UIManager.getLookAndFeelDefaults().get( "\"Tree.cellRenderer\".foregroundSelectionChildCount");
+    		Object obj = UIManager.getLookAndFeelDefaults().get( "Tree:\"Tree.cellRenderer\".foregroundSelectionChildCount");
     		if(obj instanceof Paint){
     			g.setPaint((Paint)obj);
     		}else{
     			g.setColor(renderer.getBackgroundSelectionColor());
     		}
     	}else{
-    		Object obj = UIManager.getLookAndFeelDefaults().get( "\"Tree.cellRenderer\".foregroundChildCount");
+    		Object obj = UIManager.getLookAndFeelDefaults().get( "Tree:\"Tree.cellRenderer\".foregroundChildCount");
     		if(obj instanceof Paint){
     			g.setPaint((Paint)obj);
     		}else{
