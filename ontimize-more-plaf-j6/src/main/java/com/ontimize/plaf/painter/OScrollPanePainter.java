@@ -151,8 +151,9 @@ public class OScrollPanePainter extends AbstractRegionPainter {
     		for(int i=0;i<comps.length;i++){
     			Component current = comps[i];
     			if(current instanceof JComponent && current.getClass().isAssignableFrom(JViewport.class)){
-    				if(((JComponent)current).getComponents()[0] instanceof JTextComponent){
-    					return (JTextComponent)((JComponent)current).getComponents()[0];
+    				JComponent jComp = (JComponent)current;
+    				if(jComp.getComponentCount() > 0 && jComp.getComponent(0) instanceof JTextComponent){
+    					return (JTextComponent)jComp.getComponent(0);
     				}
     			}
     		}
