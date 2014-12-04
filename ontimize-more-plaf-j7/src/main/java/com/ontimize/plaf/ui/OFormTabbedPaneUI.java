@@ -67,7 +67,7 @@ import com.ontimize.plaf.utils.OTabCloseListener;
  * Based on SynthTabbedPaneUI.
  * </p>
  */
-public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, PropertyChangeListener, TabbedPanePopup {
+public class OFormTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, PropertyChangeListener, TabbedPanePopup {
 
 	protected SynthStyle style;
 	protected SynthStyle tabStyle;
@@ -144,7 +144,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 	/**
 	 * Creates a new OntimizeTabbedPaneUI object.
 	 */
-	protected OTabbedPaneUI() {
+	protected OFormTabbedPaneUI() {
 		this.textRect = new Rectangle();
 		this.iconRect = new Rectangle();
 		this.tabAreaRect = new Rectangle();
@@ -160,7 +160,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 	 * @return the UI delegate.
 	 */
 	public static ComponentUI createUI(JComponent c) {
-		return new OTabbedPaneUI();
+		return new OFormTabbedPaneUI();
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 			}
 		}
 
-		Object opaque = UIManager.get("TabbedPane.opaque");
+		Object opaque = UIManager.get("FormTabbedPane.opaque");
 		if (opaque == null) {
 			opaque = Boolean.FALSE;
 		}
@@ -291,8 +291,8 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		if (this.style != oldStyle) {
 
 			this.tabRunOverlay = 0;
-			this.textIconGap = this.style.getInt(context, "TabbedPane.textIconGap", 0);
-			this.selectedTabPadInsets = (Insets) this.style.get(context, "TabbedPane.selectedTabPadInsets");
+			this.textIconGap = this.style.getInt(context, "FormTabbedPane.textIconGap", 0);
+			this.selectedTabPadInsets = (Insets) this.style.get(context, "FormTabbedPane.selectedTabPadInsets");
 
 			if (this.selectedTabPadInsets == null) {
 				this.selectedTabPadInsets = new Insets(0, 0, 0, 0);
@@ -304,18 +304,18 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 			}
 		}
 
-		SynthContext tabContext = this.getContext(c, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
+		SynthContext tabContext = this.getContext(c, OntimizeRegion.FORM_TABBED_PANE_TAB, SynthConstants.ENABLED);
 		this.tabStyle = OntimizeLookAndFeel.updateStyle(tabContext, this);
 		this.tabInsets = this.tabStyle.getInsets(tabContext, null);
 
 		SynthContext tabCloseContext = this.getContext(c, OntimizeRegion.TABBED_PANE_TAB_CLOSE_BUTTON, SynthConstants.ENABLED);
 		this.tabCloseStyle = OntimizeLookAndFeel.updateStyle(tabCloseContext, this);
 
-		SynthContext tabAreaContext = this.getContext(c, Region.TABBED_PANE_TAB_AREA, SynthConstants.ENABLED);
+		SynthContext tabAreaContext = this.getContext(c, OntimizeRegion.FORM_TABBED_PANE_TAB_AREA, SynthConstants.ENABLED);
 		this.tabAreaStyle = OntimizeLookAndFeel.updateStyle(tabAreaContext, this);
 		this.tabAreaInsets = this.tabAreaStyle.getInsets(tabAreaContext, null);
 
-		SynthContext tabContentContext = this.getContext(c, Region.TABBED_PANE_CONTENT, SynthConstants.ENABLED);
+		SynthContext tabContentContext = this.getContext(c, OntimizeRegion.FORM_TABBED_PANE_CONTENT, SynthConstants.ENABLED);
 		this.tabContentStyle = OntimizeLookAndFeel.updateStyle(tabContentContext, this);
 		this.contentBorderInsets = this.tabContentStyle.getInsets(tabContentContext, null);
 	}
@@ -332,14 +332,14 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		this.scrollBackwardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				OTabbedPaneUI.this.scrollBackward();
+				OFormTabbedPaneUI.this.scrollBackward();
 			}
 		});
 
 		this.scrollForwardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				OTabbedPaneUI.this.scrollForward();
+				OFormTabbedPaneUI.this.scrollForward();
 			}
 		});
 
@@ -492,17 +492,17 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 	protected SynthContext getContext(JComponent c, Region subregion, int state) {
 		SynthStyle style = this.style;
 
-		if (subregion == Region.TABBED_PANE_TAB) {
+		if (subregion == OntimizeRegion.FORM_TABBED_PANE_TAB) {
 			if (this.tabStyle == null) {
 				this.tabStyle = new DefaultSynthStyle();
 			}
 			style = this.tabStyle;
-		} else if (subregion == Region.TABBED_PANE_TAB_AREA) {
+		} else if (subregion == OntimizeRegion.FORM_TABBED_PANE_TAB_AREA) {
 			if (this.tabAreaStyle == null) {
 				this.tabAreaStyle = new DefaultSynthStyle();
 			}
 			style = this.tabAreaStyle;
-		} else if (subregion == Region.TABBED_PANE_CONTENT) {
+		} else if (subregion == OntimizeRegion.FORM_TABBED_PANE_CONTENT) {
 			if (this.tabContentStyle == null) {
 				this.tabContentStyle = new DefaultSynthStyle();
 			}
@@ -563,7 +563,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 
 		SynthScrollableTabButton b = new SynthScrollableTabButton(direction);
 
-		b.setName("TabbedPaneTabArea.button");
+		b.setName("FormTabbedPaneTabArea.button");
 
 		return b;
 	}
@@ -649,7 +649,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		if ((this.tabPane.getTabComponentAt(tab) != null) || (this.getTextViewForTab(tab) != null)) {
 			return super.getBaseline(tab);
 		}
-		SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
+		SynthContext tabContext = this.getContext(this.tabPane, OntimizeRegion.FORM_TABBED_PANE_TAB, SynthConstants.ENABLED);
 		String title = this.tabPane.getTitleAt(tab);
 		Font font = tabContext.getStyle().getFont(tabContext);
 		FontMetrics metrics = this.getFontMetrics(font);
@@ -659,10 +659,10 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		this.iconRect.setBounds(0, 0, 0, 0);
 		this.calcRect.setBounds(0, 0, Short.MAX_VALUE, this.maxTabHeight);
 		tabContext
-				.getStyle()
-				.getGraphicsUtils(tabContext)
-				.layoutText(tabContext, metrics, title, icon, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.LEADING, SwingConstants.TRAILING, this.calcRect,
-						this.iconRect, this.textRect, this.textIconGap);
+		.getStyle()
+		.getGraphicsUtils(tabContext)
+		.layoutText(tabContext, metrics, title, icon, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.LEADING, SwingConstants.TRAILING, this.calcRect,
+				this.iconRect, this.textRect, this.textIconGap);
 
 		return this.textRect.y + metrics.getAscent() + this.getBaselineOffset();
 	}
@@ -706,7 +706,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		int selectedIndex = this.tabPane.getSelectedIndex();
 
 		this.ensureCurrentLayout();
-		SynthContext tabContentContext = this.getContext(this.tabPane, Region.TABBED_PANE_CONTENT, SynthConstants.ENABLED);
+		SynthContext tabContentContext = this.getContext(this.tabPane, OntimizeRegion.FORM_TABBED_PANE_CONTENT, SynthConstants.ENABLED);
 		// Paint content border.
 		this.paintContentBorder(tabContentContext, g, this.tabPlacement, selectedIndex);
 		this.paintTabArea(g, this.tabPlacement, selectedIndex);
@@ -718,7 +718,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 	 */
 	@Override
 	protected void paintTabArea(Graphics g, int tabPlacement, int selectedIndex) {
-		SynthContext tabAreaContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB_AREA, SynthConstants.ENABLED);
+		SynthContext tabAreaContext = this.getContext(this.tabPane, OntimizeRegion.FORM_TABBED_PANE_TAB_AREA, SynthConstants.ENABLED);
 		this.paintTabArea(tabAreaContext, g, tabPlacement, selectedIndex, this.tabAreaRect);
 	}
 
@@ -765,7 +765,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 			this.paintScrollButtonBackground(ss, g, this.arrowButton);
 		}
 
-		SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
+		SynthContext tabContext = this.getContext(this.tabPane, OntimizeRegion.FORM_TABBED_PANE_TAB, SynthConstants.ENABLED);
 		for (int i = this.leadingTabIndex; i <= this.trailingTabIndex; i++) {
 			if (this.rects[i].intersects(clipRect) && (selectedIndex != i)) {
 				this.paintTab(tabContext, g, this.rects, i, this.iconRect, this.textRect);
@@ -835,7 +835,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		if (this.tabPane.getTabCount() > 1) {
 			if ((tabIndex == 0) && (tabIndex == this.leadingTabIndex)) {
 				segmentPosition = flipSegments ? "last" : "first";
-			} else if ((tabIndex == (this.tabPane.getTabCount())) && (tabIndex == this.trailingTabIndex)) {
+			} else if ((tabIndex == (this.tabPane.getTabCount() - 1)) && (tabIndex == this.trailingTabIndex)) {
 				segmentPosition = flipSegments ? "first" : "last";
 			} else {
 				segmentPosition = "middle";
@@ -930,18 +930,9 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 
 		OntimizeLookAndFeel.updateSubregion(ss, g, tabRect);
 
-		String segmentPosition = "first";
-		if (scrollButton == this.scrollBackwardButton) {
-			segmentPosition = flipSegments ? "last" : "first";
-		} else if (scrollButton == this.scrollForwardButton) {
-			segmentPosition = this.arrowButton.isVisible() ? "middle" : flipSegments ? "first" : "last";
-		} else if (scrollButton == this.arrowButton) {
-			segmentPosition = flipSegments ? "first" : "last";
-		}
+		this.tabPane.putClientProperty("JTabbedPane.Tab.segmentPosition", ((scrollButton == this.scrollBackwardButton) ^ flipSegments) ? "first" : "last");
 
-		this.tabPane.putClientProperty("JTabbedPane.Tab.segmentPosition", segmentPosition);
-
-		SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
+		SynthContext tabContext = this.getContext(this.tabPane, OntimizeRegion.FORM_TABBED_PANE_TAB, SynthConstants.ENABLED);
 		int oldState = tabContext.getComponentState();
 		ButtonModel model = scrollButton.getModel();
 		int isPressed = model.isPressed() && model.isArmed() ? SynthConstants.PRESSED : 0;
@@ -991,9 +982,9 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		textRect.x = textRect.y = iconRect.x = iconRect.y = 0;
 
 		ss.getStyle()
-				.getGraphicsUtils(ss)
-				.layoutText(ss, metrics, title, icon, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.LEADING, SwingConstants.TRAILING, tabRect, iconRect, textRect,
-						this.textIconGap);
+		.getGraphicsUtils(ss)
+		.layoutText(ss, metrics, title, icon, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.LEADING, SwingConstants.TRAILING, tabRect, iconRect, textRect,
+				this.textIconGap);
 
 		this.tabPane.putClientProperty("html", null);
 
@@ -1133,7 +1124,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 	 */
 	@Override
 	public int calculateMaxTabHeight(int tabPlacement) {
-		SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
+		SynthContext tabContext = this.getContext(this.tabPane, OntimizeRegion.FORM_TABBED_PANE_TAB, SynthConstants.ENABLED);
 		FontMetrics metrics = this.getFontMetrics(tabContext.getStyle().getFont(tabContext));
 		int tabCount = this.tabPane.getTabCount();
 		int result = 0;
@@ -1180,7 +1171,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 				// html
 				width += (int) v.getPreferredSpan(View.X_AXIS);
 			} else {
-				SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
+				SynthContext tabContext = this.getContext(this.tabPane, OntimizeRegion.FORM_TABBED_PANE_TAB, SynthConstants.ENABLED);
 				// plain text
 				String title = this.tabPane.getTitleAt(tabIndex);
 
@@ -1199,7 +1190,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 	 */
 	@Override
 	public int calculateMaxTabWidth(int tabPlacement) {
-		SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
+		SynthContext tabContext = this.getContext(this.tabPane, OntimizeRegion.FORM_TABBED_PANE_TAB, SynthConstants.ENABLED);
 		FontMetrics metrics = this.getFontMetrics(tabContext.getStyle().getFont(tabContext));
 		int tabCount = this.tabPane.getTabCount();
 		int result = 0;
@@ -1252,7 +1243,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 	 */
 	@Override
 	protected FontMetrics getFontMetrics() {
-		SynthContext tabContext = this.getContext(this.tabPane, Region.TABBED_PANE_TAB, SynthConstants.ENABLED);
+		SynthContext tabContext = this.getContext(this.tabPane, OntimizeRegion.FORM_TABBED_PANE_TAB, SynthConstants.ENABLED);
 		return this.getFontMetrics(tabContext.getStyle().getFont(tabContext));
 	}
 
@@ -1294,7 +1285,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		} else if (selected) {
 			state |= (SynthConstants.ENABLED | SynthConstants.SELECTED);
 
-			if (isMouseOver && UIManager.getBoolean("TabbedPane.isTabRollover")) {
+			if (isMouseOver && UIManager.getBoolean("FormTabbedPane.isTabRollover")) {
 				state |= SynthConstants.MOUSE_OVER;
 			}
 		} else if (isMouseOver) {
@@ -1313,7 +1304,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 			state |= SynthConstants.PRESSED;
 		}
 
-		return this.getContext(this.tabPane, Region.TABBED_PANE_TAB, state);
+		return this.getContext(this.tabPane, OntimizeRegion.FORM_TABBED_PANE_TAB, state);
 	}
 
 	/**
@@ -1438,7 +1429,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 
 		@Override
 		protected Dimension calculateSize(boolean minimum) {
-			if (OTabbedPaneUI.this.tabPane.getTabCount() > 0) {
+			if (OFormTabbedPaneUI.this.tabPane.getTabCount() > 0) {
 				return super.calculateSize(minimum);
 			}
 			return new Dimension(0, 0);
@@ -1446,12 +1437,12 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 
 		@Override
 		protected int preferredTabAreaHeight(int tabPlacement, int width) {
-			return OTabbedPaneUI.this.calculateMaxTabHeight(tabPlacement);
+			return OFormTabbedPaneUI.this.calculateMaxTabHeight(tabPlacement);
 		}
 
 		@Override
 		protected int preferredTabAreaWidth(int tabPlacement, int height) {
-			return OTabbedPaneUI.this.calculateMaxTabWidth(tabPlacement);
+			return OFormTabbedPaneUI.this.calculateMaxTabWidth(tabPlacement);
 		}
 
 		/**
@@ -1459,36 +1450,35 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 */
 		@Override
 		public void layoutContainer(Container parent) {
-			OTabbedPaneUI.this.setRolloverTab(-1);
+			OFormTabbedPaneUI.this.setRolloverTab(-1);
 
 			this.setScrollButtonDirections();
 			this.calculateLayoutInfo();
 
-			boolean shouldChangeFocus = this.verifyFocus(OTabbedPaneUI.this.tabPane.getSelectedIndex());
+			boolean shouldChangeFocus = this.verifyFocus(OFormTabbedPaneUI.this.tabPane.getSelectedIndex());
 
-			if (OTabbedPaneUI.this.tabPane.getTabCount() <= 0) {
+			if (OFormTabbedPaneUI.this.tabPane.getTabCount() <= 0) {
 				return;
 			}
 
 			this.calcContentRect();
 
-			for (int i = 0; i < OTabbedPaneUI.this.tabPane.getComponentCount(); i++) {
-				Component child = OTabbedPaneUI.this.tabPane.getComponent(i);
+			for (int i = 0; i < OFormTabbedPaneUI.this.tabPane.getComponentCount(); i++) {
+				Component child = OFormTabbedPaneUI.this.tabPane.getComponent(i);
 
 				// Ignore the scroll buttons. They have already been positioned
-				// in
-				// calculateTabRects, which will have been called by
-				// calculateLayoutInfo,
-				// which is called above.
-				if ((child != OTabbedPaneUI.this.scrollBackwardButton) && (child != OTabbedPaneUI.this.scrollForwardButton) && (child != OTabbedPaneUI.this.arrowButton)) {
-					child.setBounds(OTabbedPaneUI.this.contentRect);
+				// in calculateTabRects, which will have been called by
+				// calculateLayoutInfo, which is called above.
+				if ((child != OFormTabbedPaneUI.this.scrollBackwardButton) && (child != OFormTabbedPaneUI.this.scrollForwardButton)
+						&& (child != OFormTabbedPaneUI.this.arrowButton)) {
+					child.setBounds(OFormTabbedPaneUI.this.contentRect);
 				}
 			}
 			this.setTabContainerBounds();
 			this.layoutTabComponents();
 
-			if (shouldChangeFocus && !SwingUtilities2.tabbedPaneChangeFocusTo(OTabbedPaneUI.this.getVisibleComponent())) {
-				OTabbedPaneUI.this.tabPane.requestFocus();
+			if (shouldChangeFocus && !SwingUtilities2.tabbedPaneChangeFocusTo(OFormTabbedPaneUI.this.getVisibleComponent())) {
+				OFormTabbedPaneUI.this.tabPane.requestFocus();
 			}
 		}
 
@@ -1498,9 +1488,9 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 * @return the container used to hold custom tab components.
 		 */
 		protected Component getTabContainer() {
-			int tabCount = OTabbedPaneUI.this.tabPane.getTabCount();
+			int tabCount = OFormTabbedPaneUI.this.tabPane.getTabCount();
 			for (int i = 0; i < tabCount; i++) {
-				Component tabComponent = OTabbedPaneUI.this.tabPane.getTabComponentAt(i);
+				Component tabComponent = OFormTabbedPaneUI.this.tabPane.getTabComponentAt(i);
 				if (tabComponent != null) {
 					return tabComponent.getParent();
 				}
@@ -1515,15 +1505,15 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		protected void setTabContainerBounds() {
 			Component tabContainer = this.getTabContainer();
 			if (tabContainer != null) {
-				int tabContainerX = OTabbedPaneUI.this.tabPlacement == SwingConstants.RIGHT ? OTabbedPaneUI.this.contentRect.width : 0;
-				int tabContainerY = OTabbedPaneUI.this.tabPlacement == SwingConstants.BOTTOM ? OTabbedPaneUI.this.contentRect.height : 0;
-				int tabContainerWidth = (OTabbedPaneUI.this.tabPlacement == SwingConstants.LEFT) || (OTabbedPaneUI.this.tabPlacement == SwingConstants.RIGHT) ? OTabbedPaneUI.this.tabPane
-						.getWidth() - OTabbedPaneUI.this.contentRect.width
-						: OTabbedPaneUI.this.contentRect.width;
-				int tabContainerHeight = (OTabbedPaneUI.this.tabPlacement == SwingConstants.TOP) || (OTabbedPaneUI.this.tabPlacement == SwingConstants.BOTTOM) ? OTabbedPaneUI.this.tabPane
-						.getHeight() - OTabbedPaneUI.this.contentRect.height
-						: OTabbedPaneUI.this.contentRect.height;
-				tabContainer.setBounds(tabContainerX, tabContainerY, tabContainerWidth, tabContainerHeight);
+				int tabContainerX = OFormTabbedPaneUI.this.tabPlacement == SwingConstants.RIGHT ? OFormTabbedPaneUI.this.contentRect.width : 0;
+				int tabContainerY = OFormTabbedPaneUI.this.tabPlacement == SwingConstants.BOTTOM ? OFormTabbedPaneUI.this.contentRect.height : 0;
+				int tabContainerWidth = (OFormTabbedPaneUI.this.tabPlacement == SwingConstants.LEFT) || (OFormTabbedPaneUI.this.tabPlacement == SwingConstants.RIGHT) ? OFormTabbedPaneUI.this.tabPane
+						.getWidth() - OFormTabbedPaneUI.this.contentRect.width
+						: OFormTabbedPaneUI.this.contentRect.width;
+						int tabContainerHeight = (OFormTabbedPaneUI.this.tabPlacement == SwingConstants.TOP) || (OFormTabbedPaneUI.this.tabPlacement == SwingConstants.BOTTOM) ? OFormTabbedPaneUI.this.tabPane
+								.getHeight() - OFormTabbedPaneUI.this.contentRect.height
+								: OFormTabbedPaneUI.this.contentRect.height;
+								tabContainer.setBounds(tabContainerX, tabContainerY, tabContainerWidth, tabContainerHeight);
 			}
 		}
 
@@ -1531,41 +1521,41 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 * Set the directions of the arrows in the scroll buttons if necessary.
 		 */
 		protected void setScrollButtonDirections() {
-			if ((OTabbedPaneUI.this.tabPlacement == SwingConstants.LEFT) || (OTabbedPaneUI.this.tabPlacement == SwingConstants.RIGHT)) {
-				if (OTabbedPaneUI.this.scrollForwardButton.getDirection() != SwingConstants.SOUTH) {
-					OTabbedPaneUI.this.scrollForwardButton.setDirection(SwingConstants.SOUTH);
+			if ((OFormTabbedPaneUI.this.tabPlacement == SwingConstants.LEFT) || (OFormTabbedPaneUI.this.tabPlacement == SwingConstants.RIGHT)) {
+				if (OFormTabbedPaneUI.this.scrollForwardButton.getDirection() != SwingConstants.SOUTH) {
+					OFormTabbedPaneUI.this.scrollForwardButton.setDirection(SwingConstants.SOUTH);
 				}
 
-				if (OTabbedPaneUI.this.scrollBackwardButton.getDirection() != SwingConstants.NORTH) {
-					OTabbedPaneUI.this.scrollBackwardButton.setDirection(SwingConstants.NORTH);
+				if (OFormTabbedPaneUI.this.scrollBackwardButton.getDirection() != SwingConstants.NORTH) {
+					OFormTabbedPaneUI.this.scrollBackwardButton.setDirection(SwingConstants.NORTH);
 				}
 
-				if (OTabbedPaneUI.this.arrowButton.getDirection() != SwingConstants.WEST) {
-					OTabbedPaneUI.this.arrowButton.setDirection(SwingConstants.WEST);
+				if (OFormTabbedPaneUI.this.arrowButton.getDirection() != SwingConstants.WEST) {
+					OFormTabbedPaneUI.this.arrowButton.setDirection(SwingConstants.WEST);
 				}
-			} else if (OTabbedPaneUI.this.tabPane.getComponentOrientation().isLeftToRight()) {
-				if (OTabbedPaneUI.this.scrollForwardButton.getDirection() != SwingConstants.EAST) {
-					OTabbedPaneUI.this.scrollForwardButton.setDirection(SwingConstants.EAST);
-				}
-
-				if (OTabbedPaneUI.this.scrollBackwardButton.getDirection() != SwingConstants.WEST) {
-					OTabbedPaneUI.this.scrollBackwardButton.setDirection(SwingConstants.WEST);
+			} else if (OFormTabbedPaneUI.this.tabPane.getComponentOrientation().isLeftToRight()) {
+				if (OFormTabbedPaneUI.this.scrollForwardButton.getDirection() != SwingConstants.EAST) {
+					OFormTabbedPaneUI.this.scrollForwardButton.setDirection(SwingConstants.EAST);
 				}
 
-				if (OTabbedPaneUI.this.arrowButton.getDirection() != SwingConstants.SOUTH) {
-					OTabbedPaneUI.this.arrowButton.setDirection(SwingConstants.SOUTH);
+				if (OFormTabbedPaneUI.this.scrollBackwardButton.getDirection() != SwingConstants.WEST) {
+					OFormTabbedPaneUI.this.scrollBackwardButton.setDirection(SwingConstants.WEST);
+				}
+
+				if (OFormTabbedPaneUI.this.arrowButton.getDirection() != SwingConstants.SOUTH) {
+					OFormTabbedPaneUI.this.arrowButton.setDirection(SwingConstants.SOUTH);
 				}
 			} else {
-				if (OTabbedPaneUI.this.scrollForwardButton.getDirection() != SwingConstants.WEST) {
-					OTabbedPaneUI.this.scrollForwardButton.setDirection(SwingConstants.WEST);
+				if (OFormTabbedPaneUI.this.scrollForwardButton.getDirection() != SwingConstants.WEST) {
+					OFormTabbedPaneUI.this.scrollForwardButton.setDirection(SwingConstants.WEST);
 				}
 
-				if (OTabbedPaneUI.this.scrollBackwardButton.getDirection() != SwingConstants.EAST) {
-					OTabbedPaneUI.this.scrollBackwardButton.setDirection(SwingConstants.EAST);
+				if (OFormTabbedPaneUI.this.scrollBackwardButton.getDirection() != SwingConstants.EAST) {
+					OFormTabbedPaneUI.this.scrollBackwardButton.setDirection(SwingConstants.EAST);
 				}
 
-				if (OTabbedPaneUI.this.arrowButton.getDirection() != SwingConstants.SOUTH) {
-					OTabbedPaneUI.this.arrowButton.setDirection(SwingConstants.SOUTH);
+				if (OFormTabbedPaneUI.this.arrowButton.getDirection() != SwingConstants.SOUTH) {
+					OFormTabbedPaneUI.this.arrowButton.setDirection(SwingConstants.SOUTH);
 				}
 			}
 		}
@@ -1581,19 +1571,19 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 *         otherwise.
 		 */
 		protected boolean verifyFocus(int selectedIndex) {
-			Component visibleComponent = OTabbedPaneUI.this.getVisibleComponent();
+			Component visibleComponent = OFormTabbedPaneUI.this.getVisibleComponent();
 			Component selectedComponent = null;
 
 			if (selectedIndex < 0) {
 				if (visibleComponent != null) {
 					// The last tab was removed, so remove the component.
-					OTabbedPaneUI.this.setVisibleComponent(null);
+					OFormTabbedPaneUI.this.setVisibleComponent(null);
 				}
 			} else {
-				selectedComponent = OTabbedPaneUI.this.tabPane.getComponentAt(selectedIndex);
+				selectedComponent = OFormTabbedPaneUI.this.tabPane.getComponentAt(selectedIndex);
 			}
 
-			if (OTabbedPaneUI.this.tabPane.getTabCount() == 0) {
+			if (OFormTabbedPaneUI.this.tabPane.getTabCount() == 0) {
 				return false;
 			}
 
@@ -1612,7 +1602,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 					}
 				}
 
-				OTabbedPaneUI.this.setVisibleComponent(selectedComponent);
+				OFormTabbedPaneUI.this.setVisibleComponent(selectedComponent);
 			}
 
 			return shouldChangeFocus;
@@ -1622,28 +1612,28 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 * Calculate the bounds Rectangle for the content panes.
 		 */
 		protected void calcContentRect() {
-			Insets contentInsets = OTabbedPaneUI.this.getContentBorderInsets(OTabbedPaneUI.this.tabPlacement);
-			Rectangle bounds = OTabbedPaneUI.this.tabPane.getBounds();
-			Insets insets = OTabbedPaneUI.this.tabPane.getInsets();
+			Insets contentInsets = OFormTabbedPaneUI.this.getContentBorderInsets(OFormTabbedPaneUI.this.tabPlacement);
+			Rectangle bounds = OFormTabbedPaneUI.this.tabPane.getBounds();
+			Insets insets = OFormTabbedPaneUI.this.tabPane.getInsets();
 
 			int cx;
 			int cy;
 			int cw;
 			int ch;
 
-			switch (OTabbedPaneUI.this.tabPlacement) {
+			switch (OFormTabbedPaneUI.this.tabPlacement) {
 
 			case LEFT:
-				cx = OTabbedPaneUI.this.tabAreaRect.x + OTabbedPaneUI.this.tabAreaRect.width + contentInsets.left;
-				cy = OTabbedPaneUI.this.tabAreaRect.y + contentInsets.top;
-				cw = bounds.width - insets.left - insets.right - OTabbedPaneUI.this.tabAreaRect.width - contentInsets.left - contentInsets.right;
+				cx = OFormTabbedPaneUI.this.tabAreaRect.x + OFormTabbedPaneUI.this.tabAreaRect.width + contentInsets.left;
+				cy = OFormTabbedPaneUI.this.tabAreaRect.y + contentInsets.top;
+				cw = bounds.width - insets.left - insets.right - OFormTabbedPaneUI.this.tabAreaRect.width - contentInsets.left - contentInsets.right;
 				ch = bounds.height - insets.top - insets.bottom - contentInsets.top - contentInsets.bottom;
 				break;
 
 			case RIGHT:
 				cx = insets.left + contentInsets.left;
 				cy = insets.top + contentInsets.top;
-				cw = bounds.width - insets.left - insets.right - OTabbedPaneUI.this.tabAreaRect.width - contentInsets.left - contentInsets.right;
+				cw = bounds.width - insets.left - insets.right - OFormTabbedPaneUI.this.tabAreaRect.width - contentInsets.left - contentInsets.right;
 				ch = bounds.height - insets.top - insets.bottom - contentInsets.top - contentInsets.bottom;
 				break;
 
@@ -1651,18 +1641,18 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 				cx = insets.left + contentInsets.left;
 				cy = insets.top + contentInsets.top;
 				cw = bounds.width - insets.left - insets.right - contentInsets.left - contentInsets.right;
-				ch = bounds.height - insets.top - insets.bottom - OTabbedPaneUI.this.tabAreaRect.height - contentInsets.top - contentInsets.bottom;
+				ch = bounds.height - insets.top - insets.bottom - OFormTabbedPaneUI.this.tabAreaRect.height - contentInsets.top - contentInsets.bottom;
 				break;
 
 			case TOP:
 			default:
-				cx = OTabbedPaneUI.this.tabAreaRect.x + contentInsets.left;
-				cy = OTabbedPaneUI.this.tabAreaRect.y + OTabbedPaneUI.this.tabAreaRect.height + contentInsets.top;
+				cx = OFormTabbedPaneUI.this.tabAreaRect.x + contentInsets.left;
+				cy = OFormTabbedPaneUI.this.tabAreaRect.y + OFormTabbedPaneUI.this.tabAreaRect.height + contentInsets.top;
 				cw = bounds.width - insets.left - insets.right - contentInsets.left - contentInsets.right;
-				ch = bounds.height - insets.top - insets.bottom - OTabbedPaneUI.this.tabAreaRect.height - contentInsets.top - contentInsets.bottom;
+				ch = bounds.height - insets.top - insets.bottom - OFormTabbedPaneUI.this.tabAreaRect.height - contentInsets.top - contentInsets.bottom;
 			}
 
-			OTabbedPaneUI.this.contentRect.setBounds(cx, cy, cw, ch);
+			OFormTabbedPaneUI.this.contentRect.setBounds(cx, cy, cw, ch);
 		}
 
 		/**
@@ -1670,17 +1660,17 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 */
 		protected void layoutTabComponents() {
 			Rectangle rect = new Rectangle();
-			for (int i = 0; i < OTabbedPaneUI.this.tabPane.getTabCount(); i++) {
-				Component c = OTabbedPaneUI.this.tabPane.getTabComponentAt(i);
+			for (int i = 0; i < OFormTabbedPaneUI.this.tabPane.getTabCount(); i++) {
+				Component c = OFormTabbedPaneUI.this.tabPane.getTabComponentAt(i);
 
 				if (c == null) {
 					continue;
 				}
 
-				OTabbedPaneUI.this.getTabBounds(i, rect);
+				OFormTabbedPaneUI.this.getTabBounds(i, rect);
 
 				Dimension preferredSize = c.getPreferredSize();
-				Insets insets = OTabbedPaneUI.this.getTabInsets(OTabbedPaneUI.this.tabPlacement, i);
+				Insets insets = OFormTabbedPaneUI.this.getTabInsets(OFormTabbedPaneUI.this.tabPlacement, i);
 				int outerX = rect.x + insets.left;
 				int outerY = rect.y + insets.top;
 				int outerWidth = rect.width - insets.left - insets.right;
@@ -1689,9 +1679,9 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 				// centralize component
 				int x = outerX + ((outerWidth - preferredSize.width) / 2);
 				int y = outerY + ((outerHeight - preferredSize.height) / 2);
-				boolean isSelected = i == OTabbedPaneUI.this.tabPane.getSelectedIndex();
-				c.setBounds(x + OTabbedPaneUI.this.getTabLabelShiftX(OTabbedPaneUI.this.tabPlacement, i, isSelected),
-						y + OTabbedPaneUI.this.getTabLabelShiftY(OTabbedPaneUI.this.tabPlacement, i, isSelected), preferredSize.width, preferredSize.height);
+				boolean isSelected = i == OFormTabbedPaneUI.this.tabPane.getSelectedIndex();
+				c.setBounds(x + OFormTabbedPaneUI.this.getTabLabelShiftX(OFormTabbedPaneUI.this.tabPlacement, i, isSelected),
+						y + OFormTabbedPaneUI.this.getTabLabelShiftY(OFormTabbedPaneUI.this.tabPlacement, i, isSelected), preferredSize.width, preferredSize.height);
 			}
 		}
 
@@ -1701,71 +1691,71 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 */
 		@Override
 		protected void calculateTabRects(int tabPlacement, int tabCount) {
-			if (OTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) {
-				OTabbedPaneUI.this.maxTabHeight = OTabbedPaneUI.this.calculateMaxTabHeight(tabPlacement);
+			if (OFormTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) {
+				OFormTabbedPaneUI.this.maxTabHeight = OFormTabbedPaneUI.this.calculateMaxTabHeight(tabPlacement);
 			} else {
-				OTabbedPaneUI.this.maxTabWidth = OTabbedPaneUI.this.calculateMaxTabWidth(tabPlacement);
+				OFormTabbedPaneUI.this.maxTabWidth = OFormTabbedPaneUI.this.calculateMaxTabWidth(tabPlacement);
 			}
 
 			// Calculate the tab area itself.
 			this.calcTabAreaRect();
 
 			if (tabCount == 0) {
-				OTabbedPaneUI.this.scrollBackwardButton.setVisible(false);
-				OTabbedPaneUI.this.scrollForwardButton.setVisible(false);
-				OTabbedPaneUI.this.arrowButton.setVisible(false);
-				OTabbedPaneUI.this.runCount = 0;
-				OTabbedPaneUI.this.selectedRun = -1;
+				OFormTabbedPaneUI.this.scrollBackwardButton.setVisible(false);
+				OFormTabbedPaneUI.this.scrollForwardButton.setVisible(false);
+				OFormTabbedPaneUI.this.arrowButton.setVisible(false);
+				OFormTabbedPaneUI.this.runCount = 0;
+				OFormTabbedPaneUI.this.selectedRun = -1;
 				return;
 			}
 
-			OTabbedPaneUI.this.selectedRun = 0;
-			OTabbedPaneUI.this.runCount = 1;
+			OFormTabbedPaneUI.this.selectedRun = 0;
+			OFormTabbedPaneUI.this.runCount = 1;
 
-			int selectedIndex = OTabbedPaneUI.this.tabPane.getSelectedIndex();
+			int selectedIndex = OFormTabbedPaneUI.this.tabPane.getSelectedIndex();
 
-			if (OTabbedPaneUI.this.leadingTabIndex > selectedIndex) {
-				OTabbedPaneUI.this.leadingTabIndex = selectedIndex;
+			if (OFormTabbedPaneUI.this.leadingTabIndex > selectedIndex) {
+				OFormTabbedPaneUI.this.leadingTabIndex = selectedIndex;
 			}
 
-			Insets tabAreaInsets = OTabbedPaneUI.this.getTabAreaInsets(tabPlacement);
-			Dimension size = new Dimension(OTabbedPaneUI.this.tabAreaRect.width - tabAreaInsets.left - tabAreaInsets.right, OTabbedPaneUI.this.tabAreaRect.height
+			Insets tabAreaInsets = OFormTabbedPaneUI.this.getTabAreaInsets(tabPlacement);
+			Dimension size = new Dimension(OFormTabbedPaneUI.this.tabAreaRect.width - tabAreaInsets.left - tabAreaInsets.right, OFormTabbedPaneUI.this.tabAreaRect.height
 					- tabAreaInsets.top - tabAreaInsets.bottom);
-			int tabAreaLength = OTabbedPaneUI.this.orientation.getLength(size);
-			int buttonLength = OTabbedPaneUI.this.orientation.getLength(OTabbedPaneUI.this.scrollForwardButton.getPreferredSize());
+			int tabAreaLength = OFormTabbedPaneUI.this.orientation.getLength(size);
+			int buttonLength = OFormTabbedPaneUI.this.orientation.getLength(OFormTabbedPaneUI.this.scrollForwardButton.getPreferredSize());
 
 			this.determineVisibleTabIndices(tabCount, selectedIndex, tabAreaLength, buttonLength);
 			this.resetTabPositionsToLeadingTabIndex(tabCount);
-			int totalLength = OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex].x
-					+ OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex].width, OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex].y
-					+ OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex].height);
+			int totalLength = OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.trailingTabIndex].x
+					+ OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.trailingTabIndex].width, OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.trailingTabIndex].y
+					+ OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.trailingTabIndex].height);
 
-			if ((OTabbedPaneUI.this.leadingTabIndex > 0) || (OTabbedPaneUI.this.trailingTabIndex < (tabCount - 1))) {
+			if ((OFormTabbedPaneUI.this.leadingTabIndex > 0) || (OFormTabbedPaneUI.this.trailingTabIndex < (tabCount - 1))) {
 				this.resizeTabs(tabCount, totalLength, buttonLength, tabAreaLength);
 			} else {
 				this.centerTabs(tabCount, totalLength, tabAreaLength);
 			}
 
 			// Set the positions and visibility of the scroll buttons.
-			this.setScrollButtonPositions(OTabbedPaneUI.this.scrollBackwardButton, (OTabbedPaneUI.this.leadingTabIndex > 0),
-					OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.leadingTabIndex]) - buttonLength);
+			this.setScrollButtonPositions(OFormTabbedPaneUI.this.scrollBackwardButton, (OFormTabbedPaneUI.this.leadingTabIndex > 0),
+					OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.leadingTabIndex]) - buttonLength);
 			this.setScrollButtonPositions(
-					OTabbedPaneUI.this.scrollForwardButton,
-					(OTabbedPaneUI.this.trailingTabIndex < (tabCount - 1)),
-					OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex])
-					+ OTabbedPaneUI.this.orientation.getLength(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex]));
+					OFormTabbedPaneUI.this.scrollForwardButton,
+					(OFormTabbedPaneUI.this.trailingTabIndex < (tabCount - 1)),
+					OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.trailingTabIndex])
+					+ OFormTabbedPaneUI.this.orientation.getLength(OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.trailingTabIndex]));
 			this.setScrollButtonPositions(
-					OTabbedPaneUI.this.arrowButton,
-					(OTabbedPaneUI.this.leadingTabIndex > 0) || (OTabbedPaneUI.this.trailingTabIndex < (tabCount - 1)),
-					OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex])
-					+ OTabbedPaneUI.this.orientation.getLength(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex])
-					+ (OTabbedPaneUI.this.scrollForwardButton.isVisible() ? OTabbedPaneUI.this.scrollForwardButton.getWidth() : 0));
+					OFormTabbedPaneUI.this.arrowButton,
+					(OFormTabbedPaneUI.this.leadingTabIndex > 0) || (OFormTabbedPaneUI.this.trailingTabIndex < (tabCount - 1)),
+					OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.trailingTabIndex])
+					+ OFormTabbedPaneUI.this.orientation.getLength(OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.trailingTabIndex])
+					+ (OFormTabbedPaneUI.this.scrollForwardButton.isVisible() ? OFormTabbedPaneUI.this.scrollForwardButton.getWidth() : 0));
 
 			// If component orientation right to left and tab placement is on
 			// the top or the bottom,
 			// flip x positions and adjust by widths.
-			if (!OTabbedPaneUI.this.tabPane.getComponentOrientation().isLeftToRight() && (OTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL)) {
-				this.flipRightToLeft(tabCount, OTabbedPaneUI.this.tabPane.getSize());
+			if (!OFormTabbedPaneUI.this.tabPane.getComponentOrientation().isLeftToRight() && (OFormTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL)) {
+				this.flipRightToLeft(tabCount, OFormTabbedPaneUI.this.tabPane.getSize());
 			}
 		}
 
@@ -1780,12 +1770,12 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 * </p>
 		 */
 		protected void calcTabAreaRect() {
-			Insets insets = OTabbedPaneUI.this.tabPane.getInsets();
-			Insets tabAreaInsets = OTabbedPaneUI.this.getTabAreaInsets(OTabbedPaneUI.this.tabPlacement);
-			Rectangle bounds = OTabbedPaneUI.this.tabPane.getBounds();
+			Insets insets = OFormTabbedPaneUI.this.tabPane.getInsets();
+			Insets tabAreaInsets = OFormTabbedPaneUI.this.getTabAreaInsets(OFormTabbedPaneUI.this.tabPlacement);
+			Rectangle bounds = OFormTabbedPaneUI.this.tabPane.getBounds();
 
-			if (OTabbedPaneUI.this.tabPane.getTabCount() == 0) {
-				OTabbedPaneUI.this.tabAreaRect.setBounds(0, 0, 0, 0);
+			if (OFormTabbedPaneUI.this.tabPane.getTabCount() == 0) {
+				OFormTabbedPaneUI.this.tabAreaRect.setBounds(0, 0, 0, 0);
 				return;
 			}
 
@@ -1795,19 +1785,19 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 			int length;
 			int thickness;
 
-			if (OTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) {
+			if (OFormTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) {
 				length = bounds.width - insets.left - insets.right;
 				position = insets.left;
-				thickness = OTabbedPaneUI.this.maxTabHeight + tabAreaInsets.top + tabAreaInsets.bottom;
-				offset = (OTabbedPaneUI.this.tabPlacement == SwingConstants.BOTTOM) ? bounds.height - insets.bottom - thickness : insets.top;
+				thickness = OFormTabbedPaneUI.this.maxTabHeight + tabAreaInsets.top + tabAreaInsets.bottom;
+				offset = (OFormTabbedPaneUI.this.tabPlacement == SwingConstants.BOTTOM) ? bounds.height - insets.bottom - thickness : insets.top;
 			} else {
 				length = bounds.height - insets.top - insets.bottom;
 				position = insets.top;
-				thickness = OTabbedPaneUI.this.maxTabWidth + tabAreaInsets.left + tabAreaInsets.right;
-				offset = (OTabbedPaneUI.this.tabPlacement == SwingConstants.RIGHT) ? bounds.width - insets.right - thickness : insets.left;
+				thickness = OFormTabbedPaneUI.this.maxTabWidth + tabAreaInsets.left + tabAreaInsets.right;
+				offset = (OFormTabbedPaneUI.this.tabPlacement == SwingConstants.RIGHT) ? bounds.width - insets.right - thickness : insets.left;
 			}
 
-			OTabbedPaneUI.this.tabAreaRect.setBounds(OTabbedPaneUI.this.orientation.createBounds(position, offset, length, thickness));
+			OFormTabbedPaneUI.this.tabAreaRect.setBounds(OFormTabbedPaneUI.this.orientation.createBounds(position, offset, length, thickness));
 		}
 
 		/**
@@ -1827,60 +1817,60 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 */
 		protected void determineVisibleTabIndices(int tabCount, int selectedIndex, int tabAreaLength, int buttonLength) {
 			int desiredMaximumLength = this.calcDesiredMaximumLength(tabCount);
-			int leadingTabOffset = OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.leadingTabIndex]);
-			int selectedTabEndOffset = OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[selectedIndex].x + OTabbedPaneUI.this.rects[selectedIndex].width,
-					OTabbedPaneUI.this.rects[selectedIndex].y + OTabbedPaneUI.this.rects[selectedIndex].height);
+			int leadingTabOffset = OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.leadingTabIndex]);
+			int selectedTabEndOffset = OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[selectedIndex].x
+					+ OFormTabbedPaneUI.this.rects[selectedIndex].width, OFormTabbedPaneUI.this.rects[selectedIndex].y + OFormTabbedPaneUI.this.rects[selectedIndex].height);
 
 			if (desiredMaximumLength <= tabAreaLength) {
 				// Fits with no scroll buttons.
-				OTabbedPaneUI.this.leadingTabIndex = 0;
-				OTabbedPaneUI.this.trailingTabIndex = tabCount - 1;
+				OFormTabbedPaneUI.this.leadingTabIndex = 0;
+				OFormTabbedPaneUI.this.trailingTabIndex = tabCount - 1;
 			} else if (((desiredMaximumLength - leadingTabOffset) + buttonLength) <= tabAreaLength) {
 				// Fits from current leading tab index, with scroll backward
 				// button. Leave leadingTabIndex alone.
-				OTabbedPaneUI.this.trailingTabIndex = tabCount - 1;
-			} else if (((OTabbedPaneUI.this.leadingTabIndex == 0) && (((selectedTabEndOffset - leadingTabOffset) + buttonLength) <= tabAreaLength))
+				OFormTabbedPaneUI.this.trailingTabIndex = tabCount - 1;
+			} else if (((OFormTabbedPaneUI.this.leadingTabIndex == 0) && (((selectedTabEndOffset - leadingTabOffset) + buttonLength) <= tabAreaLength))
 					|| (((selectedTabEndOffset - leadingTabOffset) + (2 * buttonLength)) <= tabAreaLength)) {
 				// Selected index fits with current leading tab index and one or
 				// two scroll buttons. Leave leadingTabIndex alone.
-				OTabbedPaneUI.this.trailingTabIndex = -1;
+				OFormTabbedPaneUI.this.trailingTabIndex = -1;
 
 				for (int i = tabCount - 1; i > selectedIndex; i--) {
-					int end = OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[i].x + OTabbedPaneUI.this.rects[i].width, OTabbedPaneUI.this.rects[i].y
-							+ OTabbedPaneUI.this.rects[i].height);
+					int end = OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[i].x + OFormTabbedPaneUI.this.rects[i].width,
+							OFormTabbedPaneUI.this.rects[i].y + OFormTabbedPaneUI.this.rects[i].height);
 
 					if (((end - leadingTabOffset) + (3 * buttonLength)) <= tabAreaLength) {
-						OTabbedPaneUI.this.trailingTabIndex = i;
+						OFormTabbedPaneUI.this.trailingTabIndex = i;
 						break;
 					}
 				}
 
-				if (OTabbedPaneUI.this.trailingTabIndex == -1) {
-					OTabbedPaneUI.this.trailingTabIndex = selectedIndex;
+				if (OFormTabbedPaneUI.this.trailingTabIndex == -1) {
+					OFormTabbedPaneUI.this.trailingTabIndex = selectedIndex;
 				}
 			} else {
 				// Selected index does not fit with current leading index and
 				// two scroll buttons.
 				// Make selected index the trailing index and find the leading
 				// index that will fit.
-				OTabbedPaneUI.this.trailingTabIndex = selectedIndex;
-				OTabbedPaneUI.this.leadingTabIndex = -1;
+				OFormTabbedPaneUI.this.trailingTabIndex = selectedIndex;
+				OFormTabbedPaneUI.this.leadingTabIndex = -1;
 
 				for (int i = 0; i < selectedIndex; i++) {
-					int start = OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[i]);
+					int start = OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[i]);
 
 					if (((selectedTabEndOffset - start) + (2 * buttonLength)) <= tabAreaLength) {
-						OTabbedPaneUI.this.leadingTabIndex = i;
+						OFormTabbedPaneUI.this.leadingTabIndex = i;
 						break;
 					}
 				}
 
-				if (OTabbedPaneUI.this.leadingTabIndex == -1) {
-					OTabbedPaneUI.this.leadingTabIndex = selectedIndex;
+				if (OFormTabbedPaneUI.this.leadingTabIndex == -1) {
+					OFormTabbedPaneUI.this.leadingTabIndex = selectedIndex;
 				}
 			}
 
-			OTabbedPaneUI.this.tabRuns[0] = OTabbedPaneUI.this.leadingTabIndex;
+			OFormTabbedPaneUI.this.tabRuns[0] = OFormTabbedPaneUI.this.leadingTabIndex;
 		}
 
 		/**
@@ -1895,21 +1885,21 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 *         maximum height.
 		 */
 		protected int calcDesiredMaximumLength(int tabCount) {
-			FontMetrics metrics = OTabbedPaneUI.this.getFontMetrics();
+			FontMetrics metrics = OFormTabbedPaneUI.this.getFontMetrics();
 			int fontHeight = metrics.getHeight();
-			Insets tabAreaInsets = OTabbedPaneUI.this.getTabAreaInsets(fontHeight);
-			Point corner = new Point(OTabbedPaneUI.this.tabAreaRect.x + tabAreaInsets.left, OTabbedPaneUI.this.tabAreaRect.y + tabAreaInsets.top);
-			int offset = OTabbedPaneUI.this.orientation.getOrthogonalOffset(corner);
-			int thickness = (OTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) ? OTabbedPaneUI.this.maxTabWidth : OTabbedPaneUI.this.maxTabHeight;
+			Insets tabAreaInsets = OFormTabbedPaneUI.this.getTabAreaInsets(fontHeight);
+			Point corner = new Point(OFormTabbedPaneUI.this.tabAreaRect.x + tabAreaInsets.left, OFormTabbedPaneUI.this.tabAreaRect.y + tabAreaInsets.top);
+			int offset = OFormTabbedPaneUI.this.orientation.getOrthogonalOffset(corner);
+			int thickness = (OFormTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) ? OFormTabbedPaneUI.this.maxTabWidth : OFormTabbedPaneUI.this.maxTabHeight;
 			int position = 0;
 			int maxTabLength = 0;
 
 			// Run through tabs and lay them out in a single long run.
 			for (int i = 0; i < tabCount; i++) {
-				int length = (OTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) ? OTabbedPaneUI.this.calculateTabWidth(SwingConstants.TOP, i, metrics)
-						: OTabbedPaneUI.this.calculateTabHeight(SwingConstants.LEFT, i, fontHeight);
+				int length = (OFormTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) ? OFormTabbedPaneUI.this.calculateTabWidth(SwingConstants.TOP, i, metrics)
+						: OFormTabbedPaneUI.this.calculateTabHeight(SwingConstants.LEFT, i, fontHeight);
 
-				OTabbedPaneUI.this.rects[i].setBounds(OTabbedPaneUI.this.orientation.createBounds(position, offset, length, thickness));
+				OFormTabbedPaneUI.this.rects[i].setBounds(OFormTabbedPaneUI.this.orientation.createBounds(position, offset, length, thickness));
 
 				// Update the maximum length and the next tab position.
 				maxTabLength = Math.max(maxTabLength, length);
@@ -1917,10 +1907,10 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 			}
 
 			// Update the BasicTabbedPaneUI length variable.
-			if (OTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) {
-				OTabbedPaneUI.this.maxTabWidth = maxTabLength;
+			if (OFormTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) {
+				OFormTabbedPaneUI.this.maxTabWidth = maxTabLength;
 			} else {
-				OTabbedPaneUI.this.maxTabHeight = maxTabLength;
+				OFormTabbedPaneUI.this.maxTabHeight = maxTabLength;
 			}
 
 			return position;
@@ -1936,14 +1926,14 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 */
 		protected void resetTabPositionsToLeadingTabIndex(int tabCount) {
 			// Rebalance the layout such that the leading tab is at position 0.
-			int leadingTabPosition = OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.leadingTabIndex]);
+			int leadingTabPosition = OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.leadingTabIndex]);
 
 			for (int i = 0; i < tabCount; i++) {
-				if ((i < OTabbedPaneUI.this.leadingTabIndex) || (i > OTabbedPaneUI.this.trailingTabIndex)) {
-					OTabbedPaneUI.this.rects[i].setBounds(-1000, -1000, 0, 0);
+				if ((i < OFormTabbedPaneUI.this.leadingTabIndex) || (i > OFormTabbedPaneUI.this.trailingTabIndex)) {
+					OFormTabbedPaneUI.this.rects[i].setBounds(-1000, -1000, 0, 0);
 				} else {
-					OTabbedPaneUI.this.orientation.updateBoundsPosition(OTabbedPaneUI.this.rects[i], OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[i])
-							- leadingTabPosition);
+					OFormTabbedPaneUI.this.orientation.updateBoundsPosition(OFormTabbedPaneUI.this.rects[i],
+							OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[i]) - leadingTabPosition);
 				}
 			}
 		}
@@ -1959,18 +1949,19 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 *            the total length available.
 		 */
 		protected void centerTabs(int tabCount, int totalLength, int tabAreaLength) {
-			Insets tabAreaInsets = OTabbedPaneUI.this.getTabAreaInsets(OTabbedPaneUI.this.tabPlacement);
-			Point corner = new Point(OTabbedPaneUI.this.tabAreaRect.x + tabAreaInsets.left, OTabbedPaneUI.this.tabAreaRect.y + tabAreaInsets.top);
-			int startPosition = OTabbedPaneUI.this.orientation.getPosition(corner);
-			int offset = OTabbedPaneUI.this.orientation.getOrthogonalOffset(corner);
-			int thickness = (OTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) ? OTabbedPaneUI.this.maxTabHeight : OTabbedPaneUI.this.maxTabWidth;
-			int delta = (-(tabAreaLength - totalLength) / 2) - startPosition;
+			Insets tabAreaInsets = OFormTabbedPaneUI.this.getTabAreaInsets(OFormTabbedPaneUI.this.tabPlacement);
+			Point corner = new Point(OFormTabbedPaneUI.this.tabAreaRect.x + tabAreaInsets.left, OFormTabbedPaneUI.this.tabAreaRect.y + tabAreaInsets.top);
+			int startPosition = OFormTabbedPaneUI.this.orientation.getPosition(corner);
+			int offset = OFormTabbedPaneUI.this.orientation.getOrthogonalOffset(corner);
+			int thickness = (OFormTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) ? OFormTabbedPaneUI.this.maxTabHeight : OFormTabbedPaneUI.this.maxTabWidth;
+			// int delta = (-(tabAreaLength - totalLength) / 2) - startPosition;
+			int delta = 0;
 
-			for (int i = OTabbedPaneUI.this.leadingTabIndex; i <= OTabbedPaneUI.this.trailingTabIndex; i++) {
-				int position = OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[i]) - delta;
-				int length = OTabbedPaneUI.this.orientation.getLength(OTabbedPaneUI.this.rects[i]);
+			for (int i = OFormTabbedPaneUI.this.leadingTabIndex; i <= OFormTabbedPaneUI.this.trailingTabIndex; i++) {
+				int position = OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[i]) - delta;
+				int length = OFormTabbedPaneUI.this.orientation.getLength(OFormTabbedPaneUI.this.rects[i]);
 
-				OTabbedPaneUI.this.rects[i].setBounds(OTabbedPaneUI.this.orientation.createBounds(position, offset, length, thickness));
+				OFormTabbedPaneUI.this.rects[i].setBounds(OFormTabbedPaneUI.this.orientation.createBounds(position, offset, length, thickness));
 			}
 		}
 
@@ -1989,33 +1980,34 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 */
 		protected void resizeTabs(int tabCount, int totalLength, int buttonLength, int tabAreaLength) {
 			// Subtract off the button length from the available length.
-			if (OTabbedPaneUI.this.leadingTabIndex > 0) {
+			if (OFormTabbedPaneUI.this.leadingTabIndex > 0) {
 				tabAreaLength -= buttonLength;
 			}
 
-			if (OTabbedPaneUI.this.trailingTabIndex < (tabCount - 1)) {
+			if (OFormTabbedPaneUI.this.trailingTabIndex < (tabCount - 1)) {
 				tabAreaLength -= buttonLength;
 			}
 
-			if ((OTabbedPaneUI.this.leadingTabIndex > 0) || (OTabbedPaneUI.this.trailingTabIndex < (tabCount - 1))) {
+			if ((OFormTabbedPaneUI.this.leadingTabIndex > 0) || (OFormTabbedPaneUI.this.trailingTabIndex < (tabCount - 1))) {
 				tabAreaLength -= buttonLength;
 			}
 
-			Insets tabAreaInsets = OTabbedPaneUI.this.getTabAreaInsets(OTabbedPaneUI.this.tabPlacement);
-			Point corner = new Point(OTabbedPaneUI.this.tabAreaRect.x + tabAreaInsets.left, OTabbedPaneUI.this.tabAreaRect.y + tabAreaInsets.top);
-			int startPosition = OTabbedPaneUI.this.orientation.getPosition(corner);
-			int offset = OTabbedPaneUI.this.orientation.getOrthogonalOffset(corner);
-			int thickness = (OTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) ? OTabbedPaneUI.this.maxTabHeight : OTabbedPaneUI.this.maxTabWidth;
+			Insets tabAreaInsets = OFormTabbedPaneUI.this.getTabAreaInsets(OFormTabbedPaneUI.this.tabPlacement);
+			Point corner = new Point(OFormTabbedPaneUI.this.tabAreaRect.x + tabAreaInsets.left, OFormTabbedPaneUI.this.tabAreaRect.y + tabAreaInsets.top);
+			int startPosition = OFormTabbedPaneUI.this.orientation.getPosition(corner);
+			int offset = OFormTabbedPaneUI.this.orientation.getOrthogonalOffset(corner);
+			int thickness = (OFormTabbedPaneUI.this.orientation == ControlOrientation.HORIZONTAL) ? OFormTabbedPaneUI.this.maxTabHeight : OFormTabbedPaneUI.this.maxTabWidth;
 
 			// Fill the tabs to the available width.
 			float multiplier = ((float) tabAreaLength / totalLength);
 
-			for (int i = OTabbedPaneUI.this.leadingTabIndex; i <= OTabbedPaneUI.this.trailingTabIndex; i++) {
-				int position = (i == OTabbedPaneUI.this.leadingTabIndex) ? startPosition + (OTabbedPaneUI.this.leadingTabIndex > 0 ? buttonLength : 0)
-						: OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[i - 1]) + OTabbedPaneUI.this.orientation.getLength(OTabbedPaneUI.this.rects[i - 1]);
-				int length = (int) (OTabbedPaneUI.this.orientation.getLength(OTabbedPaneUI.this.rects[i]) * multiplier);
+			for (int i = OFormTabbedPaneUI.this.leadingTabIndex; i <= OFormTabbedPaneUI.this.trailingTabIndex; i++) {
+				int position = (i == OFormTabbedPaneUI.this.leadingTabIndex) ? startPosition + (OFormTabbedPaneUI.this.leadingTabIndex > 0 ? buttonLength : 0)
+						: OFormTabbedPaneUI.this.orientation.getPosition(OFormTabbedPaneUI.this.rects[i - 1])
+								+ OFormTabbedPaneUI.this.orientation.getLength(OFormTabbedPaneUI.this.rects[i - 1]);
+				int length = (int) (OFormTabbedPaneUI.this.orientation.getLength(OFormTabbedPaneUI.this.rects[i]) * multiplier);
 
-				OTabbedPaneUI.this.rects[i].setBounds(OTabbedPaneUI.this.orientation.createBounds(position, offset, length, thickness));
+				OFormTabbedPaneUI.this.rects[i].setBounds(OFormTabbedPaneUI.this.orientation.createBounds(position, offset, length, thickness));
 			}
 		}
 
@@ -2031,13 +2023,13 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 */
 		protected void setScrollButtonPositions(Component child, boolean visible, int position) {
 			if (visible) {
-				child.setBounds(OTabbedPaneUI.this.orientation.createBounds(position,
-						OTabbedPaneUI.this.orientation.getOrthogonalOffset(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.leadingTabIndex]),
-						OTabbedPaneUI.this.orientation.getLength(child.getPreferredSize()),
-						OTabbedPaneUI.this.orientation.getThickness(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.leadingTabIndex])));
+				child.setBounds(OFormTabbedPaneUI.this.orientation.createBounds(position,
+						OFormTabbedPaneUI.this.orientation.getOrthogonalOffset(OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.leadingTabIndex]),
+						OFormTabbedPaneUI.this.orientation.getLength(child.getPreferredSize()),
+						OFormTabbedPaneUI.this.orientation.getThickness(OFormTabbedPaneUI.this.rects[OFormTabbedPaneUI.this.leadingTabIndex])));
 			}
 
-			child.setEnabled(OTabbedPaneUI.this.tabPane.isEnabled());
+			child.setEnabled(OFormTabbedPaneUI.this.tabPane.isEnabled());
 			child.setVisible(visible);
 		}
 
@@ -2053,19 +2045,19 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 			int rightMargin = size.width;
 
 			for (int i = 0; i < tabCount; i++) {
-				OTabbedPaneUI.this.rects[i].x = rightMargin - OTabbedPaneUI.this.rects[i].x - OTabbedPaneUI.this.rects[i].width;
+				OFormTabbedPaneUI.this.rects[i].x = rightMargin - OFormTabbedPaneUI.this.rects[i].x - OFormTabbedPaneUI.this.rects[i].width;
 			}
 
-			if (OTabbedPaneUI.this.scrollBackwardButton.isVisible()) {
-				Rectangle b = OTabbedPaneUI.this.scrollBackwardButton.getBounds();
+			if (OFormTabbedPaneUI.this.scrollBackwardButton.isVisible()) {
+				Rectangle b = OFormTabbedPaneUI.this.scrollBackwardButton.getBounds();
 
-				OTabbedPaneUI.this.scrollBackwardButton.setLocation(rightMargin - b.x - b.width, b.y);
+				OFormTabbedPaneUI.this.scrollBackwardButton.setLocation(rightMargin - b.x - b.width, b.y);
 			}
 
-			if (OTabbedPaneUI.this.scrollForwardButton.isVisible()) {
-				Rectangle b = OTabbedPaneUI.this.scrollForwardButton.getBounds();
+			if (OFormTabbedPaneUI.this.scrollForwardButton.isVisible()) {
+				Rectangle b = OFormTabbedPaneUI.this.scrollForwardButton.getBounds();
 
-				OTabbedPaneUI.this.scrollForwardButton.setLocation(rightMargin - b.x - b.width, b.y);
+				OFormTabbedPaneUI.this.scrollForwardButton.setLocation(rightMargin - b.x - b.width, b.y);
 			}
 		}
 
@@ -2116,8 +2108,8 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 			this.delegate = originalMouseListener;
 			this.delegate2 = (MouseMotionListener) originalMouseListener;
 
-			OTabbedPaneUI.this.closeButtonHoverIndex = -1;
-			OTabbedPaneUI.this.closeButtonArmedIndex = -1;
+			OFormTabbedPaneUI.this.closeButtonHoverIndex = -1;
+			OFormTabbedPaneUI.this.closeButtonArmedIndex = -1;
 		}
 
 		/**
@@ -2149,16 +2141,16 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 */
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			int oldHoverIndex = OTabbedPaneUI.this.closeButtonHoverIndex;
+			int oldHoverIndex = OFormTabbedPaneUI.this.closeButtonHoverIndex;
 
 			// Test for mouse position and set hover index.
 			this.currentMouseX = e.getX();
 			this.currentMouseY = e.getY();
 
-			OTabbedPaneUI.this.isOverCloseButton(this.currentMouseX, this.currentMouseY);
+			OFormTabbedPaneUI.this.isOverCloseButton(this.currentMouseX, this.currentMouseY);
 
-			if (oldHoverIndex != OTabbedPaneUI.this.closeButtonHoverIndex) {
-				OTabbedPaneUI.this.tabPane.repaint();
+			if (oldHoverIndex != OFormTabbedPaneUI.this.closeButtonHoverIndex) {
+				OFormTabbedPaneUI.this.tabPane.repaint();
 				return;
 			}
 
@@ -2173,9 +2165,9 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 			this.currentMouseX = e.getX();
 			this.currentMouseY = e.getY();
 
-			if ((OTabbedPaneUI.this.closeButtonArmedIndex != -1) && !OTabbedPaneUI.this.isOverCloseButton(this.currentMouseX, this.currentMouseY)) {
+			if ((OFormTabbedPaneUI.this.closeButtonArmedIndex != -1) && !OFormTabbedPaneUI.this.isOverCloseButton(this.currentMouseX, this.currentMouseY)) {
 				// isOverCloseButton resets closeButtonArmedIndex.
-				OTabbedPaneUI.this.tabPane.repaint();
+				OFormTabbedPaneUI.this.tabPane.repaint();
 			}
 		}
 
@@ -2184,36 +2176,36 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 */
 		@Override
 		public void mousePressed(MouseEvent e) {
-			if (!OTabbedPaneUI.this.tabPane.isEnabled()) {
+			if (!OFormTabbedPaneUI.this.tabPane.isEnabled()) {
 				return;
 			}
 
-			if (!SwingUtilities.isLeftMouseButton(e) || !OTabbedPaneUI.this.tabPane.isEnabled()) {
+			if (!SwingUtilities.isLeftMouseButton(e) || !OFormTabbedPaneUI.this.tabPane.isEnabled()) {
 				return;
 			}
 
-			int tabIndex = OTabbedPaneUI.this.tabForCoordinate(OTabbedPaneUI.this.tabPane, e.getX(), e.getY());
+			int tabIndex = OFormTabbedPaneUI.this.tabForCoordinate(OFormTabbedPaneUI.this.tabPane, e.getX(), e.getY());
 
 			this.currentMouseX = e.getX();
 			this.currentMouseY = e.getY();
 
-			if (OTabbedPaneUI.this.isOverCloseButton(this.currentMouseX, this.currentMouseY)) {
-				OTabbedPaneUI.this.closeButtonArmedIndex = tabIndex;
-				OTabbedPaneUI.this.tabPane.repaint();
+			if (OFormTabbedPaneUI.this.isOverCloseButton(this.currentMouseX, this.currentMouseY)) {
+				OFormTabbedPaneUI.this.closeButtonArmedIndex = tabIndex;
+				OFormTabbedPaneUI.this.tabPane.repaint();
 				return;
-			} else if (OTabbedPaneUI.this.closeButtonArmedIndex != -1) {
+			} else if (OFormTabbedPaneUI.this.closeButtonArmedIndex != -1) {
 				// isOverCloseButton resets closeButtonArmedIndex.
-				OTabbedPaneUI.this.tabPane.repaint();
+				OFormTabbedPaneUI.this.tabPane.repaint();
 				return;
 			}
 
-			if ((tabIndex >= 0) && OTabbedPaneUI.this.tabPane.isEnabledAt(tabIndex)) {
-				if (tabIndex == OTabbedPaneUI.this.tabPane.getSelectedIndex()) {
+			if ((tabIndex >= 0) && OFormTabbedPaneUI.this.tabPane.isEnabledAt(tabIndex)) {
+				if (tabIndex == OFormTabbedPaneUI.this.tabPane.getSelectedIndex()) {
 					// Clicking on selected tab
-					OTabbedPaneUI.this.selectedTabIsPressed = true;
+					OFormTabbedPaneUI.this.selectedTabIsPressed = true;
 
 					// TODO need to just repaint the tab area!
-					OTabbedPaneUI.this.tabPane.repaint();
+					OFormTabbedPaneUI.this.tabPane.repaint();
 				}
 			}
 
@@ -2227,19 +2219,19 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		 */
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			if (OTabbedPaneUI.this.closeButtonArmedIndex != -1) {
-				if (OTabbedPaneUI.this.isOverCloseButton(this.currentMouseX, this.currentMouseY)) {
-					OTabbedPaneUI.this.doClose(OTabbedPaneUI.this.closeButtonArmedIndex);
+			if (OFormTabbedPaneUI.this.closeButtonArmedIndex != -1) {
+				if (OFormTabbedPaneUI.this.isOverCloseButton(this.currentMouseX, this.currentMouseY)) {
+					OFormTabbedPaneUI.this.doClose(OFormTabbedPaneUI.this.closeButtonArmedIndex);
 				}
 
-				OTabbedPaneUI.this.closeButtonArmedIndex = -1;
+				OFormTabbedPaneUI.this.closeButtonArmedIndex = -1;
 
-				OTabbedPaneUI.this.tabPane.repaint();
-			} else if (OTabbedPaneUI.this.selectedTabIsPressed) {
-				OTabbedPaneUI.this.selectedTabIsPressed = false;
+				OFormTabbedPaneUI.this.tabPane.repaint();
+			} else if (OFormTabbedPaneUI.this.selectedTabIsPressed) {
+				OFormTabbedPaneUI.this.selectedTabIsPressed = false;
 
 				// TODO need to just repaint the tab area!
-				OTabbedPaneUI.this.tabPane.repaint();
+				OFormTabbedPaneUI.this.tabPane.repaint();
 			}
 
 			// forward the event
