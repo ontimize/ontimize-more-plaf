@@ -16,93 +16,103 @@ import javax.swing.border.TitledBorder;
 import com.ontimize.plaf.utils.LinearGradient;
 import com.ontimize.plaf.utils.OntimizeLAFColorUtils;
 
-
-
 public class ORowPanelPainter extends AbstractRegionPainter {
 
-	public static final int BACKGROUND_ENABLED = 1;
+    public static final int BACKGROUND_ENABLED = 1;
 
-	 protected int state; //refers to one of the static ints above
-	 protected PaintContext ctx;
-	    
-	 protected Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD);
-	 
-	 protected Color color1 = OntimizeLAFColorUtils.colorHexToColor("#FFFFFF14");
-	 
-	 protected Paint bgPaint;
-	 
-	 public ORowPanelPainter(int state, PaintContext ctx) {
-		 super();
-		 this.state = state;
-		 this.ctx = ctx;	 
-		 
-		 init();
-	}
-	
-	@Override
-	protected void doPaint(Graphics2D g, JComponent c, int width, int height, Object[] extendedCacheKeys) {
-		paintBackground(g, c, width, height);
-	}
-	
-	protected void init(){
-		Object obj = UIManager.getLookAndFeelDefaults().get("\"Row\".bgpaint");
-		if(obj instanceof Paint){
-			bgPaint = (Paint)obj;
-		}else{
-			bgPaint = null;
-		}
-	}
+    protected int state; // refers to one of the static ints above
+    protected PaintContext ctx;
 
-	public static boolean hasTitleBorder(Border border){
-		if (border instanceof TitledBorder) return true;
-		if (border instanceof CompoundBorder){
-			if (hasTitleBorder(((CompoundBorder)border).getInsideBorder())){
-				return true;
-			}
-			
-			if (hasTitleBorder(((CompoundBorder)border).getOutsideBorder())){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public static Insets getTitleBorderInsets(Border border,JComponent c){
-		if (border instanceof TitledBorder) return border.getBorderInsets(c);
-		
-		if (border instanceof CompoundBorder){
-			CompoundBorder compound = (CompoundBorder)border;
-			if (compound.getOutsideBorder() instanceof TitledBorder) return getTitleBorderInsets(compound.getOutsideBorder(),c);
-		}
-		return border.getBorderInsets(c);
-	}
-	
-	protected void paintBackground(Graphics2D g, JComponent c, int w, int h){
-		if (hasTitleBorder(c.getBorder()) || c.isOpaque()){
-			Insets insets = getTitleBorderInsets(c.getBorder(),c);
-			Paint background = c.getBackground();
-			if(bgPaint instanceof LinearGradient){
-				Rectangle bounds = new Rectangle();
-				bounds.x = insets.left;
-				bounds.y = insets.top;
-				bounds.width = w-insets.left-insets.right;
-				bounds.height = h-insets.top-insets.bottom;
-				background = OntimizeLAFColorUtils.decodeGradient(bounds, (LinearGradient)bgPaint);
-			}
-			
-			Color old = g.getColor();
-			g.setPaint(background);
-			g.fillRect(insets.left, insets.top, w-insets.left-insets.right, h-insets.top-insets.bottom);
-			g.setColor(old);
-		}
-	}
-	
-	@Override
-	protected PaintContext getPaintContext() {
-		return this.ctx;
-	}
-	
-	protected int decodeHeight(int height){
-		return (int)(height-(height*0.2));
-	}	
+    protected Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD);
+
+    protected Color color1 = OntimizeLAFColorUtils.colorHexToColor("#FFFFFF14");
+
+    protected Paint bgPaint;
+
+    public ORowPanelPainter(int state, PaintContext ctx) {
+        super();
+        this.state = state;
+        this.ctx = ctx;
+
+        this.init();
+    }
+
+    @Override
+    protected void doPaint(Graphics2D g, JComponent c, int width, int height, Object[] extendedCacheKeys) {
+        this.paintBackground(g, c, width, height);
+    }
+
+    @Override
+    protected String getComponentKeyName() {
+        return "\"Row\"";
+    }
+
+    @Override
+    protected void init() {
+        Object obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + ".bgpaint");
+        if (obj instanceof Paint) {
+            this.bgPaint = (Paint) obj;
+        } else {
+            this.bgPaint = null;
+        }
+    }
+
+    public static boolean hasTitleBorder(Border border) {
+        if (border instanceof TitledBorder) {
+            return true;
+        }
+        if (border instanceof CompoundBorder) {
+            if (ORowPanelPainter.hasTitleBorder(((CompoundBorder) border).getInsideBorder())) {
+                return true;
+            }
+
+            if (ORowPanelPainter.hasTitleBorder(((CompoundBorder) border).getOutsideBorder())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static Insets getTitleBorderInsets(Border border, JComponent c) {
+        if (border instanceof TitledBorder) {
+            return border.getBorderInsets(c);
+        }
+
+        if (border instanceof CompoundBorder) {
+            CompoundBorder compound = (CompoundBorder) border;
+            if (compound.getOutsideBorder() instanceof TitledBorder) {
+                return ORowPanelPainter.getTitleBorderInsets(compound.getOutsideBorder(), c);
+            }
+        }
+        return border.getBorderInsets(c);
+    }
+
+    protected void paintBackground(Graphics2D g, JComponent c, int w, int h) {
+        if (ORowPanelPainter.hasTitleBorder(c.getBorder()) || c.isOpaque()) {
+            Insets insets = ORowPanelPainter.getTitleBorderInsets(c.getBorder(), c);
+            Paint background = c.getBackground();
+            if (this.bgPaint instanceof LinearGradient) {
+                Rectangle bounds = new Rectangle();
+                bounds.x = insets.left;
+                bounds.y = insets.top;
+                bounds.width = w - insets.left - insets.right;
+                bounds.height = h - insets.top - insets.bottom;
+                background = OntimizeLAFColorUtils.decodeGradient(bounds, (LinearGradient) this.bgPaint);
+            }
+
+            Color old = g.getColor();
+            g.setPaint(background);
+            g.fillRect(insets.left, insets.top, w - insets.left - insets.right, h - insets.top - insets.bottom);
+            g.setColor(old);
+        }
+    }
+
+    @Override
+    protected PaintContext getPaintContext() {
+        return this.ctx;
+    }
+
+    protected int decodeHeight(int height) {
+        return (int) (height - (height * 0.2));
+    }
 }

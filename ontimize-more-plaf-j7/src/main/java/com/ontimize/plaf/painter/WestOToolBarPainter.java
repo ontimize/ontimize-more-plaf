@@ -1,16 +1,19 @@
 package com.ontimize.plaf.painter;
 
+public class WestOToolBarPainter extends AbstractOToolBarPainter {
 
-public class WestOToolBarPainter extends AbstractOToolBarPainter{
+    public WestOToolBarPainter(int state, PaintContext ctx) {
+        super(state, ctx);
+    }
 
-	public WestOToolBarPainter(int state, PaintContext ctx) {
-		super(state, ctx);
-		// TODO Auto-generated constructor stub
-	}
+    @Override
+    protected String getComponentState() {
+        return "West";
+    }
 
-	@Override
-	protected String getComponentState() {
-		return "West";
-	}
+    @Override
+    protected String getComponentKeyName() {
+        return null;
+    }
 
 }

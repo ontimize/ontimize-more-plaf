@@ -10,151 +10,161 @@ import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 
+public class OFormHeaderButtonPainter extends AbstractOButtonPainter {
 
+    public static Color defaultFocusBgColor = new Color(0x366581);
+    protected Color focusBgColor;
 
-public class OFormHeaderButtonPainter extends AbstractOButtonPainter{
-	
-	public static  Color defaultFocusBgColor = new Color(0x366581);
-	protected Color focusBgColor;
-	
-	public static  Color defaultMouseOverBgColor = new Color(0xffffff);
-	protected Color mouseOverBgColor;
+    public static Color defaultMouseOverBgColor = new Color(0xffffff);
+    protected Color mouseOverBgColor;
 
-	protected PaintContext ctx;
-	protected int state;
-	
-	protected JComponent component;
-	
-	public OFormHeaderButtonPainter(int state, PaintContext ctx) {
-		super(state, ctx);
-		this.state = state;
-		this.ctx = ctx;
-		
-		init();
-	}
+    protected PaintContext ctx;
+    protected int state;
 
-	@Override
-	protected void doPaint(Graphics2D g, JComponent c, int width, int height,
-			Object[] extendedCacheKeys) {
-		componentColors = extendedCacheKeys;
-		this.component = c;
-		 switch(state) {
-        case BACKGROUND_DEFAULT_FOCUSED: paintBackgroundDefaultAndFocused(g); break;
-        case BACKGROUND_FOCUSED: paintBackgroundFocused(g); break;
-        case BACKGROUND_MOUSEOVER: paintBackgroundMouseOver(g); break;
-        case BACKGROUND_MOUSEOVER_FOCUSED: paintBackgroundMouseOverAndFocused(g); break;
-        case BACKGROUND_PRESSED: paintBackgroundPressed(g); break;
-        case BACKGROUND_PRESSED_FOCUSED: paintBackgroundPressedAndFocused(g); break;
-		 }
-		
-	}
-	
-	protected JComponent getComponent(){
-		return this.component;
-	}
-	
-	@Override
-	protected String getComponentKeyName() {
-		return "\"FormHeaderButton\"";
-	}
-	
-	protected void init (){
-		super.init();
+    protected JComponent component;
 
-		Object obj = UIManager.getDefaults().get("\"FormHeaderButton\"[Focused].background");
-		if(obj instanceof Color){
-			this.focusBgColor = (Color)obj;
-		}else{
-			this.focusBgColor = defaultFocusBgColor;
-		}
-		
-		obj = UIManager.getLookAndFeelDefaults().get( "\"PopupItem\"" + "[MouseOver].background");
-		if(obj instanceof Paint){
-			mouseOverBgColor = (Color)obj;
-		}else{
-			mouseOverBgColor = defaultMouseOverBgColor;
-		}
-		
-	}
+    public OFormHeaderButtonPainter(int state, PaintContext ctx) {
+        super(state, ctx);
+        this.state = state;
+        this.ctx = ctx;
+    }
 
-	protected void paintBackgroundDefaultAndFocused(Graphics2D g) {
-		
-		JComponent c = getComponent();
-		if(c.getParent() instanceof JPopupMenu){
-//			paintBackgroundMouseOver(g);
-			return;
-		}
-		
-    	AlphaComposite old = (AlphaComposite) g.getComposite();
-    	g.setComposite(getDerivedAlphaComposite());
-        roundRect = decodeRoundRect4();
-        g.setPaint(focusBgColor!=null ? focusBgColor : defaultFocusBgColor);
-        g.fill(roundRect);
+    @Override
+    protected void doPaint(Graphics2D g, JComponent c, int width, int height, Object[] extendedCacheKeys) {
+        this.componentColors = extendedCacheKeys;
+        this.component = c;
+        switch (this.state) {
+        case BACKGROUND_DEFAULT_FOCUSED:
+            this.paintBackgroundDefaultAndFocused(g);
+            break;
+        case BACKGROUND_FOCUSED:
+            this.paintBackgroundFocused(g);
+            break;
+        case BACKGROUND_MOUSEOVER:
+            this.paintBackgroundMouseOver(g);
+            break;
+        case BACKGROUND_MOUSEOVER_FOCUSED:
+            this.paintBackgroundMouseOverAndFocused(g);
+            break;
+        case BACKGROUND_PRESSED:
+            this.paintBackgroundPressed(g);
+            break;
+        case BACKGROUND_PRESSED_FOCUSED:
+            this.paintBackgroundPressedAndFocused(g);
+            break;
+        }
+
+    }
+
+    protected JComponent getComponent() {
+        return this.component;
+    }
+
+    @Override
+    protected String getComponentKeyName() {
+        return "\"FormHeaderButton\"";
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        Object obj = UIManager.getDefaults().get(this.getComponentKeyName() + "[Focused].background");
+        if (obj instanceof Color) {
+            this.focusBgColor = (Color) obj;
+        } else {
+            this.focusBgColor = OFormHeaderButtonPainter.defaultFocusBgColor;
+        }
+
+        obj = UIManager.getLookAndFeelDefaults().get("\"PopupItem\"" + "[MouseOver].background");
+        if (obj instanceof Paint) {
+            this.mouseOverBgColor = (Color) obj;
+        } else {
+            this.mouseOverBgColor = OFormHeaderButtonPainter.defaultMouseOverBgColor;
+        }
+
+    }
+
+    @Override
+    protected void paintBackgroundDefaultAndFocused(Graphics2D g) {
+
+        JComponent c = this.getComponent();
+        if (c.getParent() instanceof JPopupMenu) {
+            // paintBackgroundMouseOver(g);
+            return;
+        }
+
+        AlphaComposite old = (AlphaComposite) g.getComposite();
+        g.setComposite(this.getDerivedAlphaComposite());
+        this.roundRect = this.decodeRoundRect4();
+        g.setPaint(this.focusBgColor != null ? this.focusBgColor : OFormHeaderButtonPainter.defaultFocusBgColor);
+        g.fill(this.roundRect);
         g.setComposite(old);
     }
-	
-	protected void paintBackgroundFocused(Graphics2D g) {
-		
-		JComponent c = getComponent();
-		if(c.getParent() instanceof JPopupMenu){
-//			paintBackgroundMouseOver(g);
-			return;
-		}
-		
-    	AlphaComposite old = (AlphaComposite) g.getComposite();
-    	g.setComposite(getDerivedAlphaComposite());
-        roundRect = decodeRoundRect4();
-        g.setPaint(focusBgColor!=null ? focusBgColor : defaultFocusBgColor);
-        g.fill(roundRect);
+
+    @Override
+    protected void paintBackgroundFocused(Graphics2D g) {
+
+        JComponent c = this.getComponent();
+        if (c.getParent() instanceof JPopupMenu) {
+            // paintBackgroundMouseOver(g);
+            return;
+        }
+
+        AlphaComposite old = (AlphaComposite) g.getComposite();
+        g.setComposite(this.getDerivedAlphaComposite());
+        this.roundRect = this.decodeRoundRect4();
+        g.setPaint(this.focusBgColor != null ? this.focusBgColor : OFormHeaderButtonPainter.defaultFocusBgColor);
+        g.fill(this.roundRect);
         g.setComposite(old);
     }
-	
-	@Override
-	protected void paintBackgroundMouseOver(Graphics2D g) {
-		JComponent c = getComponent();
-		if(c.getParent() instanceof JPopupMenu){
-			rect = decodeRect();
-			g.setPaint(mouseOverBgColor);
-			g.fill(rect);
-		}
-	}
-	
-	@Override
-	protected void paintBackgroundMouseOverAndFocused(Graphics2D g) {
-		JComponent c = getComponent();
-		if(c.getParent() instanceof JPopupMenu){
-			rect = decodeRect();
-			g.setPaint(mouseOverBgColor);
-			g.fill(rect);
-		}
-	}
-	
-	@Override
-	protected void paintBackgroundPressed(Graphics2D g) {
-		JComponent c = getComponent();
-		if(c.getParent() instanceof JPopupMenu){
-			rect = decodeRect();
-			g.setPaint(mouseOverBgColor);
-			g.fill(rect);
-		}
-	}
-	
-	@Override
-	protected void paintBackgroundPressedAndFocused(Graphics2D g) {
-		JComponent c = getComponent();
-		if(c.getParent() instanceof JPopupMenu){
-			rect = decodeRect();
-			g.setPaint(mouseOverBgColor);
-			g.fill(rect);
-		}
-	}
-	
-	protected Rectangle2D decodeRect() {
-		rect.setRect(decodeX(0.0f), //x
-				decodeY(0.0f), //y
-				decodeX(3.0f), //width
-				decodeY(3.0f) ); //height
-		return rect;
-	}
+
+    @Override
+    protected void paintBackgroundMouseOver(Graphics2D g) {
+        JComponent c = this.getComponent();
+        if (c.getParent() instanceof JPopupMenu) {
+            this.rect = this.decodeRect();
+            g.setPaint(this.mouseOverBgColor);
+            g.fill(this.rect);
+        }
+    }
+
+    @Override
+    protected void paintBackgroundMouseOverAndFocused(Graphics2D g) {
+        JComponent c = this.getComponent();
+        if (c.getParent() instanceof JPopupMenu) {
+            this.rect = this.decodeRect();
+            g.setPaint(this.mouseOverBgColor);
+            g.fill(this.rect);
+        }
+    }
+
+    @Override
+    protected void paintBackgroundPressed(Graphics2D g) {
+        JComponent c = this.getComponent();
+        if (c.getParent() instanceof JPopupMenu) {
+            this.rect = this.decodeRect();
+            g.setPaint(this.mouseOverBgColor);
+            g.fill(this.rect);
+        }
+    }
+
+    @Override
+    protected void paintBackgroundPressedAndFocused(Graphics2D g) {
+        JComponent c = this.getComponent();
+        if (c.getParent() instanceof JPopupMenu) {
+            this.rect = this.decodeRect();
+            g.setPaint(this.mouseOverBgColor);
+            g.fill(this.rect);
+        }
+    }
+
+    protected Rectangle2D decodeRect() {
+        this.rect.setRect(this.decodeX(0.0f), // x
+                this.decodeY(0.0f), // y
+                this.decodeX(3.0f), // width
+                this.decodeY(3.0f)); // height
+        return this.rect;
+    }
 
 }

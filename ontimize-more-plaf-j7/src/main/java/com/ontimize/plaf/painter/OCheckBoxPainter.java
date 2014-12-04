@@ -7,12 +7,11 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
-
 public class OCheckBoxPainter extends AbstractRegionPainter {
-    //package protected integers representing the available states that
-    //this painter will paint. These are used when creating a new instance
-    //of CheckBoxPainter to determine which region/state is being painted
-    //by that instance.
+    // package protected integers representing the available states that
+    // this painter will paint. These are used when creating a new instance
+    // of CheckBoxPainter to determine which region/state is being painted
+    // by that instance.
     public static final int BACKGROUND_DISABLED = 1;
     public static final int BACKGROUND_ENABLED = 2;
     public static final int ICON_DISABLED = 3;
@@ -30,67 +29,73 @@ public class OCheckBoxPainter extends AbstractRegionPainter {
     public static final int ICON_MOUSEOVER_SELECTED_FOCUSED = 15;
     public static final int ICON_DISABLED_SELECTED = 16;
 
-
-    protected int state; //refers to one of the static final ints above
+    protected int state; // refers to one of the static final ints above
     protected PaintContext ctx;
     protected URL url;
 
-    //Array of current component colors, updated in each paint call
+    // Array of current component colors, updated in each paint call
     protected Object[] componentColors;
 
-    
     protected Image image;
-    
-    public OCheckBoxPainter(int state,PaintContext ctx) {
+
+    public OCheckBoxPainter(int state, PaintContext ctx) {
         this.state = state;
         this.ctx = ctx;
     }
-    
-    public OCheckBoxPainter(int state,PaintContext ctx, URL url) {
+
+    public OCheckBoxPainter(int state, PaintContext ctx, URL url) {
         this.state = state;
         this.ctx = ctx;
         this.url = url;
     }
 
     public Image getImage() {
-		if (image == null) {
-			if(url!=null){
-				image = new ImageIcon(url).getImage();
-			}
-		}
-		return image;
-	}
-    
+        if (this.image == null) {
+            if (this.url != null) {
+                this.image = new ImageIcon(this.url).getImage();
+            }
+        }
+        return this.image;
+    }
+
+    @Override
+    protected String getComponentKeyName() {
+        return "CheckBox";
+    }
+
     @Override
     protected void doPaint(Graphics2D g, JComponent c, int width, int height, Object[] extendedCacheKeys) {
-        componentColors = extendedCacheKeys;
-        switch(state) {
-        	case ICON_DISABLED: 
-        	case ICON_ENABLED: 
-        	case ICON_FOCUSED: 
-        	case ICON_MOUSEOVER:
-        	case ICON_MOUSEOVER_FOCUSED:
-        	case ICON_PRESSED: 
-        	case ICON_PRESSED_FOCUSED: 
-        	case ICON_SELECTED: 
-        	case ICON_SELECTED_FOCUSED: 
-        	case ICON_PRESSED_SELECTED: 
-        	case ICON_PRESSED_SELECTED_FOCUSED: 
-        	case ICON_MOUSEOVER_SELECTED: 
-        	case ICON_MOUSEOVER_SELECTED_FOCUSED: 
-        	case ICON_DISABLED_SELECTED: paintImage(g); break;
+        this.componentColors = extendedCacheKeys;
+        switch (this.state) {
+        case ICON_DISABLED:
+        case ICON_ENABLED:
+        case ICON_FOCUSED:
+        case ICON_MOUSEOVER:
+        case ICON_MOUSEOVER_FOCUSED:
+        case ICON_PRESSED:
+        case ICON_PRESSED_FOCUSED:
+        case ICON_SELECTED:
+        case ICON_SELECTED_FOCUSED:
+        case ICON_PRESSED_SELECTED:
+        case ICON_PRESSED_SELECTED_FOCUSED:
+        case ICON_MOUSEOVER_SELECTED:
+        case ICON_MOUSEOVER_SELECTED_FOCUSED:
+        case ICON_DISABLED_SELECTED:
+            this.paintImage(g);
+            break;
         }
     }
 
-    protected void paintImage(Graphics2D g){
-    	g.drawImage(getImage(),(int)decodeX(0f), //x
-                  (int)decodeY(0f), //y
-                  (int)(decodeX(3f) - decodeX(0f)), //width
-                  (int)(decodeY(3f) - decodeY(0f)),null);
+    protected void paintImage(Graphics2D g) {
+        g.drawImage(this.getImage(), (int) this.decodeX(0f), // x
+                (int) this.decodeY(0f), // y
+                (int) (this.decodeX(3f) - this.decodeX(0f)), // width
+                (int) (this.decodeY(3f) - this.decodeY(0f)), null);
     }
 
     @Override
     protected PaintContext getPaintContext() {
-        return ctx;
+        return this.ctx;
     }
+
 }
