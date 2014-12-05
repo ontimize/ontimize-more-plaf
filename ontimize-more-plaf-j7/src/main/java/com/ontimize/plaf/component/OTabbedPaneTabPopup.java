@@ -840,7 +840,14 @@ public class OTabbedPaneTabPopup extends JPopupMenu implements TabbedPaneTabPopu
 		//
 		@Override
 		public void propertyChange(PropertyChangeEvent e) {
-
+			if ("indexForTitle".equals(e.getPropertyName())) {
+				Object oIndex = e.getNewValue();
+				if (oIndex instanceof Integer) {
+					int index = ((Integer) oIndex).intValue();
+					String element = OTabbedPaneTabPopup.this.tabbedPane.getTitleAt(index);
+					((DefaultListModel) OTabbedPaneTabPopup.this.getList().getModel()).setElementAt(element, index);
+				}
+			}
 		}
 
 		//

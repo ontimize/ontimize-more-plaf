@@ -8,6 +8,8 @@ import java.awt.geom.Path2D;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 
+import com.ontimize.plaf.utils.OntimizeLAFParseUtils;
+
 public class OFormTabbedPaneTabPainter extends AbstractRegionPainter {
 	// package private integers representing the available states that
 	// this painter will paint. These are used when creating a new instance
@@ -140,7 +142,7 @@ public class OFormTabbedPaneTabPainter extends AbstractRegionPainter {
 
 	private void paintBackgroundEnabled(Graphics2D g) {
 		this.path = this.decodePath1();
-		g.setPaint(new Color(0x737373));
+		g.setPaint(this.getBorderPaint(false));
 		g.fill(this.path);
 		this.path = this.decodePath2();
 		g.setPaint(this.backgroundEnabled);
@@ -149,7 +151,7 @@ public class OFormTabbedPaneTabPainter extends AbstractRegionPainter {
 
 	private void paintBackgroundEnabledAndMouseOver(Graphics2D g) {
 		this.path = this.decodePath1();
-		g.setPaint(new Color(0x737373));
+		g.setPaint(this.getBorderPaint(false));
 		g.fill(this.path);
 		this.path = this.decodePath2();
 		g.setPaint(this.backgroundEnabledMouseOver);
@@ -178,7 +180,7 @@ public class OFormTabbedPaneTabPainter extends AbstractRegionPainter {
 
 	private void paintBackgroundSelected(Graphics2D g) {
 		this.path = this.decodePath1();
-		g.setPaint(new Color(0x21465e));
+		g.setPaint(this.getBorderPaint(true));
 		g.fill(this.path);
 		this.path = this.decodePath2();
 		g.setPaint(this.backgroundSelected);
@@ -199,7 +201,7 @@ public class OFormTabbedPaneTabPainter extends AbstractRegionPainter {
 
 	private void paintBackgroundSelectedAndFocused(Graphics2D g) {
 		this.path = this.decodePath1();
-		g.setPaint(new Color(0x21465e));
+		g.setPaint(this.getBorderPaint(true));
 		g.fill(this.path);
 		this.path = this.decodePath2();
 		g.setPaint(this.backgroundSelectedFocused);
@@ -216,6 +218,16 @@ public class OFormTabbedPaneTabPainter extends AbstractRegionPainter {
 		this.path = this.decodePath12();
 		g.setPaint(this.backgroundSelectedPressedFoscused);
 		g.fill(this.path);
+	}
+
+	protected Paint getBorderPaint(boolean focused) {
+		Paint p = null;
+		if (focused) {
+			p = OntimizeLAFParseUtils.parseColor("#21465E", null);
+		} else {
+			p = OntimizeLAFParseUtils.parseColor("#737373", null);
+		}
+		return p;
 	}
 
 	private Path2D decodePath1() {

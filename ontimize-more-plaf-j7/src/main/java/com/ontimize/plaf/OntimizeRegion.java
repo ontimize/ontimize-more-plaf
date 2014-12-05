@@ -14,7 +14,7 @@ public class OntimizeRegion extends Region {
 	protected static final Object LOWER_CASE_NAME_MAP_KEY = new Object();
 
 	/** A Close button for a tab in a tabbed pane. */
-	public static Region TABBED_PANE_TAB_CLOSE_BUTTON = new OntimizeRegion("TabbedPaneTabClaseButton", null, true);
+	public static Region TABBED_PANE_TAB_CLOSE_BUTTON = new OntimizeRegion("TabbedPaneTabCloseButton", null, true);
 
 	public static Region FORM_TABBED_PANE = new OntimizeRegion("FormTabbedPane", "FormTabbedPaneUI", false);
 	public static Region FORM_TABBED_PANE_TAB = new OntimizeRegion("FormTabbedPaneTab", null, true);

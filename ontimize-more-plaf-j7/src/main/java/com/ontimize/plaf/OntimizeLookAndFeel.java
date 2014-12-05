@@ -221,9 +221,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	protected Font defaultFont;
 
 	public static final String[] NIMBUS_COLORS_KEYS = new String[] { "nimbusSelectionBackground", "text", "nimbusSelectedText", "nimbusDisabledText", "nimbusLightBackground",
-			"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
-			"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
-			"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
+		"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
+		"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
+		"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
 
 	/**
 	 * Constructor method. Here it is indicated: - initialize the map of styles
@@ -1151,7 +1151,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		// ************Ontimize Table Configuration***********
 		Table.defaultTableOpaque = Boolean.TRUE;
 		Table.defaultTableBackgroundColor = StyleUtil.getColor("Table", "background", "#9CB2C1");
-		Table.MIN_ROW_HEIGHT = 22;
+		Table.MIN_ROW_HEIGHT = StyleUtil.getInteger(compName, "minRowHeight", "22");
 		borderColor = StyleUtil.getColorUI("Table", "border", "#ADC0CE");
 		BorderUIResource tBorder = new BorderUIResource(BorderFactory.createLineBorder(borderColor, 2));
 		BorderManager.putBorder(BorderManager.DEFAULT_TABLE_BORDER_KEY, tBorder);
@@ -1844,6 +1844,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 13 2 4");
 
 		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Selected,Disabled,Focused,Editable,Required");
+		d.put(compName + ".Required", new RequiredState());
 		d.put(compName + ".Editable", new OComboBoxEditableState());
 		d.put(compName + ".forceOpaque", Boolean.TRUE);
 		d.put(compName + ".buttonWhenNotEditable", Boolean.TRUE);
@@ -1915,6 +1916,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		}
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OComboBoxTextFieldPainter");
 
+		d.put(compName + ".States", "Enabled,Disabled,Focused,Selected,Required");
+		d.put(compName + ".Required", new RequiredState());
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
@@ -3999,12 +4002,13 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		// Tab Label
 		compName = name + ":TabbedPaneTab:\"TabbedPaneTab.label\"";
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#263945");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#263945");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#263945");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#263945");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#263945");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#ffffff");
+		d.put(compName + ".States", "Enabled,Disabled,Focused,Selected");
+		OntimizeLookAndFeel.setColor(d, compName, "foreground", "#263945");
+		OntimizeLookAndFeel.setColor(d, compName, "textForeground", "#263945");
+		OntimizeLookAndFeel.setColor(d, compName, "[Enabled].textForeground", "#263945");
+		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].textForeground", "#263945");
+		OntimizeLookAndFeel.setColor(d, compName, "[Selected].textForeground", "#ffffff");
+		OntimizeLookAndFeel.setColor(d, compName, "[Focused].textForeground", "#ffffff");
 
 		// *********************************************************************
 		// TabArea...
