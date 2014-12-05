@@ -221,9 +221,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	protected Font defaultFont;
 
 	public static final String[] NIMBUS_COLORS_KEYS = new String[] { "nimbusSelectionBackground", "text", "nimbusSelectedText", "nimbusDisabledText", "nimbusLightBackground",
-		"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
-		"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
-		"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
+			"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
+			"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
+			"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
 
 	/**
 	 * Constructor method. Here it is indicated: - initialize the map of styles
@@ -3295,6 +3295,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		FieldButton.defaultPaintFocus = true;
 		FieldButton.defaultCapable = true;
 
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "3 3 3 3");
 		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
 		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
@@ -3304,11 +3305,15 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
 
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
-		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#ffffff");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.25");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#ffffff");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver].alphaTransparency", "0.25");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+MouseOver].background", "#ffffff");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "0.25");
 
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(16, 16, 16, 16), new Dimension(33, 33), false,
-				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "3 3 3 3"), new Dimension(33, 33),
+				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
 		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
@@ -3340,6 +3345,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		FormButton.defaultPaintFocus = true;
 		FormButton.defaultCapable = true;
 
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
 		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
 		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
@@ -3352,8 +3358,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
 		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
 
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(16, 16, 16, 16), new Dimension(33, 33), false,
-				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(33, 33),
+				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
 		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
@@ -3408,7 +3414,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		FormHeaderButton.defaultContentAreaFilled = true;
 		FormHeaderButton.defaultPaintFocus = true;
 
-		// setInsetsUIResource(d, compName, "contentMargins", "16 16 16 16");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
 		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
 		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
@@ -3421,8 +3427,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
 		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
 
-		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(16, 16, 16, 16), new Dimension(33, 33), false,
-				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(33, 33),
+				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
 		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
@@ -3517,8 +3523,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		ButtonSelection.defaultButtonSelectionCapable = true;
 		ButtonSelection.defaultButtonSelectionPaintFocus = true;
+		ButtonSelection.defaultButtonSelectionContentAreaFilled = true;
 
-		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "16 16 16 16");
+		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
 		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
 		OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
@@ -3532,7 +3539,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
 
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OButtonSelectionPainter");
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "16 16 16 16"), new Dimension(33, 33), false,
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(33, 33), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
@@ -3577,6 +3584,10 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
 		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#366581");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+MouseOver].background", "#366581");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "0.5");
 
 		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].foreground", "#000000");
 		OntimizeLookAndFeel.setColor(d, compName, "[Enabled].foreground", "#000000");
@@ -3628,8 +3639,12 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
 
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#ffffff");
 		OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#ffffff");
+		OntimizeLookAndFeel.setFloat(d, compName, "[MouseOver].alphaTransparency", "0.5");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+MouseOver].background", "#ffffff");
+		OntimizeLookAndFeel.setFloat(d, compName, "[Focused+MouseOver].alphaTransparency", "0.5");
 
 		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].foreground", "#929292");
 		OntimizeLookAndFeel.setColor(d, compName, "[Enabled].foreground", "#000000");
@@ -3638,7 +3653,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColor(d, compName, "[Pressed].foreground", "#000000");
 
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolbarNavigatorMenuButtonSelectionPainter");
-		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "8 0 8 0"), new Dimension(33, 33), false,
+		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "8 8 8 0"), new Dimension(33, 33), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
