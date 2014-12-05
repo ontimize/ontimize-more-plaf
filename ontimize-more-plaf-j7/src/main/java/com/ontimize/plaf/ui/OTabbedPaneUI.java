@@ -659,10 +659,10 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		this.iconRect.setBounds(0, 0, 0, 0);
 		this.calcRect.setBounds(0, 0, Short.MAX_VALUE, this.maxTabHeight);
 		tabContext
-				.getStyle()
-				.getGraphicsUtils(tabContext)
-				.layoutText(tabContext, metrics, title, icon, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.LEADING, SwingConstants.TRAILING, this.calcRect,
-						this.iconRect, this.textRect, this.textIconGap);
+		.getStyle()
+		.getGraphicsUtils(tabContext)
+		.layoutText(tabContext, metrics, title, icon, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.LEADING, SwingConstants.TRAILING, this.calcRect,
+				this.iconRect, this.textRect, this.textIconGap);
 
 		return this.textRect.y + metrics.getAscent() + this.getBaselineOffset();
 	}
@@ -835,7 +835,7 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		if (this.tabPane.getTabCount() > 1) {
 			if ((tabIndex == 0) && (tabIndex == this.leadingTabIndex)) {
 				segmentPosition = flipSegments ? "last" : "first";
-			} else if ((tabIndex == (this.tabPane.getTabCount())) && (tabIndex == this.trailingTabIndex)) {
+			} else if ((tabIndex == (this.tabPane.getTabCount() - 1)) && (tabIndex == this.trailingTabIndex)) {
 				segmentPosition = flipSegments ? "first" : "last";
 			} else {
 				segmentPosition = "middle";
@@ -991,9 +991,9 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 		textRect.x = textRect.y = iconRect.x = iconRect.y = 0;
 
 		ss.getStyle()
-				.getGraphicsUtils(ss)
-				.layoutText(ss, metrics, title, icon, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.LEADING, SwingConstants.TRAILING, tabRect, iconRect, textRect,
-						this.textIconGap);
+		.getGraphicsUtils(ss)
+		.layoutText(ss, metrics, title, icon, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.LEADING, SwingConstants.TRAILING, tabRect, iconRect, textRect,
+				this.textIconGap);
 
 		this.tabPane.putClientProperty("html", null);
 
@@ -1520,10 +1520,10 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 				int tabContainerWidth = (OTabbedPaneUI.this.tabPlacement == SwingConstants.LEFT) || (OTabbedPaneUI.this.tabPlacement == SwingConstants.RIGHT) ? OTabbedPaneUI.this.tabPane
 						.getWidth() - OTabbedPaneUI.this.contentRect.width
 						: OTabbedPaneUI.this.contentRect.width;
-				int tabContainerHeight = (OTabbedPaneUI.this.tabPlacement == SwingConstants.TOP) || (OTabbedPaneUI.this.tabPlacement == SwingConstants.BOTTOM) ? OTabbedPaneUI.this.tabPane
-						.getHeight() - OTabbedPaneUI.this.contentRect.height
-						: OTabbedPaneUI.this.contentRect.height;
-				tabContainer.setBounds(tabContainerX, tabContainerY, tabContainerWidth, tabContainerHeight);
+						int tabContainerHeight = (OTabbedPaneUI.this.tabPlacement == SwingConstants.TOP) || (OTabbedPaneUI.this.tabPlacement == SwingConstants.BOTTOM) ? OTabbedPaneUI.this.tabPane
+								.getHeight() - OTabbedPaneUI.this.contentRect.height
+								: OTabbedPaneUI.this.contentRect.height;
+								tabContainer.setBounds(tabContainerX, tabContainerY, tabContainerWidth, tabContainerHeight);
 			}
 		}
 
@@ -1753,13 +1753,13 @@ public class OTabbedPaneUI extends BasicTabbedPaneUI implements SynthUI, Propert
 					OTabbedPaneUI.this.scrollForwardButton,
 					(OTabbedPaneUI.this.trailingTabIndex < (tabCount - 1)),
 					OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex])
-					+ OTabbedPaneUI.this.orientation.getLength(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex]));
+							+ OTabbedPaneUI.this.orientation.getLength(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex]));
 			this.setScrollButtonPositions(
 					OTabbedPaneUI.this.arrowButton,
 					(OTabbedPaneUI.this.leadingTabIndex > 0) || (OTabbedPaneUI.this.trailingTabIndex < (tabCount - 1)),
 					OTabbedPaneUI.this.orientation.getPosition(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex])
-					+ OTabbedPaneUI.this.orientation.getLength(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex])
-					+ (OTabbedPaneUI.this.scrollForwardButton.isVisible() ? OTabbedPaneUI.this.scrollForwardButton.getWidth() : 0));
+							+ OTabbedPaneUI.this.orientation.getLength(OTabbedPaneUI.this.rects[OTabbedPaneUI.this.trailingTabIndex])
+							+ (OTabbedPaneUI.this.scrollForwardButton.isVisible() ? OTabbedPaneUI.this.scrollForwardButton.getWidth() : 0));
 
 			// If component orientation right to left and tab placement is on
 			// the top or the bottom,
