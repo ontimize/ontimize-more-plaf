@@ -37,9 +37,6 @@ public class OTableHeaderRendererPainter extends AbstractRegionPainter {
 	public static final int BACKGROUND_ENABLED_FOCUSED_SORTED = 7;
 	public static final int BACKGROUND_DISABLED_SORTED = 8;
 
-	protected int state; // refers to one of the static ints above
-	protected PaintContext ctx;
-
 	// the following 4 variables are reused during the painting code of the
 	// layers
 	protected Path2D path = new Path2D.Float();
@@ -95,9 +92,7 @@ public class OTableHeaderRendererPainter extends AbstractRegionPainter {
 	protected Object[] componentColors;
 
 	public OTableHeaderRendererPainter(int state, PaintContext ctx) {
-		super();
-		this.state = state;
-		this.ctx = ctx;
+		super(state, ctx);
 	}
 
 	@Override
@@ -466,7 +461,7 @@ public class OTableHeaderRendererPainter extends AbstractRegionPainter {
 		return this.decodeGradient((0.5f * w) + x, (0.0f * h) + y, (0.5f * w) + x, (1.0f * h) + y, new float[] { 0.0f, 0.08049711f, 0.32534248f, 0.56267816f, 0.7037037f,
 				0.83986557f, 0.97602737f },
 				new Color[] { this.color19, this.decodeColor(this.color19, this.color20, 0.5f), this.color20, this.decodeColor(this.color20, this.color21, 0.5f), this.color21,
-						this.decodeColor(this.color21, this.color22, 0.5f), this.color22 });
+				this.decodeColor(this.color21, this.color22, 0.5f), this.color22 });
 	}
 
 	protected Paint decodeGradient6(Shape s) {

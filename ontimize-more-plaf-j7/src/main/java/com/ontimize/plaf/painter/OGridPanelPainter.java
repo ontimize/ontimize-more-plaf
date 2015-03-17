@@ -14,64 +14,57 @@ import com.ontimize.plaf.utils.OntimizeLAFColorUtils;
 
 public class OGridPanelPainter extends AbstractRegionPainter {
 
-    public static final int BACKGROUND_ENABLED = 1;
+	public static final int BACKGROUND_ENABLED = 1;
 
-    protected int state; // refers to one of the static ints above
-    protected PaintContext ctx;
+	protected Paint bgPaint;
 
-    protected Paint bgPaint;
+	public OGridPanelPainter(int state, PaintContext ctx) {
+		super(state, ctx);
+	}
 
-    public OGridPanelPainter(int state, PaintContext ctx) {
-        super();
-        this.state = state;
-        this.ctx = ctx;
+	@Override
+	protected void doPaint(Graphics2D g, JComponent c, int width, int height, Object[] extendedCacheKeys) {
+		this.paintBackground(g, c, width, height);
+	}
 
-        this.init();
-    }
+	@Override
+	protected String getComponentKeyName() {
+		return "\"Grid\"";
+	}
 
-    @Override
-    protected void doPaint(Graphics2D g, JComponent c, int width, int height, Object[] extendedCacheKeys) {
-        this.paintBackground(g, c, width, height);
-    }
+	@Override
+	protected void init() {
 
-    @Override
-    protected String getComponentKeyName() {
-        return "\"Grid\"";
-    }
+		Object obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + ".bgpaint");
+		if (obj instanceof Paint) {
+			this.bgPaint = (Paint) obj;
+		}
+	}
 
-    @Override
-    protected void init() {
+	protected void paintBackground(Graphics2D g, JComponent c, int w, int h) {
+		if (c.isOpaque()) {
+			Color old = g.getColor();
+			Insets insets = c.getInsets();
 
-        Object obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + ".bgpaint");
-        if (obj instanceof Paint) {
-            this.bgPaint = (Paint) obj;
-        }
-    }
+			Paint background = c.getBackground();
+			if (this.bgPaint instanceof LinearGradient) {
+				Rectangle bounds = new Rectangle();
+				bounds.x = insets.left;
+				bounds.y = insets.top;
+				bounds.width = w - insets.left - insets.right;
+				bounds.height = h - insets.top - insets.bottom;
+				background = OntimizeLAFColorUtils.decodeGradient(bounds, (LinearGradient) this.bgPaint);
+			}
 
-    protected void paintBackground(Graphics2D g, JComponent c, int w, int h) {
-        if (c.isOpaque()) {
-            Color old = g.getColor();
-            Insets insets = c.getInsets();
+			g.setPaint(background);
+			g.fillRect(insets.left, insets.top, w - insets.left - insets.right, h - insets.top - insets.bottom);
+			g.setColor(old);
+		}
+	}
 
-            Paint background = c.getBackground();
-            if (this.bgPaint instanceof LinearGradient) {
-                Rectangle bounds = new Rectangle();
-                bounds.x = insets.left;
-                bounds.y = insets.top;
-                bounds.width = w - insets.left - insets.right;
-                bounds.height = h - insets.top - insets.bottom;
-                background = OntimizeLAFColorUtils.decodeGradient(bounds, (LinearGradient) this.bgPaint);
-            }
-
-            g.setPaint(background);
-            g.fillRect(insets.left, insets.top, w - insets.left - insets.right, h - insets.top - insets.bottom);
-            g.setColor(old);
-        }
-    }
-
-    @Override
-    protected PaintContext getPaintContext() {
-        return this.ctx;
-    }
+	@Override
+	protected PaintContext getPaintContext() {
+		return this.ctx;
+	}
 
 }

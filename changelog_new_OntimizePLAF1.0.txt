@@ -2,8 +2,20 @@
 ======== Warning ======
 
 ====== Noteworthies ======
+OntimizeStyle. New implementation. Rely on Nimbus the task of matching painters.
+\\
+CSS Style constants. Now it is possible to define constants for your repeated property values.
+\\
+ResultCountLabel. New property that allows to change the font color of form registry count in navigation controls.
+\\
+FormTabbedPane. New painter for tabs of this component.
+\\
 
 ====== Enhancements ======
+New methods on OntimizeLookAndFeel. For each component it has been created new methods that allows to you to set same component properties with a different name.
+\\
+Form. Fixed problem of margin into Form scroll pane.
+\\
 
 ======== Bugs fixed======
 TextField and TextArea. Fixed bug on setting background text selection color (Property 'textBackground' into CSS).
@@ -11,6 +23,18 @@ TextField and TextArea. Fixed bug on setting background text selection color (Pr
 Tab. Fixed bug on changing font of the component. To set the font it is necessary to set CSS parameter 'font' into the component TabbedPane.
 \\
 TextArea. Fixed bug on corner radius configuration.
+\\
+TreeCellRenderer. Solved problem of Tree cell renderer configuration.
+\\
+Menu. Solved problem of font configuration.
+\\
+CalendarTableHeaderRenderer. Solved problem of initialization of default colours.
+\\
+TableHeaderRenderer. Fixing problems on sort icon painting.
+\\
+FormTabbedPane. Fixing problems on fixing foreground and background colors of tabs.
+\\
+ComboBox. Fixing problems on painting border when 'Required' state.
 \\
 
 -----------------------------------------%1.0.9%

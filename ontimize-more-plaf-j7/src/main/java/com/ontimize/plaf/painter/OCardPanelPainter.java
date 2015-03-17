@@ -8,44 +8,39 @@ import javax.swing.JComponent;
 
 public class OCardPanelPainter extends AbstractRegionPainter {
 
-    public static final int BACKGROUND_ENABLED = 1;
+	public static final int BACKGROUND_ENABLED = 1;
 
-    protected int state; // refers to one of the static ints above
-    protected PaintContext ctx;
+	public OCardPanelPainter(int state, PaintContext ctx) {
+		super(state, ctx);
+	}
 
-    public OCardPanelPainter(int state, PaintContext ctx) {
-        super();
-        this.state = state;
-        this.ctx = ctx;
-    }
+	@Override
+	protected void doPaint(Graphics2D g, JComponent c, int width, int height, Object[] extendedCacheKeys) {
+		this.paintBackground(g, c, width, height);
+	}
 
-    @Override
-    protected void doPaint(Graphics2D g, JComponent c, int width, int height, Object[] extendedCacheKeys) {
-        this.paintBackground(g, c, width, height);
-    }
+	@Override
+	protected String getComponentKeyName() {
+		return "\"CardPanel\"";
+	}
 
-    @Override
-    protected String getComponentKeyName() {
-        return "\"CardPanel\"";
-    }
+	protected void paintBackground(Graphics2D g, JComponent c, int w, int h) {
+		if (c.isOpaque()) {
+			Color background = c.getBackground();
+			Insets insets = c.getInsets();
+			Color old = g.getColor();
+			g.setColor(background);
+			g.fillRect(insets.left, insets.top, w - insets.left - insets.right, h - insets.top - insets.bottom);
+			g.setColor(old);
+		}
+	}
 
-    protected void paintBackground(Graphics2D g, JComponent c, int w, int h) {
-        if (c.isOpaque()) {
-            Color background = c.getBackground();
-            Insets insets = c.getInsets();
-            Color old = g.getColor();
-            g.setColor(background);
-            g.fillRect(insets.left, insets.top, w - insets.left - insets.right, h - insets.top - insets.bottom);
-            g.setColor(old);
-        }
-    }
+	@Override
+	protected PaintContext getPaintContext() {
+		return this.ctx;
+	}
 
-    @Override
-    protected PaintContext getPaintContext() {
-        return this.ctx;
-    }
-
-    protected int decodeHeight(int height) {
-        return (int) (height - (height * 0.2));
-    }
+	protected int decodeHeight(int height) {
+		return (int) (height - (height * 0.2));
+	}
 }

@@ -53,6 +53,7 @@ import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthStyleFactory;
 import javax.swing.plaf.synth.SynthUI;
 
+import sun.awt.AppContext;
 import sun.swing.plaf.synth.DefaultSynthStyle;
 
 import com.ontimize.agenda.CenterPanel;
@@ -192,12 +193,6 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 	protected boolean initialized = false;
 
-	/** Refer to setSelectedUI */
-	public static ComponentUI selectedUI;
-
-	/** Refer to setSelectedUI */
-	public static int selectedUIState;
-
 	/**
 	 * The number of pixels that compounds the border width of the component.
 	 */
@@ -221,9 +216,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	protected Font defaultFont;
 
 	public static final String[] NIMBUS_COLORS_KEYS = new String[] { "nimbusSelectionBackground", "text", "nimbusSelectedText", "nimbusDisabledText", "nimbusLightBackground",
-			"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
-			"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
-			"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
+		"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
+		"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
+		"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
 
 	/**
 	 * Constructor method. Here it is indicated: - initialize the map of styles
@@ -236,6 +231,28 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		super();
 
 		this.defaultFont = this.getDefaultFont();
+		this.defaultStyle = new DefaultSynthStyle();
+		this.defaultStyle.setFont(this.defaultFont);
+
+		/*
+		 * Register all of the regions and their states that this class will use
+		 * for later lookup. Additional regions can be registered later by 3rd
+		 * party components. These are simply the default registrations.
+		 */
+		this.registerStyles();
+
+	}
+
+	public OntimizeLookAndFeel(Font defaultFont) {
+		super();
+
+		FontUIResource fUI = null;
+		if (defaultFont instanceof FontUIResource) {
+			fUI = (FontUIResource) defaultFont;
+		} else {
+			fUI = new FontUIResource(defaultFont);
+		}
+		this.defaultFont = fUI;
 		this.defaultStyle = new DefaultSynthStyle();
 		this.defaultStyle.setFont(this.defaultFont);
 
@@ -490,6 +507,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		}
 
 		return this.defaultFont;
+	}
+
+	public void reinstallDefaultFont(Font font) {
+		if (font == null) {
+			return;
+		}
+		FontUIResource fUI = null;
+		if (font instanceof FontUIResource) {
+			fUI = (FontUIResource) font;
+		} else {
+			fUI = new FontUIResource(font);
+		}
+		this.defaultFont = fUI;
 	}
 
 	protected void defineDefaultFont(UIDefaults d) {
@@ -1392,8 +1422,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		SortTableCellRenderer.defaultForegroundFilterColor = StyleUtil.getColor(compName, "foregroundFilter", "#2E8ECb");
 		SortTableCellRenderer.paintSortIcon = true;
 
-		d.put(compName + ".ascendingSortIcon", new OntimizeSynthIcon("TableHeader", "ascendingSortIconPainter", 31, 17));
-		d.put(compName + ".descendingSortIcon", new OntimizeSynthIcon("TableHeader", "descendingSortIconPainter", 31, 17));
+		d.put("Table.ascendingSortIcon", new OntimizeSynthIcon("TableHeader", "ascendingSortIconPainter", 31, 17));
+		d.put("Table.descendingSortIcon", new OntimizeSynthIcon("TableHeader", "descendingSortIconPainter", 31, 17));
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "ascendingSortIconBackground", "#80b721");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "descendingSortIconBackground", "#e64718");
@@ -1892,6 +1922,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_FOCUSED, ctx));
 		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_REQUIRED, ctx));
 		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER, ctx));
 		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED, ctx));
@@ -1949,6 +1980,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		}
 		d.put(compName + ".contentMargins", new InsetsUIResource(1, 1, 1, 1));
 		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Disabled,Editable");
+		d.put(compName + ".Required", new RequiredState());
 		d.put(compName + ".Editable", new OComboBoxArrowButtonEditableState());
 		d.put(compName + ".size", new Integer(21));
 
@@ -1960,18 +1992,21 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].background", "#263945");
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Editable].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Enabled].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Focused].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+MouseOver].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Pressed].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Required].background", "#263945");
 
 		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].foreground", "#FFFFFF");
 		OntimizeLookAndFeel.setColor(d, compName, "[Enabled].foreground", "#FFFFFF");
 		OntimizeLookAndFeel.setColor(d, compName, "[Selected].foreground", "#000000");
 		OntimizeLookAndFeel.setColor(d, compName, "[MouseOver].foreground", "#000000");
 		OntimizeLookAndFeel.setColor(d, compName, "[Pressed].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[Required].foreground", "#000000");
 
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OComboBoxArrowButtonPainter");
 		PaintContext ctx = new PaintContext(new Insets(1, 1, 1, 1), new Dimension(20, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING,
@@ -1982,12 +2017,14 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.remove(compName + "[Editable+MouseOver].backgroundPainter");
 		d.remove(compName + "[Editable+Pressed].backgroundPainter");
 		d.remove(compName + "[Editable+Selected].backgroundPainter");
+		d.remove(compName + "[Editable+Required].backgroundPainter");
 
 		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_ENABLED, ctx));
 		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
 		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_DISABLED, ctx));
 		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_PRESSED, ctx));
 		d.put(compName + "[Selected].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_SELECTED, ctx));
+		d.put(compName + "[Required].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_REQUIRED, ctx));
 	}
 
 	protected void defineComboBoxListRenderer(UIDefaults d) {
@@ -3701,7 +3738,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 	protected void defineCollapsiblePanel(UIDefaults d) {
 		String compName = "CollapsiblePanel";
-		this.defineCollapsibleButtonPanel(compName, d);
+		this.defineCollapsiblePanel(compName, d);
 	}
 
 	protected void defineCollapsiblePanel(String compName, UIDefaults d) {
@@ -3949,7 +3986,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String name = "FormTabbedPane";
 		String compName = name;
 
-		d.put(compName + ".States", "Enabled,Disabled");
+		d.put(compName + ".States", "Enabled,Disabled,Selected,Focused");
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
 		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
 		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
@@ -3982,6 +4019,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		// It must be the same font that TabbedPane!
 		FontUIResource font = StyleUtil.getFontUIResource("FormTabbedPane", "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
 		d.put("FormTabbedPane:TabbedPaneTab.font", font);
+		d.put(compName + ".States", "Enabled,Disabled,Selected,Focused");
 
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 8 3 8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#263945");
@@ -4016,14 +4054,14 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 				ctx));
 
 		// Tab Label
-		compName = name + ":TabbedPaneTab:\"TabbedPaneTab.label\"";
+		compName = "\"FormTabbedPaneTab.Label\"";
 		d.put(compName + ".States", "Enabled,Disabled,Focused,Selected");
-		OntimizeLookAndFeel.setColor(d, compName, "foreground", "#263945");
-		OntimizeLookAndFeel.setColor(d, compName, "textForeground", "#263945");
-		OntimizeLookAndFeel.setColor(d, compName, "[Enabled].textForeground", "#263945");
-		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].textForeground", "#263945");
-		OntimizeLookAndFeel.setColor(d, compName, "[Selected].textForeground", "#ffffff");
-		OntimizeLookAndFeel.setColor(d, compName, "[Focused].textForeground", "#ffffff");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#ffffff");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#ffffff");
 
 		// *********************************************************************
 		// TabArea...
@@ -4900,7 +4938,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		this.register(OntimizeRegion.FORM_TABBED_PANE_TAB, "FormTabbedPane:TabbedPaneTab");
 		this.register(OntimizeRegion.FORM_TABBED_PANE_TAB_AREA, "FormTabbedPane:TabbedPaneTabArea");
 		this.register(OntimizeRegion.FORM_TABBED_PANE_CONTENT, "FormTabbedPane:TabbedPaneContent");
-		this.register(Region.LABEL, "FormTabbedPane:TabbedPaneTab:\"TabbedPaneTab.label\"");
+		this.register(Region.LABEL, "\"FormTabbedPaneTab.Label\"");
 		this.register(Region.ARROW_BUTTON, "FormTabbedPane:TabbedPaneTabArea:\"FormTabbedPaneTabArea.button\"");
 
 		this.register(Region.PANEL, "\"Form\"");
@@ -5009,6 +5047,20 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	}
 
 	/**
+	 * AppContext key to get selectedUI.
+	 */
+	private static final Object SELECTED_UI_KEY = new StringBuilder("selectedUI");
+
+	/**
+	 * AppContext key to get selectedUIState.
+	 */
+	private static final Object SELECTED_UI_STATE_KEY = new StringBuilder("selectedUIState");
+
+	public static ComponentUI getSelectedUI() {
+		return (ComponentUI) AppContext.getAppContext().get(OntimizeLookAndFeel.SELECTED_UI_KEY);
+	}
+
+	/**
 	 * Used by the renderers. For the most part the renderers are implemented as
 	 * Labels, which is problematic in so far as they are never selected. To
 	 * accomodate this OLabelUI checks if the current UI matches that of
@@ -5028,37 +5080,47 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	 *            is the component's rollover state enabled?
 	 */
 	public static void setSelectedUI(ComponentUI uix, boolean selected, boolean focused, boolean enabled, boolean rollover) {
-		OntimizeLookAndFeel.selectedUI = uix;
-		OntimizeLookAndFeel.selectedUIState = 0;
+		int selectedUIState = 0;
 
 		if (selected) {
-			OntimizeLookAndFeel.selectedUIState = SynthConstants.SELECTED;
-
+			selectedUIState = SynthConstants.SELECTED;
 			if (focused) {
-				OntimizeLookAndFeel.selectedUIState |= SynthConstants.FOCUSED;
+				selectedUIState |= SynthConstants.FOCUSED;
 			}
 		} else if (rollover && enabled) {
-			OntimizeLookAndFeel.selectedUIState |= SynthConstants.MOUSE_OVER | SynthConstants.ENABLED;
-
+			selectedUIState |= SynthConstants.MOUSE_OVER | SynthConstants.ENABLED;
 			if (focused) {
-				OntimizeLookAndFeel.selectedUIState |= SynthConstants.FOCUSED;
+				selectedUIState |= SynthConstants.FOCUSED;
 			}
 		} else {
-
 			if (enabled) {
-				OntimizeLookAndFeel.selectedUIState |= SynthConstants.ENABLED;
-				OntimizeLookAndFeel.selectedUIState = SynthConstants.FOCUSED;
+				selectedUIState |= SynthConstants.ENABLED;
+				if (focused) {
+					selectedUIState |= SynthConstants.FOCUSED;
+				}
 			} else {
-				OntimizeLookAndFeel.selectedUIState |= SynthConstants.DISABLED;
+				selectedUIState |= SynthConstants.DISABLED;
 			}
 		}
+
+		AppContext context = AppContext.getAppContext();
+
+		context.put(OntimizeLookAndFeel.SELECTED_UI_KEY, uix);
+		context.put(OntimizeLookAndFeel.SELECTED_UI_STATE_KEY, Integer.valueOf(selectedUIState));
+
+	}
+
+	public static int getSelectedUIState() {
+		Integer result = (Integer) AppContext.getAppContext().get(OntimizeLookAndFeel.SELECTED_UI_STATE_KEY);
+
+		return result == null ? 0 : result.intValue();
 	}
 
 	/**
 	 * Clears out the selected UI that was last set in setSelectedUI.
 	 */
 	public static void resetSelectedUI() {
-		OntimizeLookAndFeel.selectedUI = null;
+		AppContext.getAppContext().remove(OntimizeLookAndFeel.SELECTED_UI_KEY);
 	}
 
 	public Image getImage(String key) {

@@ -9,7 +9,7 @@
   	<version>2.0.1</version>
   </parent>
   <properties>
-  		<ontimize-core.version>5.4.0</ontimize-core.version>
+  		<ontimize-core.version>5.5.0-SNAPSHOT</ontimize-core.version>
 		<ontimize-more-workflow.version>2.5.0</ontimize-more-workflow.version>
 		<ontimize-more-diagram.version>2.2.0</ontimize-more-diagram.version>
 		<ontimize-more-agenda.version>2.0.1</ontimize-more-agenda.version>
@@ -53,7 +53,6 @@
       </dependencies>
   </dependencyManagement>
   <modules>
-  	<module>ontimize-more-plaf-j6</module>
   	<module>ontimize-more-plaf-j7</module>
   </modules>
   

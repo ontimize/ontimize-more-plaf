@@ -27,9 +27,6 @@ public class OFormTabbedPaneTabPainter extends AbstractRegionPainter {
 	public static final int BACKGROUND_SELECTED_MOUSEOVER_FOCUSED = 10;
 	public static final int BACKGROUND_SELECTED_PRESSED_FOCUSED = 11;
 
-	private final int state; // refers to one of the static final ints above
-	private final PaintContext ctx;
-
 	// the following 4 variables are reused during the painting code of the
 	// layers
 	private Path2D path = new Path2D.Float();
@@ -64,9 +61,7 @@ public class OFormTabbedPaneTabPainter extends AbstractRegionPainter {
 	private Paint backgroundSelectedPressedFoscused;
 
 	public OFormTabbedPaneTabPainter(int state, PaintContext ctx) {
-		super();
-		this.state = state;
-		this.ctx = ctx;
+		super(state, ctx);
 	}
 
 	@Override

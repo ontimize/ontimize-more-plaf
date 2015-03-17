@@ -16,7 +16,9 @@ import java.beans.PropertyChangeEvent;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JTabbedPane;
 import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -32,6 +34,7 @@ import javax.swing.text.View;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import com.ontimize.gui.calendar.VisualCalendarComponent;
+import com.ontimize.gui.manager.TabbedFormManager.ButtonTabComponent;
 import com.ontimize.gui.tree.BasicTreeCellRenderer;
 import com.ontimize.gui.tree.Tree;
 import com.ontimize.plaf.OntimizeLookAndFeel;
@@ -59,17 +62,18 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
 
 	@Override
 	protected void installDefaults(JLabel c) {
-		if ("ELabel".equals(c.getName())) {
+		String compName = c.getName();
+		if ("ELabel".equals(compName)) {
 			OntimizeLookAndFeel.installColorsAndFont(c, "\"ELabel\".background", "\"ELabel\".foreground", "\"ELabel\".font");
 			LookAndFeel.installProperty(c, "opaque", Boolean.FALSE);
 		} else if (c instanceof BasicTreeCellRenderer) {
 			OntimizeLookAndFeel.installColorsAndFont(c, "Tree:\"Tree.cellRenderer\".background", "Tree:\"Tree.cellRenderer\".foreground", "Tree:\"Tree.cellRenderer\".font");
 			LookAndFeel.installProperty(c, "opaque", Boolean.FALSE);
-		} else if ("PageFetcher.Label".equals(c.getName())) {
+		} else if ("PageFetcher.Label".equals(compName)) {
 			OntimizeLookAndFeel.installColorsAndFont(c, "\"PageFetcher.Label\".background", "\"PageFetcher.Label\".foreground", "\"PageFetcher.Label\".font");
 			LookAndFeel.installProperty(c, "opaque", Boolean.FALSE);
-		} else if ((c.getName() != null) && (c.getName().length() > 0)) {
-			OntimizeLookAndFeel.installColorsAndFont(c, c.getName() + ".background", c.getName() + ".foreground", c.getName() + ".font");
+		} else if ((compName != null) && (compName.length() > 0)) {
+			OntimizeLookAndFeel.installColorsAndFont(c, compName + ".background", compName + ".foreground", compName + ".font");
 			LookAndFeel.installProperty(c, "opaque", Boolean.FALSE);
 		} else {
 			super.installDefaults(c);
@@ -112,8 +116,8 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
 
 	protected int getComponentState(JComponent c) {
 		int state = OntimizeLookAndFeel.getComponentState(c);
-		if ((OntimizeLookAndFeel.selectedUI == this) && (state == SynthConstants.ENABLED)) {
-			state = OntimizeLookAndFeel.selectedUIState | SynthConstants.ENABLED;
+		if ((OntimizeLookAndFeel.getSelectedUI() == this) && (state == SynthConstants.ENABLED)) {
+			state = OntimizeLookAndFeel.getSelectedUIState() | SynthConstants.ENABLED;
 		}
 
 		if (c instanceof PopupItem) {
@@ -124,6 +128,16 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
 
 		if (c instanceof SynthComboBoxRenderer) {
 			state = SynthConstants.ENABLED;
+		}
+
+		if (c.getParent() instanceof ButtonTabComponent) {
+			JTabbedPane tabbedPane = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, c);
+			if ((ButtonTabComponent) c.getParent() == tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex())) {
+				state = SynthConstants.SELECTED;
+				if (c.getParent().hasFocus()) {
+					state |= SynthConstants.FOCUSED;
+				}
+			}
 		}
 
 		return state;
@@ -155,9 +169,9 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
 		SynthContext context = this.getContext(label);
 		FontMetrics fm = context.getComponent().getFontMetrics(context.getStyle().getFont(context));
 		context.getStyle()
-				.getGraphicsUtils(context)
-				.layoutText(context, fm, label.getText(), label.getIcon(), label.getHorizontalAlignment(), label.getVerticalAlignment(), label.getHorizontalTextPosition(),
-						label.getVerticalTextPosition(), viewRect, iconRect, textRect, label.getIconTextGap());
+		.getGraphicsUtils(context)
+		.layoutText(context, fm, label.getText(), label.getIcon(), label.getHorizontalAlignment(), label.getVerticalAlignment(), label.getHorizontalTextPosition(),
+				label.getVerticalTextPosition(), viewRect, iconRect, textRect, label.getIconTextGap());
 		View view = (View) label.getClientProperty(BasicHTML.propertyKey);
 		int baseline;
 		if (view != null) {
@@ -226,9 +240,9 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
 				g.setColor(new Color(0x00000033));
 			}
 			context.getStyle()
-					.getGraphicsUtils(context)
-					.paintText(context, g, label.getText(), null, label.getHorizontalAlignment(), label.getVerticalAlignment(), label.getHorizontalTextPosition(),
-							label.getVerticalTextPosition(), label.getIconTextGap(), label.getDisplayedMnemonicIndex(), 1);
+			.getGraphicsUtils(context)
+			.paintText(context, g, label.getText(), null, label.getHorizontalAlignment(), label.getVerticalAlignment(), label.getHorizontalTextPosition(),
+					label.getVerticalTextPosition(), label.getIconTextGap(), label.getDisplayedMnemonicIndex(), 1);
 			oColor = OntimizeLookAndFeel.lookup("TableHeader:\"VisualCalendar:TableHeader.renderer\".foreground");
 			if (oColor instanceof Color) {
 				g.setColor((Color) oColor);
@@ -238,9 +252,9 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
 		}
 
 		context.getStyle()
-				.getGraphicsUtils(context)
-				.paintText(context, g, label.getText(), icon, label.getHorizontalAlignment(), label.getVerticalAlignment(), label.getHorizontalTextPosition(),
-						label.getVerticalTextPosition(), label.getIconTextGap(), label.getDisplayedMnemonicIndex(), 0);
+		.getGraphicsUtils(context)
+		.paintText(context, g, label.getText(), icon, label.getHorizontalAlignment(), label.getVerticalAlignment(), label.getHorizontalTextPosition(),
+				label.getVerticalTextPosition(), label.getIconTextGap(), label.getDisplayedMnemonicIndex(), 0);
 
 		if (label instanceof BasicTreeCellRenderer) {
 			label.setBorder(oldBorder);

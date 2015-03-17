@@ -40,8 +40,7 @@ import com.ontimize.plaf.utils.ContextUtils;
  *
  * @see javax.swing.plaf.synth.SynthButtonUI
  */
-public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
-		SynthUI {
+public class OButtonUI extends BasicButtonUI implements PropertyChangeListener, SynthUI {
 	protected static final String APPLE_PREFIX = "JButton.";
 	protected SynthStyle style;
 
@@ -60,8 +59,9 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	/**
 	 * @see javax.swing.plaf.basic.BasicButtonUI#installDefaults(javax.swing.AbstractButton)
 	 */
+	@Override
 	protected void installDefaults(AbstractButton b) {
-		updateStyle(b);
+		this.updateStyle(b);
 
 		LookAndFeel.installProperty(b, "rolloverEnabled", Boolean.TRUE);
 	}
@@ -69,6 +69,7 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	/**
 	 * @see javax.swing.plaf.basic.BasicButtonUI#installListeners(javax.swing.AbstractButton)
 	 */
+	@Override
 	protected void installListeners(AbstractButton b) {
 		super.installListeners(b);
 		b.addPropertyChangeListener(this);
@@ -81,14 +82,13 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 *            the button.
 	 */
 	public void updateStyle(AbstractButton b) {
-		SynthContext context = getContext(b, SynthConstants.ENABLED);
-		SynthStyle oldStyle = style;
+		SynthContext context = this.getContext(b, SynthConstants.ENABLED);
+		SynthStyle oldStyle = this.style;
 
-		style = OntimizeLookAndFeel.updateStyle(context, this);
-		if (style != oldStyle) {
-			if (b.getMargin() == null || (b.getMargin() instanceof UIResource)) {
-				Insets margin = (Insets) style.get(context, getPropertyPrefix()
-						+ "margin");
+		this.style = OntimizeLookAndFeel.updateStyle(context, this);
+		if (this.style != oldStyle) {
+			if ((b.getMargin() == null) || (b.getMargin() instanceof UIResource)) {
+				Insets margin = (Insets) this.style.get(context, this.getPropertyPrefix() + "margin");
 
 				if (margin == null) {
 					// Some places assume margins are non-null.
@@ -98,19 +98,16 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 				b.setMargin(margin);
 			}
 
-			Object value = style.get(context, getPropertyPrefix()
-					+ "iconTextGap");
+			Object value = this.style.get(context, this.getPropertyPrefix() + "iconTextGap");
 
 			if (value != null) {
 				LookAndFeel.installProperty(b, "iconTextGap", value);
 			}
 
-			value = style.get(context, getPropertyPrefix()
-					+ "contentAreaFilled");
-			LookAndFeel.installProperty(b, "contentAreaFilled",
-					value != null ? value : Boolean.TRUE);
+			value = this.style.get(context, this.getPropertyPrefix() + "contentAreaFilled");
+			LookAndFeel.installProperty(b, "contentAreaFilled", value != null ? value : Boolean.TRUE);
 
-			value = b.getClientProperty(APPLE_PREFIX + "buttonType");
+			value = b.getClientProperty(OButtonUI.APPLE_PREFIX + "buttonType");
 			if (value != null) {
 				if ("segmented".equals(value)) {
 					b.setMargin(OntimizeLookAndFeel.EMPTY_UIRESOURCE_INSETS);
@@ -118,8 +115,8 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 			}
 
 			if (oldStyle != null) {
-				uninstallKeyboardActions(b);
-				installKeyboardActions(b);
+				this.uninstallKeyboardActions(b);
+				this.installKeyboardActions(b);
 			}
 		}
 
@@ -128,6 +125,7 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	/**
 	 * @see javax.swing.plaf.basic.BasicButtonUI#uninstallListeners(javax.swing.AbstractButton)
 	 */
+	@Override
 	protected void uninstallListeners(AbstractButton b) {
 		super.uninstallListeners(b);
 		b.removePropertyChangeListener(this);
@@ -136,19 +134,21 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	/**
 	 * @see javax.swing.plaf.basic.BasicButtonUI#uninstallDefaults(javax.swing.AbstractButton)
 	 */
+	@Override
 	protected void uninstallDefaults(AbstractButton b) {
-		SynthContext context = getContext(b, ENABLED);
+		SynthContext context = this.getContext(b, SynthConstants.ENABLED);
 
-		style.uninstallDefaults(context);
+		this.style.uninstallDefaults(context);
 
-		style = null;
+		this.style = null;
 	}
 
 	/**
 	 * @see sun.swing.plaf.synth.SynthUI#getContext(javax.swing.JComponent)
 	 */
+	@Override
 	public SynthContext getContext(JComponent c) {
-		return getContext(c, getComponentState(c));
+		return this.getContext(c, this.getComponentState(c));
 	}
 
 	/**
@@ -162,10 +162,9 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 * @return the Synth context.
 	 */
 	protected SynthContext getContext(JComponent c, int state) {
-		Region region = getRegion(c);
+		Region region = this.getRegion(c);
 		if (this.style == null) {
-			this.style = OntimizeLookAndFeel.getOntimizeStyle(c,
-					OntimizeLookAndFeel.getRegion(c));
+			this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
 		}
 		return new SynthContext(c, region, this.style, state);
 	}
@@ -191,14 +190,17 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 * @return the button's state.
 	 */
 	protected int getComponentState(JComponent c) {
-		int state = ENABLED;
+		int state = SynthConstants.ENABLED;
 
 		if (!c.isEnabled()) {
-			state = DISABLED;
+			state = SynthConstants.DISABLED;
 		}
 
-		if (OntimizeLookAndFeel.selectedUI == this) {
-			return OntimizeLookAndFeel.selectedUIState | SynthConstants.ENABLED;
+		// if (OntimizeLookAndFeel.selectedUI == this) {
+		// return OntimizeLookAndFeel.selectedUIState | SynthConstants.ENABLED;
+		// }
+		if ((OntimizeLookAndFeel.getSelectedUI() == this) && (state == SynthConstants.ENABLED)) {
+			state = OntimizeLookAndFeel.getSelectedUIState() | SynthConstants.ENABLED;
 		}
 
 		AbstractButton button = (AbstractButton) c;
@@ -206,26 +208,26 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 
 		if (model.isPressed()) {
 			if (model.isArmed()) {
-				state = PRESSED;
+				state = SynthConstants.PRESSED;
 			} else {
-				state = MOUSE_OVER;
+				state = SynthConstants.MOUSE_OVER;
 			}
 		}
 
 		if (model.isRollover()) {
-			state |= MOUSE_OVER;
+			state |= SynthConstants.MOUSE_OVER;
 		}
 
 		if (model.isSelected()) {
-			state |= SELECTED;
+			state |= SynthConstants.SELECTED;
 		}
 
 		if (c.isFocusOwner() && button.isFocusPainted()) {
-			state |= FOCUSED;
+			state |= SynthConstants.FOCUSED;
 		}
 
 		if ((c instanceof JButton) && ((JButton) c).isDefaultButton()) {
-			state |= DEFAULT;
+			state |= SynthConstants.DEFAULT;
 		}
 
 		return state;
@@ -235,19 +237,20 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 * @see javax.swing.plaf.basic.BasicButtonUI#getBaseline(javax.swing.JComponent,
 	 *      int, int)
 	 */
+	@Override
 	public int getBaseline(JComponent c, int width, int height) {
 		if (c == null) {
 			throw new NullPointerException("Component must be non-null");
 		}
 
-		if (width < 0 || height < 0) {
+		if ((width < 0) || (height < 0)) {
 			throw new IllegalArgumentException("Width and height must be >= 0");
 		}
 
 		AbstractButton b = (AbstractButton) c;
 		String text = b.getText();
 
-		if (text == null || "".equals(text)) {
+		if ((text == null) || "".equals(text)) {
 			return -1;
 		}
 
@@ -262,23 +265,18 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 		viewRect.height = height - (i.bottom + viewRect.y);
 
 		// layout the text and icon
-		SynthContext context = getContext(b);
-		FontMetrics fm = context.getComponent().getFontMetrics(
-				context.getStyle().getFont(context));
+		SynthContext context = this.getContext(b);
+		FontMetrics fm = context.getComponent().getFontMetrics(context.getStyle().getFont(context));
 
 		context.getStyle()
 				.getGraphicsUtils(context)
-				.layoutText(context, fm, b.getText(), b.getIcon(),
-						b.getHorizontalAlignment(), b.getVerticalAlignment(),
-						b.getHorizontalTextPosition(),
-						b.getVerticalTextPosition(), viewRect, iconRect,
-						textRect, b.getIconTextGap());
+				.layoutText(context, fm, b.getText(), b.getIcon(), b.getHorizontalAlignment(), b.getVerticalAlignment(), b.getHorizontalTextPosition(),
+						b.getVerticalTextPosition(), viewRect, iconRect, textRect, b.getIconTextGap());
 		View view = (View) b.getClientProperty(BasicHTML.propertyKey);
 		int baseline;
 
 		if (view != null) {
-			baseline = BasicHTML.getHTMLBaseline(view, textRect.width,
-					textRect.height);
+			baseline = BasicHTML.getHTMLBaseline(view, textRect.width, textRect.height);
 			if (baseline >= 0) {
 				baseline += textRect.y;
 			}
@@ -297,12 +295,13 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 * @see javax.swing.plaf.ComponentUI#update(java.awt.Graphics,
 	 *      javax.swing.JComponent)
 	 */
+	@Override
 	public void update(Graphics g, JComponent c) {
-		SynthContext context = getContext(c);
+		SynthContext context = this.getContext(c);
 
 		OntimizeLookAndFeel.update(context, g);
-		paintBackground(context, g, c);
-		paint(context, g);
+		this.paintBackground(context, g, c);
+		this.paint(context, g);
 
 	}
 
@@ -310,10 +309,11 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 * @see javax.swing.plaf.basic.BasicButtonUI#paint(java.awt.Graphics,
 	 *      javax.swing.JComponent)
 	 */
+	@Override
 	public void paint(Graphics g, JComponent c) {
-		SynthContext context = getContext(c);
+		SynthContext context = this.getContext(c);
 
-		paint(context, g);
+		this.paint(context, g);
 
 	}
 
@@ -328,17 +328,12 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	protected void paint(SynthContext context, Graphics g) {
 		AbstractButton b = (AbstractButton) context.getComponent();
 
-		g.setColor(context.getStyle().getColor(context,
-				ColorType.TEXT_FOREGROUND));
-		g.setFont(style.getFont(context));
+		g.setColor(context.getStyle().getColor(context, ColorType.TEXT_FOREGROUND));
+		g.setFont(this.style.getFont(context));
 		context.getStyle()
 				.getGraphicsUtils(context)
-				.paintText(context, g, b.getText(), getIcon(b),
-						b.getHorizontalAlignment(), b.getVerticalAlignment(),
-						b.getHorizontalTextPosition(),
-						b.getVerticalTextPosition(), b.getIconTextGap(),
-						b.getDisplayedMnemonicIndex(),
-						getTextShiftOffset(context));
+				.paintText(context, g, b.getText(), this.getIcon(b), b.getHorizontalAlignment(), b.getVerticalAlignment(), b.getHorizontalTextPosition(),
+						b.getVerticalTextPosition(), b.getIconTextGap(), b.getDisplayedMnemonicIndex(), this.getTextShiftOffset(context));
 	}
 
 	/**
@@ -353,8 +348,7 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 */
 	void paintBackground(SynthContext context, Graphics g, JComponent c) {
 		if (((AbstractButton) c).isContentAreaFilled()) {
-			ContextUtils.getPainter(context).paintButtonBackground(context, g,
-					0, 0, c.getWidth(), c.getHeight());
+			ContextUtils.getPainter(context).paintButtonBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
 		}
 	}
 
@@ -362,10 +356,9 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 * @see sun.swing.plaf.synth.SynthUI#paintBorder(javax.swing.plaf.synth.SynthContext,
 	 *      java.awt.Graphics, int, int, int, int)
 	 */
-	public void paintBorder(SynthContext context, Graphics g, int x, int y,
-			int w, int h) {
-		ContextUtils.getPainter(context).paintButtonBorder(context, g, x, y, w,
-				h);
+	@Override
+	public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
+		ContextUtils.getPainter(context).paintButtonBorder(context, g, x, y, w, h);
 	}
 
 	/**
@@ -378,9 +371,8 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 */
 
 	protected Icon getDefaultIcon(AbstractButton b) {
-		SynthContext context = getContext(b);
-		Icon icon = context.getStyle().getIcon(context,
-				getPropertyPrefix() + "icon");
+		SynthContext context = this.getContext(b);
+		Icon icon = context.getStyle().getIcon(context, this.getPropertyPrefix() + "icon");
 
 		return icon;
 	}
@@ -398,19 +390,19 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 		ButtonModel model = b.getModel();
 
 		if (!model.isEnabled()) {
-			icon = getSynthDisabledIcon(b, icon);
+			icon = this.getSynthDisabledIcon(b, icon);
 		} else if (model.isPressed() && model.isArmed()) {
-			icon = getPressedIcon(b, getSelectedIcon(b, icon));
+			icon = this.getPressedIcon(b, this.getSelectedIcon(b, icon));
 		} else if (b.isRolloverEnabled() && model.isRollover()) {
-			icon = getRolloverIcon(b, getSelectedIcon(b, icon));
+			icon = this.getRolloverIcon(b, this.getSelectedIcon(b, icon));
 		} else if (model.isSelected()) {
-			icon = getSelectedIcon(b, icon);
+			icon = this.getSelectedIcon(b, icon);
 		} else {
-			icon = getEnabledIcon(b, icon);
+			icon = this.getEnabledIcon(b, icon);
 		}
 
 		if (icon == null) {
-			return getDefaultIcon(b);
+			return this.getDefaultIcon(b);
 		}
 
 		return icon;
@@ -433,13 +425,12 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 *
 	 * @return the icon.
 	 */
-	protected Icon getIcon(AbstractButton b, Icon specificIcon,
-			Icon defaultIcon, int state) {
+	protected Icon getIcon(AbstractButton b, Icon specificIcon, Icon defaultIcon, int state) {
 		Icon icon = specificIcon;
 
 		if (icon == null) {
 			if (defaultIcon instanceof UIResource) {
-				icon = getSynthIcon(b, state);
+				icon = this.getSynthIcon(b, state);
 				if (icon == null) {
 					icon = defaultIcon;
 				}
@@ -462,8 +453,7 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 * @return DOCUMENT ME!
 	 */
 	protected Icon getSynthIcon(AbstractButton b, int synthConstant) {
-		return style.getIcon(getContext(b, synthConstant), getPropertyPrefix()
-				+ "icon");
+		return this.style.getIcon(this.getContext(b, synthConstant), this.getPropertyPrefix() + "icon");
 	}
 
 	/**
@@ -478,7 +468,7 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 */
 	protected Icon getEnabledIcon(AbstractButton b, Icon defaultIcon) {
 		if (defaultIcon == null) {
-			defaultIcon = getSynthIcon(b, SynthConstants.ENABLED);
+			defaultIcon = this.getSynthIcon(b, SynthConstants.ENABLED);
 		}
 
 		return defaultIcon;
@@ -495,8 +485,7 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 * @return DOCUMENT ME!
 	 */
 	protected Icon getSelectedIcon(AbstractButton b, Icon defaultIcon) {
-		return getIcon(b, b.getSelectedIcon(), defaultIcon,
-				SynthConstants.SELECTED);
+		return this.getIcon(b, b.getSelectedIcon(), defaultIcon, SynthConstants.SELECTED);
 	}
 
 	/**
@@ -514,11 +503,9 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 		Icon icon;
 
 		if (model.isSelected()) {
-			icon = getIcon(b, b.getRolloverSelectedIcon(), defaultIcon,
-					SynthConstants.MOUSE_OVER | SynthConstants.SELECTED);
+			icon = this.getIcon(b, b.getRolloverSelectedIcon(), defaultIcon, SynthConstants.MOUSE_OVER | SynthConstants.SELECTED);
 		} else {
-			icon = getIcon(b, b.getRolloverIcon(), defaultIcon,
-					SynthConstants.MOUSE_OVER);
+			icon = this.getIcon(b, b.getRolloverIcon(), defaultIcon, SynthConstants.MOUSE_OVER);
 		}
 
 		return icon;
@@ -535,8 +522,7 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	 * @return DOCUMENT ME!
 	 */
 	protected Icon getPressedIcon(AbstractButton b, Icon defaultIcon) {
-		return getIcon(b, b.getPressedIcon(), defaultIcon,
-				SynthConstants.PRESSED);
+		return this.getIcon(b, b.getPressedIcon(), defaultIcon, SynthConstants.PRESSED);
 	}
 
 	/**
@@ -554,11 +540,9 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 		Icon icon;
 
 		if (model.isSelected()) {
-			icon = getIcon(b, b.getDisabledSelectedIcon(), defaultIcon,
-					SynthConstants.DISABLED | SynthConstants.SELECTED);
+			icon = this.getIcon(b, b.getDisabledSelectedIcon(), defaultIcon, SynthConstants.DISABLED | SynthConstants.SELECTED);
 		} else {
-			icon = getIcon(b, b.getDisabledIcon(), defaultIcon,
-					SynthConstants.DISABLED);
+			icon = this.getIcon(b, b.getDisabledIcon(), defaultIcon, SynthConstants.DISABLED);
 		}
 
 		return icon;
@@ -576,10 +560,8 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 		AbstractButton button = (AbstractButton) state.getComponent();
 		ButtonModel model = button.getModel();
 
-		if (model.isArmed() && model.isPressed()
-				&& button.getPressedIcon() == null) {
-			return state.getStyle().getInt(state,
-					getPropertyPrefix() + "textShiftOffset", 0);
+		if (model.isArmed() && model.isPressed() && (button.getPressedIcon() == null)) {
+			return state.getStyle().getInt(state, this.getPropertyPrefix() + "textShiftOffset", 0);
 		}
 
 		return 0;
@@ -591,19 +573,17 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	/**
 	 * @see javax.swing.plaf.basic.BasicButtonUI#getMinimumSize(javax.swing.JComponent)
 	 */
+	@Override
 	public Dimension getMinimumSize(JComponent c) {
-		if (c.getComponentCount() > 0 && c.getLayout() != null) {
+		if ((c.getComponentCount() > 0) && (c.getLayout() != null)) {
 			return null;
 		}
 
 		AbstractButton b = (AbstractButton) c;
-		SynthContext ss = getContext(c);
+		SynthContext ss = this.getContext(c);
 		final SynthStyle style2 = ss.getStyle();
-		Dimension size = style2.getGraphicsUtils(ss).getMinimumSize(ss,
-				style2.getFont(ss), b.getText(), getSizingIcon(b),
-				b.getHorizontalAlignment(), b.getVerticalAlignment(),
-				b.getHorizontalTextPosition(), b.getVerticalTextPosition(),
-				b.getIconTextGap(), b.getDisplayedMnemonicIndex());
+		Dimension size = style2.getGraphicsUtils(ss).getMinimumSize(ss, style2.getFont(ss), b.getText(), this.getSizingIcon(b), b.getHorizontalAlignment(),
+				b.getVerticalAlignment(), b.getHorizontalTextPosition(), b.getVerticalTextPosition(), b.getIconTextGap(), b.getDisplayedMnemonicIndex());
 
 		return size;
 	}
@@ -611,20 +591,18 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	/**
 	 * @see javax.swing.plaf.basic.BasicButtonUI#getPreferredSize(javax.swing.JComponent)
 	 */
+	@Override
 	public Dimension getPreferredSize(JComponent c) {
-		if (c.getComponentCount() > 0 && c.getLayout() != null) {
+		if ((c.getComponentCount() > 0) && (c.getLayout() != null)) {
 			return null;
 		}
 
 		AbstractButton b = (AbstractButton) c;
-		SynthContext ss = getContext(c);
+		SynthContext ss = this.getContext(c);
 		SynthStyle style2 = ss.getStyle();
 		SynthGraphicsUtils graphicsUtils = style2.getGraphicsUtils(ss);
-		Dimension size = graphicsUtils.getPreferredSize(ss, style2.getFont(ss),
-				b.getText(), getSizingIcon(b), b.getHorizontalAlignment(),
-				b.getVerticalAlignment(), b.getHorizontalTextPosition(),
-				b.getVerticalTextPosition(), b.getIconTextGap(),
-				b.getDisplayedMnemonicIndex());
+		Dimension size = graphicsUtils.getPreferredSize(ss, style2.getFont(ss), b.getText(), this.getSizingIcon(b), b.getHorizontalAlignment(), b.getVerticalAlignment(),
+				b.getHorizontalTextPosition(), b.getVerticalTextPosition(), b.getIconTextGap(), b.getDisplayedMnemonicIndex());
 
 		// Make height odd.
 		size.height &= ~1;
@@ -634,19 +612,17 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	/**
 	 * @see javax.swing.plaf.basic.BasicButtonUI#getMaximumSize(javax.swing.JComponent)
 	 */
+	@Override
 	public Dimension getMaximumSize(JComponent c) {
-		if (c.getComponentCount() > 0 && c.getLayout() != null) {
+		if ((c.getComponentCount() > 0) && (c.getLayout() != null)) {
 			return null;
 		}
 
 		AbstractButton b = (AbstractButton) c;
-		SynthContext ss = getContext(c);
+		SynthContext ss = this.getContext(c);
 		final SynthStyle style2 = ss.getStyle();
-		Dimension size = style2.getGraphicsUtils(ss).getMaximumSize(ss,
-				style2.getFont(ss), b.getText(), getSizingIcon(b),
-				b.getHorizontalAlignment(), b.getVerticalAlignment(),
-				b.getHorizontalTextPosition(), b.getVerticalTextPosition(),
-				b.getIconTextGap(), b.getDisplayedMnemonicIndex());
+		Dimension size = style2.getGraphicsUtils(ss).getMaximumSize(ss, style2.getFont(ss), b.getText(), this.getSizingIcon(b), b.getHorizontalAlignment(),
+				b.getVerticalAlignment(), b.getHorizontalTextPosition(), b.getVerticalTextPosition(), b.getIconTextGap(), b.getDisplayedMnemonicIndex());
 
 		return size;
 	}
@@ -662,11 +638,10 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	protected Icon getSizingIcon(AbstractButton b) {
 		// NOTE: this is slightly different than BasicButtonUI, where it
 		// would just use getIcon, but this should be ok.
-		Icon icon = (b.isEnabled() || b.getDisabledIcon() == null) ? b
-				.getIcon() : b.getDisabledIcon();
+		Icon icon = (b.isEnabled() || (b.getDisabledIcon() == null)) ? b.getIcon() : b.getDisabledIcon();
 
 		if (icon == null) {
-			icon = getDefaultIcon(b);
+			icon = this.getDefaultIcon(b);
 		}
 
 		return icon;
@@ -675,9 +650,10 @@ public class OButtonUI extends BasicButtonUI implements PropertyChangeListener,
 	/**
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent e) {
 		if (OntimizeLookAndFeel.shouldUpdateStyle(e)) {
-			updateStyle((AbstractButton) e.getSource());
+			this.updateStyle((AbstractButton) e.getSource());
 		}
 	}
 }

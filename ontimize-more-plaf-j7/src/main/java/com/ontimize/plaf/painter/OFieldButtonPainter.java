@@ -16,13 +16,8 @@ public class OFieldButtonPainter extends AbstractOButtonPainter {
 	protected Color mouseOverBgColor;
 	protected Color focusedMouseOverBgColor;
 
-	protected PaintContext ctx;
-	protected int state;
-
 	public OFieldButtonPainter(int state, PaintContext ctx) {
 		super(state, ctx);
-		this.state = state;
-		this.ctx = ctx;
 	}
 
 	@Override

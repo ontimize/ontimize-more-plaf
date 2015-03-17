@@ -17,10 +17,6 @@ public class OFormTabbedPaneTabAreaPainter extends AbstractRegionPainter {
 	public static final int BACKGROUND_ENABLED = 1;
 	public static final int BACKGROUND_DISABLED = 2;
 
-	// refers to one of the static final ints above
-	private final int state;
-	private final PaintContext ctx;
-
 	// the following 4 variables are reused during the painting code of the
 	// layers
 	private Rectangle2D rect = new Rectangle2D.Float(0, 0, 0, 0);
@@ -37,9 +33,7 @@ public class OFormTabbedPaneTabAreaPainter extends AbstractRegionPainter {
 	protected Paint backgroundColorDisabled;
 
 	public OFormTabbedPaneTabAreaPainter(int state, PaintContext ctx) {
-		super();
-		this.state = state;
-		this.ctx = ctx;
+		super(state, ctx);
 	}
 
 	@Override
