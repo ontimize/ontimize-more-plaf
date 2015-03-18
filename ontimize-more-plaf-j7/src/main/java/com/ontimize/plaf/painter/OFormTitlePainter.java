@@ -95,9 +95,6 @@ public class OFormTitlePainter extends AbstractRegionPainter {
 			this.paintBorderEnabled(g, c, 0, 0, width, height);
 			break;
 		}
-
-		g.drawRect(0, 0, cwidth, cheight);
-		g.drawRect(0, 0, width - 1, height - 1);
 	}
 
 	protected void paintBackgroundEnabled(Graphics2D g, JComponent c, int x, int y, int width, int height) {
