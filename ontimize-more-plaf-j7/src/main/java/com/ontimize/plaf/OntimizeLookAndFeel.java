@@ -216,9 +216,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	protected Font defaultFont;
 
 	public static final String[] NIMBUS_COLORS_KEYS = new String[] { "nimbusSelectionBackground", "text", "nimbusSelectedText", "nimbusDisabledText", "nimbusLightBackground",
-		"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
-		"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
-		"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
+			"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
+			"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
+			"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
 
 	/**
 	 * Constructor method. Here it is indicated: - initialize the map of styles
@@ -1352,6 +1352,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
+		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Focused+Enabled].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
 		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
 

@@ -81,13 +81,13 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 	// by a particular instance of TextFieldPainter would be created. For the
 	// moment at least,
 	// however, all are created for each instance.
-	protected Color color1 = this.decodeColor("nimbusBlueGrey", -0.015872955f, -0.07995863f, 0.15294117f, 0);
-	protected Color color2 = this.decodeColor("nimbusLightBackground", 0.0f, 0.0f, 0.0f, 0);
-	protected Color color3 = this.decodeColor("nimbusBlueGrey", -0.006944418f, -0.07187897f, 0.06666666f, 0);
-	protected Color color4 = this.decodeColor("nimbusBlueGrey", 0.007936537f, -0.07826825f, 0.10588235f, 0);
-	protected Color color7 = this.decodeColor("nimbusBlueGrey", -0.027777791f, -0.0965403f, -0.18431371f, 0);
-	protected Color color8 = this.decodeColor("nimbusBlueGrey", 0.055555582f, -0.1048766f, -0.05098039f, 0);
-	protected Color color9 = this.decodeColor("nimbusLightBackground", 0.6666667f, 0.004901961f, -0.19999999f, 0);
+	protected Color color1;
+	protected Color color2;
+	protected Color color3;
+	protected Color color4;
+	protected Color color7;
+	protected Color color8;
+	protected Color color9;
 
 	// Array of current component colors, updated in each paint call
 	protected Object[] componentColors;
@@ -177,6 +177,17 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 	@Override
 	protected PaintContext getPaintContext() {
 		return this.ctx;
+	}
+
+	@Override
+	protected void initializeDefaultColors() {
+		this.color1 = this.decodeColor("nimbusBlueGrey", -0.015872955f, -0.07995863f, 0.15294117f, 0);
+		this.color2 = this.decodeColor("nimbusLightBackground", 0.0f, 0.0f, 0.0f, 0);
+		this.color3 = this.decodeColor("nimbusBlueGrey", -0.006944418f, -0.07187897f, 0.06666666f, 0);
+		this.color4 = this.decodeColor("nimbusBlueGrey", 0.007936537f, -0.07826825f, 0.10588235f, 0);
+		this.color7 = this.decodeColor("nimbusBlueGrey", -0.027777791f, -0.0965403f, -0.18431371f, 0);
+		this.color8 = this.decodeColor("nimbusBlueGrey", 0.055555582f, -0.1048766f, -0.05098039f, 0);
+		this.color9 = this.decodeColor("nimbusLightBackground", 0.6666667f, 0.004901961f, -0.19999999f, 0);
 	}
 
 	/**
@@ -498,7 +509,7 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 	/**
 	 * This method returns, if it is configured by the user, the value for
 	 * corner radius.
-	 * 
+	 *
 	 * @return
 	 */
 	protected double getRadius() {
@@ -509,7 +520,7 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 	 * This method returns the maximum radius available for the component. The
 	 * maximum radius is calculated from the height of the component and it
 	 * provokes that the field corners looks like a semicircle.
-	 * 
+	 *
 	 * @return
 	 */
 	protected double getMaximumRadius() {
@@ -519,7 +530,7 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 	/**
 	 * Returns the x coordinate where starts the semicircle of the left of the
 	 * component.
-	 * 
+	 *
 	 * @return
 	 */
 	protected double getLeftX() {
@@ -531,7 +542,7 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 	/**
 	 * Returns the x coordinate where starts the semicircle of the right of the
 	 * component.
-	 * 
+	 *
 	 * @return
 	 */
 	protected double getRightX() {
@@ -667,7 +678,7 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 
 	/**
 	 * Decodes the border component path.
-	 * 
+	 *
 	 * @param x
 	 *            The x coordinate where starts the semicircle of the left
 	 * @param y

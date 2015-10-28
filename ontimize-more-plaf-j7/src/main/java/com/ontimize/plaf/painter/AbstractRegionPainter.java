@@ -155,10 +155,13 @@ public abstract class AbstractRegionPainter implements Painter<JComponent> {
 	public AbstractRegionPainter(int state, PaintContext ctx) {
 		this.state = state;
 		this.ctx = ctx;
+		this.initializeDefaultColors();
 		this.init();
 	}
 
 	protected void init() {}
+
+	protected void initializeDefaultColors() {};
 
 	protected abstract String getComponentKeyName();
 
