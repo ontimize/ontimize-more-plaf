@@ -1,0 +1,451 @@
+-----------------------------------------%1.0.10%
+======== Warning ======
+
+====== Noteworthies ======
+OntimizeStyle. New implementation. Rely on Nimbus the task of matching painters.
+\\
+CSS Style constants. Now it is possible to define constants for your repeated property values.
+\\
+ResultCountLabel. New property that allows to change the font color of form registry count in navigation controls.
+\\
+FormTabbedPane. New painter for tabs of this component.
+\\
+
+====== Enhancements ======
+New methods on OntimizeLookAndFeel. For each component it has been created new methods that allows to you to set same component properties with a different name.
+\\
+Form. Fixed problem of margin into Form scroll pane.
+\\
+
+======== Bugs fixed======
+TextField and TextArea. Fixed bug on setting background text selection color (Property 'textBackground' into CSS).
+\\
+Tab. Fixed bug on changing font of the component. To set the font it is necessary to set CSS parameter 'font' into the component TabbedPane.
+\\
+TextArea. Fixed bug on corner radius configuration.
+\\
+TreeCellRenderer. Solved problem of Tree cell renderer configuration.
+\\
+Menu. Solved problem of font configuration.
+\\
+CalendarTableHeaderRenderer. Solved problem of initialization of default colours.
+\\
+TableHeaderRenderer. Fixing problems on sort icon painting.
+\\
+FormTabbedPane. Fixing problems on fixing foreground and background colors of tabs.
+\\
+ComboBox. Fixing problems on painting border when 'Required' state.
+\\
+
+-----------------------------------------%1.0.9%
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+ComboBox : new css property for configuring popup list border ("ComboBox.scrollPane")
+\\
+OLabelUI : generic label renderer configuration.
+\\
+MenuItem : setFont method.
+\\
+TableCellRenderer : new css property for configuring insertable rows colors ([Insertable].requiredBackground and [Insertable].norequiredBackground)
+\\
+
+======== Bugs fixed======
+JAVA 8 version. Fixed problems with new classes of Java 8 version.
+\\
+
+-----------------------------------------%1.0.8%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+Submenus : Solved painting problems on painting submenus on Java 7.
+\\
+ReferenceExtCode : Solved problem painting required background.
+\\ 
+-----------------------------------------%1.0.7%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+PageFetcher : Solved painting footer labels on pageable tables.
+\\
+OTabbedPaneUI : Solved problem setting tab foreground color by code.
+\\ 
+-----------------------------------------%1.0.6%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+Pageable Table: Solved painting footer icons on pageable tables.
+\\
+
+-----------------------------------------%1.0.5%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+
+-----------------------------------------%1.04%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+Solved bug on painting FormHeaderPopupButton component.
+\\
+-----------------------------------------%1.03%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+Solved bug on painting forms with large scrollPanes.
+\\
+
+-----------------------------------------%1.02%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+Solved bug on selectable items of table column selection, reports and charts.
+\\
+
+-----------------------------------------%1.01%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+Linear gradient paint is now available in various components. "Columns", "Rows", "Grids", "Toolbar", "FormTitle" and "FormBodyPanels" now have a new parameter 'bgpaint' that allows to specify a linear gradient.
+\\
+ToolbarButton and ToolbarToggleButton. New component configuration properties ('opacity' and 'background') are available.
+\\
+TitledBorder. New component configuration parameter 'titleColor' available. It allows to configure foreground color of TitleBorder.
+\\
+
+======== Bugs fixed======
+CollapsibleButtonPanel. New parameters of painting configuration included into css.
+\\
+Look&Feel instalation. Fixed color assignaments and problmes of several components on Look&Feel reinstallation.
+\\
+
+-----------------------------------------%1.0%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+
+-----------------------------------------%0.66%
+
+======== Warning ======
+Running this version with Ontimize Agenda component needs to upload Agenda version jar.
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+JPasswordField. Now this component has the same appearance that Ontimize Look&Feel text fields.
+\\
+FileChooser. Fixed file name editor repainting problem.
+\\
+Fixed bug into CSS style import utility.
+\\
+CheckBox and RadioButton. Fixed settings of default foreground color.
+\\
+
+-----------------------------------------%0.65%
+
+======== Warning ======
+
+====== Noteworthies ======
+It has been changed the scope of some variables from private to protected.
+\\
+It has been removed some 'final' scope from several methods.
+\\
+
+====== Enhancements ======
+
+======== Bugs fixed======
+OTabbedPaneUI. Solved painting problem of the first element.
+\\
+
+-----------------------------------------%0.64%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+ELabel. Fixed problem of font configuration.
+\\
+Application Font. Fixed problems of global application font configuration.
+\\
+TreeCellRenderer. Fixed font configuration problem.
+\\
+CollapsiblePanel. Fixed font configuration problem.
+\\
+TitledBorder. Fixed font configuration problem.
+\\
+Table.QuickFilter. Fixed overlapping configuration color of TextField on QuickFilter changes.
+\\
+CSSParser. Added new configuration parameter to import style sheets.
+\\
+OTableVisualCalendarCellRendererPainter. Fixed initialization of colors into the painter.
+\\
+OReferenceExtFieldPainter. New painter to solve painting problems of ReferenceExtDataField (requires new Ontimize version).
+\\
+
+-----------------------------------------%0.63%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+Application. New property 'radius' that enables to configure the curvature of the corners of text fields.
+\\
+
+======== Bugs fixed======
+
+-----------------------------------------%0.62%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+TabbedPane:Tab. Fixed painting bug of first and last tab position.
+\\
+ScrollPane:Corner. Fixed painting problem of ScrollPane corner when horizontal and vertical scroll bars were visible.
+\\
+ToolTip. Fixed painting tip background when owner component is disabled. Tip shape is not painted when tip text is empty.
+\\
+MenuItem. Solved space separation between different menu elements into the menu.
+\\
+QuickFilter. Solved repainting problem when typing. Solved problem of overlapping text over magnify glass icon.
+\\
+ComboCellEditor. Fixed painting problem of combobox editors.
+\\
+ComboBox. Fixed problem paintings of list renderer.
+\\
+
+-----------------------------------------%0.61%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+ApToolbarNavigator. New default icons for button's component.
+\\
+
+======== Bugs fixed======
+TreeCellRenderer. Fixed painting of child count depending on configuration.
+\\
+TreeCellRenderer. Fixed painting background color of non-organizative nodes.
+\\
+PopupMenu. Solved problems of painting child menus when not enough space was available.
+\\
+Row and Columns. Solved problems of spacing between combination of those elements.
+\\
+TitledBorder. Solved painting problem of right margin.
+\\
+TableButton. Solved painting problem of button's icon of visible columns configuration of the table.
+\\
+
+-----------------------------------------%0.60%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+JPopupMenu. Fixed propagation of action performed events over JMenuItems.
+\\
+
+-----------------------------------------%0.59%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+Popup. Fixed transparency problems running on Linux.
+\\
+
+-----------------------------------------%0.58%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+TableHeaderPainter. Solved problem of repainting header column separators when changing position of the columns.
+\\
+TableHeader sort renderer. Solved problem of painting sorting index when multiple sorts are applied to the table.
+\\
+VisualCalendarComponent. Fixed problems of painting on day renderer columns.
+\\
+TableUI. Solved problem of painting background table when is not contained into JScrollPane.
+\\
+ButtonSelection. Fixed painting bugs of different types of ButtonSelection use's cases.
+\\
+
+-----------------------------------------%0.57%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+TreeCellRenderer. Solved problems of painting.
+\\
+PopupMenu. Solved problems of painting child menus when not enough space was available.
+\\
+FormHeaderPopupButton. Solved problems of painting.
+\\
+
+------------------------------------%0.56%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+ComboBox. Solved problems of color configuration.
+\\
+
+-----------------------------------------%0.55%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+TextField. Fixed repainting component when margins are modified.
+\\
+TextField. Fixed overlaping of degraded borders and background.
+\\
+MenuBar:Menu. Fixed painting when Menu width is greater than deployed PopupMenu width.
+\\
+TabPanel. Fixed painting component in different positions (Top, Bottom, Right, Left).
+\\
+MemoDataField. Fixed border painting when it is contained into ScrollPane.
+\\
+
+-----------------------------------------%0.54%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+PopupMenu, MenuItem, MenuBar. Fixed painting of margins.
+\\
+TextField. Fixed assigning font color.
+\\
+ToolbarButtons. Fixed margin painting.
+\\
+
+-----------------------------------------%0.53%
+
+======== Warning ======
+
+====== Noteworthies ======
+\\OTreeCellRendererPainter. Variables of background color, etc. change its scope from protected final to protected.
+====== Enhancements ======
+
+======== Bugs fixed======
+OFormButtonPanel. Bug fixing color properties into constructor fixed.
+\\
+-----------------------------------------%0.52%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+TabbedPane. Bug painting tab fixed.
+
+-----------------------------------------%0.51%
+
+======== Warning ======
+
+====== Noteworthies ======
+
+====== Enhancements ======
+
+======== Bugs fixed======
+Toolbar. Bug loading background image fixed.
+\\
+-----------------------------------------%0.5%
+
+====== Noteworthies ======
+\\
+====== Enhancements ======
+VisualCalendar Component. New appearance of the component.
+\\
+======== Bugs fixed======
+Panel. Fixed setting background color externally.
+\\
+Diagram. Fixed appearance of Diagram Toolbar.
+\\
+Agenda. Fixed appearance of Agenda Toolbar.
+\\
+======== Warning ======
+\\
