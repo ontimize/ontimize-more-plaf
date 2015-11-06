@@ -480,6 +480,8 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 		g.setPaint(this.getBackgroundForState(c));
 		g.fillRect(this.intValue(xx), this.intValue(yy), this.intValue(w), this.intValue(h));
 
+		this.defineBorderFillers(g, c, 0, 0, c.getWidth(), c.getHeight());
+
 		g.setPaint(previousPaint);
 		g.setRenderingHints(rh);
 	}
@@ -555,11 +557,6 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 		Paint previousPaint = g.getPaint();
 		RenderingHints rh = g.getRenderingHints();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		// TODO solve setOpaque into TextDataField of Ontimize...
-		// if(c.isOpaque()) {
-		this.defineBorderFillers(g, c, x, y, width, height);
-		// }
 
 		double xx = this.getLeftX();
 		double yy = this.decodeY(0.0f) + AbstractOTextFieldPainter.numBorders;
