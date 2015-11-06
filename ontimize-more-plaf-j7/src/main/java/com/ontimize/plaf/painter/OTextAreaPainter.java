@@ -15,6 +15,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.UIManager;
+import javax.swing.plaf.UIResource;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.painter.util.ShapeFactory;
@@ -316,7 +317,7 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 
 	protected Paint getBackgroundColor(JComponent c, Shape s, Paint defaultColor) {
 		if (c != null) {
-			if (c.getBackground() != null) {
+			if ((c.getBackground() instanceof UIResource) == false) {
 				return c.getBackground();
 			}
 		}
@@ -622,7 +623,7 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 
 	/**
 	 * Decodes the border component path.
-	 * 
+	 *
 	 * @param x
 	 *            The x coordinate where starts the semicircle of the left
 	 * @param y
@@ -673,7 +674,7 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 	/**
 	 * This method returns, if it is configured by the user, the value for
 	 * corner radius.
-	 * 
+	 *
 	 * @return
 	 */
 	protected double getRadius() {
@@ -684,7 +685,7 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 	 * This method returns the maximum radius available for the component. The
 	 * maximum radius is calculated from the height of the component and it
 	 * provokes that the field corners looks like a semicircle.
-	 * 
+	 *
 	 * @return
 	 */
 	protected double getMaximumRadius() {
@@ -694,7 +695,7 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 	/**
 	 * Returns the x coordinate where starts the semicircle of the left of the
 	 * component.
-	 * 
+	 *
 	 * @return
 	 */
 	protected double getLeftX() {
@@ -706,7 +707,7 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 	/**
 	 * Returns the x coordinate where starts the semicircle of the right of the
 	 * component.
-	 * 
+	 *
 	 * @return
 	 */
 	protected double getRightX() {
