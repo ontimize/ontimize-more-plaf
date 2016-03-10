@@ -35,6 +35,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 	public static final int BACKGROUND_MOUSEOVER_FOCUSED = 5;
 	public static final int BACKGROUND_MOUSEOVER = 6;
 	public static final int BACKGROUND_PRESSED_FOCUSED = 7;
+	public static final int BACKGROUND_REQUIRED_FOCUSED = 77;
 	public static final int BACKGROUND_PRESSED = 8;
 	public static final int BACKGROUND_ENABLED_SELECTED = 9;
 	public static final int BACKGROUND_DISABLED_EDITABLE = 10;
@@ -53,6 +54,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 	protected Paint backgroundColorFocusedMouseOver;
 	protected Paint backgroundColorMouseOver;
 	protected Paint backgroundColorFocusedPressed;
+	protected Paint backgroundColorFocusedRequired;
 	protected Paint backgroundColorPressed;
 	protected Paint backgroundColorRequired;
 
@@ -63,6 +65,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 	protected Paint backgroundArrowButtonColorFocusedMouseOver;
 	protected Paint backgroundArrowButtonColorMouseOver;
 	protected Paint backgroundArrowButtonColorFocusedPressed;
+	protected Paint backgroundArrowButtonColorFocusedRequired;
 	protected Paint backgroundArrowButtonColorPressed;
 
 	protected Paint backgroundArrowButtonColorEditableDisabled;
@@ -72,6 +75,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 	protected Paint backgroundArrowButtonColorEditableFocusedMouseOver;
 	protected Paint backgroundArrowButtonColorEditableMouseOver;
 	protected Paint backgroundArrowButtonColorEditableFocusedPressed;
+	protected Paint backgroundArrowButtonColorEditableFocusedRequired;
 	protected Paint backgroundArrowButtonColorEditablePressed;
 
 	// arrays to round the component (several rounded borders with degradation):
@@ -206,6 +210,9 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			break;
 		case BACKGROUND_PRESSED_FOCUSED:
 			this.paintBackgroundPressedAndFocused(g);
+			break;
+		case BACKGROUND_REQUIRED_FOCUSED:
+			this.paintBackgroundRequiredAndFocused(g);
 			break;
 		case BACKGROUND_PRESSED:
 			this.paintBackgroundPressed(g);
@@ -392,6 +399,14 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			this.backgroundColorFocusedPressed = (Paint) obj;
 		} else {
 			this.backgroundColorFocusedPressed = this.color2;
+		}
+
+		// focused + required:
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Focused+Required].background");
+		if (obj instanceof Paint) {
+			this.backgroundColorFocusedRequired = (Paint) obj;
+		} else {
+			this.backgroundColorFocusedRequired = this.color2;
 		}
 
 		// pressed:
@@ -679,6 +694,15 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			this.drawDegradatedBorders(g, this.degradatedBorderColorFocused);
 		}
 
+	}
+
+	protected void paintBackgroundRequiredAndFocused(Graphics2D g) {
+		if (this.isTableEditor()) {
+			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorFocusedMouseOver));
+		} else {
+			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorFocusedRequired));
+			this.drawDegradatedBorders(g, this.degradatedBorderColorFocused);
+		}
 	}
 
 	protected void paintBackgroundPressed(Graphics2D g) {
@@ -973,6 +997,9 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			break;
 		case BACKGROUND_PRESSED_FOCUSED:
 			c = (Color) this.backgroundArrowButtonColorPressed;
+			break;
+		case BACKGROUND_REQUIRED_FOCUSED:
+			c = (Color) this.backgroundArrowButtonColorMouseOver;
 			break;
 		case BACKGROUND_FOCUSED:
 			c = (Color) this.backgroundArrowButtonColorFocused;

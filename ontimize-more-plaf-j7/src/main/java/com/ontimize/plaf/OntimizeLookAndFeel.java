@@ -1,5 +1,6 @@
 package com.ontimize.plaf;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -56,7 +57,6 @@ import javax.swing.plaf.synth.SynthUI;
 import sun.awt.AppContext;
 import sun.swing.plaf.synth.DefaultSynthStyle;
 
-import com.ontimize.agenda.CenterPanel;
 import com.ontimize.gui.ApToolBarNavigator;
 import com.ontimize.gui.ApToolBarPopupButton;
 import com.ontimize.gui.ApplicationManager;
@@ -1925,6 +1925,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_REQUIRED, ctx));
 		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER, ctx));
 		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Focused+Required].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_REQUIRED_FOCUSED, ctx));
 		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED, ctx));
 		d.put(compName + "[Enabled+Selected].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_ENABLED_SELECTED, ctx));
 		d.put(compName + "[Disabled+Editable].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED_EDITABLE, ctx));
@@ -4218,7 +4219,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			com.ontimize.agenda.CenterPanel.REFRESH_ICON = "com/ontimize/plaf/images/agenda/24x24_table_actualizar.png";
 			com.ontimize.agenda.CenterPanel.PREFERENCE_ICON = "com/ontimize/plaf/images/agenda/24x24_table_agenda_conf.png";
 			com.ontimize.agenda.CenterPanel.PRINT_ICON = "com/ontimize/plaf/images/table/print.png";
-			CenterPanel.toolBarFiller = false;
+			com.ontimize.agenda.CenterPanel.toolBarFiller = false;
 			com.ontimize.agenda.gui.AgendaGUI.defaultToolBarHeight = 40;
 		} catch (Throwable e) {}
 	}
@@ -4249,6 +4250,341 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		}
 
+	}
+
+	protected void defineTaskViewTooltip(UIDefaults d) {
+		String compName = "Planning:TaskView";
+		try {
+			/* Tooltip for calendar taskss */
+			com.ontimize.planning.component.PlanningConstants.TASK_VIEW = StyleUtil.getProperty(compName, "taskViewPath",
+					"com/ontimize/planning/component/controlpanel/taskView.html");
+		} catch (Throwable e) {}
+	}
+
+	protected void defineLCalendarComponent(UIDefaults d) {
+		String compName = "Planning:LCalendar";
+		this.defineLCalendarComponent(compName, d);
+	}
+
+	protected void defineLCalendarComponent(String compName, UIDefaults d) {
+		try {
+			/* Gap between calendar months */
+			com.ontimize.planning.component.calendar.LittleMonthComponent.defaultLCalendarComponentBackground = StyleUtil.getColor(compName, "componentBackground", "#F0F0F000");
+			/* Border of calendar month */
+			com.ontimize.planning.component.calendar.LittleMonthComponent.defaultLCalendarMonthBorderColor = StyleUtil.getColor(compName, "monthBorderColor", "#B6BDBF");
+			/* Month name background */
+			com.ontimize.planning.component.calendar.LittleMonthComponent.defaultLCalendarMonthHeaderBackground = StyleUtil.getColor(compName, "monthHeaderBackground", "#ABC7D8");
+			/* Month name foreground */
+			com.ontimize.planning.component.calendar.LittleMonthComponent.defaultLCalendarMonthHeaderForeground = StyleUtil.getColor(compName, "monthHeaderForeground", "#000000");
+			/* Month days name background */
+			com.ontimize.planning.component.calendar.LittleMonthComponent.defaultLCalendarWeekBackground = StyleUtil.getColor(compName, "monthWeekBackground", "#F0F0F0");
+			/* Month days name foreground */
+			com.ontimize.planning.component.calendar.LittleMonthComponent.defaultLCalendarWeekForeground = StyleUtil.getColor(compName, "monthWeekForeground", "#000000");
+			/* Month odd days background */
+			com.ontimize.planning.component.calendar.DefaultLittleDayRenderer.defaultOddMonthDaysBackground = StyleUtil.getColor(compName, "monthOddDaysBackground", "#F3F3F0");
+			/* Month odd days background */
+			com.ontimize.planning.component.calendar.DefaultLittleDayRenderer.defaultEvenMonthDaysBackground = StyleUtil.getColor(compName, "monthEvenDaysBackground", "#FFFFFF");
+			/* Selected month day background */
+			com.ontimize.planning.component.calendar.DefaultLittleDayRenderer.defaultMonthDayBackgroundSelected = StyleUtil.getColor(compName, "monthDayBackgroundSelected",
+					"#5CB1EA");
+			/* Month day foreground */
+			com.ontimize.planning.component.calendar.DefaultLittleDayRenderer.defaultMonthDaysForeground = StyleUtil.getColor(compName, "monthDaysForeground", "#000000");
+			/* Month day with accomplished tasks foreground */
+			com.ontimize.planning.component.calendar.DefaultLittleDayRenderer.defaultMonthDaysAccomplisehdAppointments = StyleUtil.getColor(compName,
+					"monthDaysAccomplisehdAppointments", "#FF0000");
+			/* Month day with pending tasks foreground */
+			com.ontimize.planning.component.calendar.DefaultLittleDayRenderer.defaultMonthDaysPendingAppointments = StyleUtil.getColor(compName, "monthDaysPendingAppointments",
+					"#00FF00");
+		} catch (Throwable e) {}
+	}
+
+	protected void defineDayPlanningComponent(UIDefaults d) {
+		String compName = "Planning:DayPlanningComponent";
+		this.defineDayPlanningComponent(compName, d);
+	}
+
+	protected void defineDayPlanningComponent(String compName, UIDefaults d) {
+		try {
+			/* Hours width */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.OWNERS_BAR_WIDTH = StyleUtil.getInteger(compName, "ownersBarWidth", "50");
+			/* Background scheduler scrollPane color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SCROLLPANEL_BGCOLOR = StyleUtil.getColor(compName, "scrollPanelBgcolor", "#366581");
+			/* Background slot color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SCHEDULERPANEL_BGCOLOR = StyleUtil.getColor(compName, "schedulerpanelBgcolor", "#FFFFFF");
+			/* Default slot color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.DEFAULT_SLOT_BACKGROUND_COLOR = StyleUtil.getColor(compName, "defaultSlotBackgroundColor", "#517286");
+			/* Default selected slot color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.DEFAULT_SLOT_BACKGROUNDSELECTED_COLOR = StyleUtil.getColor(compName,
+					"defaultSlotBackgroundselectedColor", "#E4EDF0");
+			/* Default slot border color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.DEFAULT_SLOT_BORDER_COLOR = StyleUtil.getColor(compName, "defaultSlotBorderColor", "#000000");
+			/* Default slot selected color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.DEFAULT_SLOT_SELECTEDBORDER_COLOR = StyleUtil.getColor(compName, "defaultSlotSelectedBorderColor",
+					"#FF0000");
+			/* Default empty selected slot color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.DEFAULT_EMPTY_SELECTED_SLOT_COLOR = StyleUtil.getColor(compName, "defaultEmptySelectedSlotColor",
+					"#C0C0C0");
+			/* Default empty selected slot border color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.DEFAULT_EMPTY_SELECTED_SLOT_BORDER_COLOR = StyleUtil.getColor(compName,
+					"defaultEmptySelectedSlotBorderColor", "#000000");
+			/* Default unschedulable slot color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.DEFAULT_UNSCHEDULABLE_SLOT_COLOR = StyleUtil.getColor(compName, "defaultUnschedulableSlotColor",
+					"#FF0000");
+			/* Default color of scheduler panel inner border */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SCHEDULERPANEL_LASTLINE_COLOR = StyleUtil.getColor(compName, "schedulerpanelLastlineColor", "#C0C0C0");
+			/* Default basic stroke width of scheduler panel inner border */
+			float schedulerpanelLastlineStrokeWidth = StyleUtil.getFloat(compName, "schedulerpanelLastlineStrokeWidth", "1.0f");
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SCHEDULERPANEL_LASTLINE_STROKE = new BasicStroke(schedulerpanelLastlineStrokeWidth);
+			/* Default color of scheduler lines */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SCHEDULERPANEL_LINES_COLOR = StyleUtil.getColor(compName, "schedulerpanelLinesColor", "#C0C0C0");
+			/* Default width of Basic Stroke scheduler panel lines */
+			float schedulerpanelLinesStrokeWidth = StyleUtil.getFloat(compName, "schedulerpanelLinesStrokeWidth", "1.0f");
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SCHEDULERPANEL_LINES_STROKE = new BasicStroke(schedulerpanelLinesStrokeWidth, BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_MITER, 10.0f, com.ontimize.planning.component.PlanningConstants.dash1, 0.0f);
+			/* Default color of scheduler middle line */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SCHEDULERPANEL_MIDDLELINE_COLOR = StyleUtil.getColor(compName, "schedulerpanelMiddlelineColor",
+					"#FF0000");
+			/* Default width of scheduler middle line */
+			float schedulerpanelMiddlelineStrokeWidth = StyleUtil.getFloat(compName, "schedulerpanelMiddlelineStrokeWidth", "1.0f");
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SCHEDULERPANEL_MIDDLELINE_STROKE = new BasicStroke(schedulerpanelMiddlelineStrokeWidth,
+					BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, com.ontimize.planning.component.PlanningConstants.dash1, 0.0f);
+			/* Default vertical lines color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SCHEDULERPANEL_VERTICALLINES_COLOR = StyleUtil.getColor(compName, "schedulerpanelVerticallinesColor",
+					"#000000");
+			/* Default vertical lines stroke width, NOT MODIFY DEFAULT VALUE */
+			float schedulerpanelVerticallinesStroke = StyleUtil.getFloat(compName, "schedulerpanelVerticallinesStroke", "1.0f");
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SCHEDULERPANEL_VERTICALLINES_STROKE = new BasicStroke(schedulerpanelVerticallinesStroke);
+			/* Default owners bar name background color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.OWNERSBAR_NAMES_BACKGROUND_COLOR = StyleUtil.getColor(compName, "ownersbarNamesBackgroundColor",
+					"#ABC7D8");
+			/* Default owner bar name font color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.OWNERSBAR_NAMES_FONT_COLOR = StyleUtil.getColor(compName, "ownersbarNamesFontColor", "#000000");
+			/* Default owners bar font style */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.OWNERSBAR_NAMES_FONT_STYLE = StyleUtil.getInteger(compName, "ownersbarNamesFontStyle", "1");
+			/* Default owners name font size */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.OWNERSBAR_NAMES_FONT_SIZE = StyleUtil.getFloat(compName, "ownersbarNamesFontSize", "11f");
+			/* Default owners bar hours background color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.OWNERSBAR_HOURS_BACKGROUND_COLOR = StyleUtil.getColor(compName, "ownersbarHoursBackgroundColor",
+					"#ABC7D8");
+			/* Default owners bar hours border color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.OWNERSBAR_HOURS_BORDER_COLOR = StyleUtil.getColor(compName, "ownersbarHoursBorderColor", "#366581");
+			/* Default owners bar hours font color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.OWNERSBAR_HOURS_FONT_COLOR = StyleUtil.getColor(compName, "ownersbarHoursFontColor", "#000000");
+			/* Default owners bar hours font style */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.OWNERSBAR_HOURS_FONT_STYLE = StyleUtil.getInteger(compName, "ownersbarHoursFontStyle", "1");
+			/* Default owners bar hours font size */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.OWNERSBAR_HOURS_FONT_SIZE = StyleUtil.getFloat(compName, "ownersbarHoursFontSize", "11F");
+			/* Default slot header font name */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SLOT_HEADER_FONTNAME = StyleUtil.getProperty(compName, "slotHeaderFontname", "Tahoma");
+			/* Default slot header font color */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SLOT_HEADER_FONTCOLOR = StyleUtil.getColor(compName, "slotHeaderFontcolor", "#000000");
+			/* Default slot header font size */
+			com.ontimize.planning.component.dayplanning.DayPlanningConstants.SLOT_HEADER_FONTSIZE = StyleUtil.getInteger(compName, "slotHeaderFontsize", "9");
+		} catch (Throwable e) {}
+	}
+
+	protected void defineWeekPlanningComponent(UIDefaults d) {
+		String compName = "Planning:WeekPlanningComponent";
+		this.defineWeekPlanningComponent(compName, d);
+
+	}
+
+	protected void defineWeekPlanningComponent(String compName, UIDefaults d) {
+		try {
+			/* Default owners bar width */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERS_BAR_WIDTH = StyleUtil.getInteger(compName, "ownersBarWidth", "60");
+			/* Default scheduler scroll panel background */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SCROLLPANEL_BGCOLOR = StyleUtil.getColor(compName, "scrollPanelBgcolor", "#366581");
+			/* Default Scheduler panel background color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SCHEDULERPANEL_BGCOLOR = StyleUtil.getColor(compName, "schedulerpanelBgcolor", "#FFFFFF");
+			/* Default slot background color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.DEFAULT_SLOT_BACKGROUND_COLOR = StyleUtil
+					.getColor(compName, "defaultSlotBackgroundColor", "#517286");
+			/* Default slot background selected color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.DEFAULT_SLOT_BACKGROUNDSELECTED_COLOR = StyleUtil.getColor(compName,
+					"defaultSlotBackgroundselectedColor", "#E4EDF0");
+			/* Default slot border color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.DEFAULT_SLOT_BORDER_COLOR = StyleUtil.getColor(compName, "defaultSlotBorderColor", "#000000");
+			/* Default slot selected border color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.DEFAULT_SLOT_SELECTEDBORDER_COLOR = StyleUtil.getColor(compName, "defaultSlotSelectedBorderColor",
+					"#FF0000");
+			/* Default empty selected slot color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.DEFAULT_EMPTY_SELECTED_SLOT_COLOR = StyleUtil.getColor(compName, "defaultEmptySelectedSlotColor",
+					"#C0C0C0");
+			/* Default empty selected slot border color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.DEFAULT_EMPTY_SELECTED_SLOT_BORDER_COLOR = StyleUtil.getColor(compName,
+					"defaultEmptySelectedSlotBorderColor", "#000000");
+			/* Default unschedulable slot color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.DEFAULT_UNSCHEDULABLE_SLOT_COLOR = StyleUtil.getColor(compName, "defaultUnschedulableSlotColor",
+					"#FF0000");
+			/* Default scheduler panel last line */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SCHEDULERPANEL_LASTLINE_COLOR = StyleUtil.getColor(compName, "schedulerpanelLastlineColor",
+					"#000000");
+			/* Scheduler panel last line stroke width */
+			float schedulerpanelLastlineStrokeWidth = StyleUtil.getFloat(compName, "schedulerpanelLastlineStrokeWidth", "1.0f");
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SCHEDULERPANEL_LASTLINE_STROKE = new BasicStroke(schedulerpanelLastlineStrokeWidth);
+			/* Default scheduler panel lines color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SCHEDULERPANEL_LINES_COLOR = StyleUtil.getColor(compName, "schedulerpanelLinesColor", "#C0C0C0");
+			/* Default scheduler panel lines stroke */
+			float schedulerpanelLinesStrokeWidth = StyleUtil.getFloat(compName, "schedulerpanelLinesStrokeWidth", "1.0f");
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SCHEDULERPANEL_LINES_STROKE = new BasicStroke(schedulerpanelLinesStrokeWidth, BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_MITER, 10.0f, com.ontimize.planning.component.PlanningConstants.dash1, 0.0f);
+			/* Default scheduler panel middle line color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SCHEDULERPANEL_MIDDLELINE_COLOR = StyleUtil.getColor(compName, "schedulerpanelMiddlelineColor",
+					"#FF0000");
+			/* Default scheduler panel middle name stroke width */
+			float schedulerpanelMiddlelineStrokeWidth = StyleUtil.getFloat(compName, "schedulerpanelMiddlelineStrokeWidth", "1.0f");
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SCHEDULERPANEL_MIDDLELINE_STROKE = new BasicStroke(schedulerpanelMiddlelineStrokeWidth,
+					BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, com.ontimize.planning.component.PlanningConstants.dash1, 0.0f);
+			/* Scheduler panel vertical lines color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SCHEDULERPANEL_VERTICALLINES_COLOR = StyleUtil.getColor(compName,
+					"schedulerpanelVerticallinesColor", "#000000");
+			/* Default scheduler panel vertical lines stroke width */
+			float schedulerpanelVerticallinesStrokeWidth = StyleUtil.getFloat(compName, "schedulerpanelVerticallinesStroke", "1.0f");
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SCHEDULERPANEL_VERTICALLINES_STROKE = new BasicStroke(schedulerpanelVerticallinesStrokeWidth);
+			/* Default weekdays bar background _color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.WEEKDAYSBAR_BACKGROUND_COLOR = StyleUtil.getColor(compName, "weekdaysbarBackgroundColor", "#ABC7D8");
+			/* Default weekdays bar border color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.WEEKDAYSBAR_BORDER_COLOR = StyleUtil.getColor(compName, "weekdaysbarBorderColor", "#366581");
+			/* Default weekdays bar font color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.WEEKDAYSBAR_FONT_COLOR = StyleUtil.getColor(compName, "weekdaysbarFontColor", "#000000");
+			/* Default week days bar font style */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.WEEKDAYSBAR_FONT_STYLE = StyleUtil.getInteger(compName, "weekdaysbarFontStyle", "1");
+			/* Default weekdays bar font size */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.WEEKDAYSBAR_FONT_SIZE = StyleUtil.getFloat(compName, "weekdaysbarFontSize", "12.0f");
+			/* Default owner bar names background color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_NAMES_BACKGROUND_COLOR = StyleUtil.getColor(compName, "ownersbarNamesBackgroundColor",
+					"#ABC7D8");
+			/* Default owners bar names font color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_NAMES_FONT_COLOR = StyleUtil.getColor(compName, "ownersbarNamesFontColor", "#000000");
+			/* Default owners bar names font style */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_NAMES_FONT_STYLE = StyleUtil.getInteger(compName, "ownersbarNamesFontStyle", "1");
+			/* Default owners bar names font size */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_NAMES_FONT_SIZE = StyleUtil.getFloat(compName, "ownersbarNamesFontSize", "11.0f");
+			/* Default owners bar hours background color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_HOURS_BACKGROUND_COLOR = StyleUtil.getColor(compName, "ownersbarHoursBackgroundColor",
+					"#D6D9DF");
+			/* Default owners bar hours font color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_HOURS_FONT_COLOR = StyleUtil.getColor(compName, "ownersbarHoursFontColor", "#000000");
+			/* Default owners bar font style */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_HOURS_FONT_STYLE = StyleUtil.getInteger(compName, "ownersbarHoursFontStyle", "1");
+			/* Default owners bar font size */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_HOURS_FONT_SIZE = StyleUtil.getFloat(compName, "ownersbarHoursFontSize", "9.0f");
+			/* Default owners bar hour lines color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_HOURS_LINES_COLOR = StyleUtil.getColor(compName, "ownersbarHoursLinesColor", "#404040");
+			/* Default owners bar hour lines stroke width */
+			float ownersbarHoursLinesStrokeWidth = StyleUtil.getFloat(compName, "ownersbarHoursLinesStrokeWidth", "1.0f");
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_HOURS_LINES_STROKE = new BasicStroke(ownersbarHoursLinesStrokeWidth, BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_MITER, 10.0f, com.ontimize.planning.component.PlanningConstants.dash1, 0.0f);
+			/* Default owners bar hours middle line color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_HOURS_MIDDLELINE_COLOR = StyleUtil.getColor(compName, "ownersbarHoursMiddlelineColor",
+					"#FF0000");
+			/* Default owners bar hours last line color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_HOURS_LASTLINE_COLOR = StyleUtil.getColor(compName, "ownersbarHoursLastlineColor",
+					"#000000");
+			/* Default owners bar hours last line stroke width */
+			float ownersbarHoursLastlineStrokeWidth = StyleUtil.getFloat(compName, "ownersbarHoursLastlineStrokeWidth", "1.0f");
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.OWNERSBAR_HOURS_LASTLINE_STROKE = new BasicStroke(ownersbarHoursLastlineStrokeWidth);
+			/* Default slot header font name */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SLOT_HEADER_FONTNAME = StyleUtil.getProperty(compName, "slotHeaderFontname", "Tahoma");
+			/* Default slot header font color */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SLOT_HEADER_FONTCOLOR = StyleUtil.getColor(compName, "slotHeaderFontcolor", "#000000");
+			/* Default slot header font size */
+			com.ontimize.planning.component.weekplanning.WeekPlanningConstants.SLOT_HEADER_FONTSIZE = StyleUtil.getInteger(compName, "slotHeaderFontsize", "9");
+		} catch (Throwable e) {}
+	}
+
+	protected void defineMonthPlanningComponent(UIDefaults d) {
+		String compName = "Planning:MonthPlanningComponent";
+		this.defineMonthPlanningComponent(compName, d);
+	}
+
+	protected void defineMonthPlanningComponent(String compName, UIDefaults d) {
+		try {
+			/* Default owners bar width */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.OWNERS_BAR_WIDTH = StyleUtil.getInteger(compName, "ownersBarWidth", "80");
+			/* Default scheduler panel background color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SCHEDULERPANEL_BGCOLOR = StyleUtil.getColor(compName, "schedulerpanelBgcolor", "#FFFFFF");
+			/* Default slot background color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.DEFAULT_SLOT_BACKGROUND_COLOR = StyleUtil.getColor(compName, "defaultSlotBackgroundColor",
+					"#517286");
+			/* Default slot background selected color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.DEFAULT_SLOT_BACKGROUNDSELECTED_COLOR = StyleUtil.getColor(compName,
+					"defaultSlotBackgroundselectedColor", "#E4EDF0");
+			/* Default slot border color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.DEFAULT_SLOT_BORDER_COLOR = StyleUtil.getColor(compName, "defaultSlotBorderColor", "#000000");
+			/* Default slot selected border color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.DEFAULT_SLOT_SELECTEDBORDER_COLOR = StyleUtil.getColor(compName, "defaultSlotSelectedBorderColor",
+					"#FF0000");
+			/* Default empty selected slot color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.DEFAULT_EMPTY_SELECTED_SLOT_COLOR = StyleUtil.getColor(compName, "defaultEmptySelectedSlotColor",
+					"#C0C0C0");
+			/* Default empty selected slot border color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.DEFAULT_EMPTY_SELECTED_SLOT_BORDER_COLOR = StyleUtil.getColor(compName,
+					"defaultEmptySelectedSlotBorderColor", "#000000");
+			/* Default marker slot color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.DEFAULT_MARKER_SLOT_COLOR = StyleUtil.getColor(compName, "defaultMarkerSlotColor", "#00FFFF");
+			/* Default marker slot border color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.DEFAULT_MARKER_SLOT_BORDER_COLOR = StyleUtil.getColor(compName, "defaultMarkerSlotBorderColor",
+					"#00FF00");
+			/* Default unschedulable slot color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.DEFAULT_UNSCHEDULABLE_SLOT_COLOR = StyleUtil.getColor(compName, "defaultUnschedulableSlotColor",
+					"#FF0000");
+			/* Default scheduler panel last line color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SCHEDULERPANEL_LASTLINE_COLOR = StyleUtil.getColor(compName, "schedulerpanelLastlineColor",
+					"#000000");
+			/* Default scheduler panel last line stroke width */
+			float schedulerpanelLastlineStrokeWidth = StyleUtil.getFloat(compName, "schedulerpanelLastlineStrokeWidth", "1.0f");
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SCHEDULERPANEL_LASTLINE_STROKE = new BasicStroke(schedulerpanelLastlineStrokeWidth);
+			/* De fault scheduler panel lines color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SCHEDULERPANEL_LINES_COLOR = StyleUtil.getColor(compName, "schedulerpanelLinesColor", "#C0C0C0");
+			/* Default scheduler panel lines stroke width */
+			float schedulerpanelLinesStrokeWidth = StyleUtil.getFloat(compName, "schedulerpanelLinesStrokeWidth", "1.0f");
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SCHEDULERPANEL_LINES_STROKE = new BasicStroke(schedulerpanelLinesStrokeWidth,
+					BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, com.ontimize.planning.component.PlanningConstants.dash1, 0.0f);
+			/* Default scheduler panel middle line color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SCHEDULERPANEL_MIDDLELINE_COLOR = StyleUtil.getColor(compName, "schedulerpanelMiddlelineColor",
+					"#FF0000");
+			/* Default scheduler panel middle line stroke */
+			float schedulerpanelMiddlelineStrokeWidth = StyleUtil.getFloat(compName, "schedulerpanelMiddlelineStrokeWidth", "1.0f");
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SCHEDULERPANEL_MIDDLELINE_STROKE = new BasicStroke(schedulerpanelMiddlelineStrokeWidth,
+					BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, com.ontimize.planning.component.PlanningConstants.dash1, 0.0f);
+			/* Default scheduler panel vertical lines color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SCHEDULERPANEL_VERTICALLINES_COLOR = StyleUtil.getColor(compName,
+					"schedulerpanelVerticallinesColor", "#000000");
+			/* Default scheduler panel vertical stroke width */
+			float schedulerpanelVerticallinesStroke = StyleUtil.getFloat(compName, "schedulerpanelVerticallinesStroke", "1.0f");
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SCHEDULERPANEL_VERTICALLINES_STROKE = new BasicStroke(schedulerpanelVerticallinesStroke);
+			/* Default weekdays bar background color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.WEEKDAYSBAR_BACKGROUND_COLOR = StyleUtil.getColor(compName, "weekdaysbarBackgroundColor",
+					"#ABC7D8");
+			/* Default weekdays bar font color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.WEEKDAYSBAR_FONT_COLOR = StyleUtil.getColor(compName, "weekdaysbarFontColor", "#000000");
+			/* Default weekdays bar font style */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.WEEKDAYSBAR_FONT_STYLE = StyleUtil.getInteger(compName, "weekdaysbarFontStyle", "1");
+			/* Default weekdays bar font size */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.WEEKDAYSBAR_FONT_SIZE = StyleUtil.getFloat(compName, "weekdaysbarFontSize", "9.0f");
+			/* Default weekdays bar border color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.WEEKDAYSBAR_BORDER_COLOR = StyleUtil.getColor(compName, "weekdaysbarBorderColor", "#366581");
+			/* Default minimum weekdays bar width */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.MINIMUN_WEEKDAYSBAR_WIDTH = StyleUtil.getInteger(compName, "minimunWeekdaysbarWidth", "100");
+			/* Default owners bar names background color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.OWNERSBAR_NAMES_BACKGROUND_COLOR = StyleUtil.getColor(compName, "ownersbarNamesBackgroundColor",
+					"#ABC7D8");
+			/* Default owners bar names font color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.OWNERSBAR_NAMES_FONT_COLOR = StyleUtil.getColor(compName, "ownersbarNamesFontColor", "#000000");
+			/* Default owners bar names font style */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.OWNERSBAR_NAMES_FONT_STYLE = StyleUtil.getInteger(compName, "ownersbarNamesFontStyle", "1");
+			/* Default owners bar names font size */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.OWNERSBAR_NAMES_FONT_SIZE = StyleUtil.getFloat(compName, "ownersbarNamesFontSize", "11.0f");
+
+			/* Default slot header font name */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SLOT_HEADER_FONTNAME = StyleUtil.getProperty(compName, "slotHeaderFontname", "Tahoma");
+			/* Default slot header font color */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SLOT_HEADER_FONTCOLOR = StyleUtil.getColor(compName, "slotHeaderFontcolor", "#000000");
+			/* Default slot header font size */
+			com.ontimize.planning.component.monthplanning.MonthPlanningConstants.SLOT_HEADER_FONTSIZE = StyleUtil.getInteger(compName, "slotHeaderFontsize", "9");
+		} catch (Throwable e) {}
 	}
 
 	/**
@@ -4511,6 +4847,11 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			this.defineReferenceExtComponent(uidefaults);
 			this.defineReferenceExtCodeComponent(uidefaults);
 			this.defineResultCountLabel(uidefaults);
+			this.defineTaskViewTooltip(uidefaults);
+			this.defineLCalendarComponent(uidefaults);
+			this.defineDayPlanningComponent(uidefaults);
+			this.defineWeekPlanningComponent(uidefaults);
+			this.defineMonthPlanningComponent(uidefaults);
 
 			uidefaults.put("\"FrameButton\".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.ButtonPainter", ButtonPainter.BACKGROUND_DEFAULT,
 					"com/ontimize/plaf/images/closeIcon.png"));

@@ -10,6 +10,8 @@ ResultCountLabel. New property that allows to change the font color of form regi
 \\
 FormTabbedPane. New painter for tabs of this component.
 \\
+Ontimize Planning component. New component style configurable via CSS.
+\\
 
 ====== Enhancements ======
 New methods on OntimizeLookAndFeel. For each component it has been created new methods that allows to you to set same component properties with a different name.
