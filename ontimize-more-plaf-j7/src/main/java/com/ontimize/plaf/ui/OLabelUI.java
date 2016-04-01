@@ -34,7 +34,6 @@ import javax.swing.text.View;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import com.ontimize.gui.calendar.VisualCalendarComponent;
-import com.ontimize.gui.manager.TabbedFormManager.ButtonTabComponent;
 import com.ontimize.gui.tree.BasicTreeCellRenderer;
 import com.ontimize.gui.tree.Tree;
 import com.ontimize.plaf.OntimizeLookAndFeel;
@@ -134,15 +133,21 @@ public class OLabelUI extends BasicLabelUI implements SynthUI {
 			state = SynthConstants.ENABLED;
 		}
 
-		if (c.getParent() instanceof ButtonTabComponent) {
-			JTabbedPane tabbedPane = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, c);
-			if ((ButtonTabComponent) c.getParent() == tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex())) {
-				state = SynthConstants.SELECTED;
-				if (c.getParent().hasFocus()) {
-					state |= SynthConstants.FOCUSED;
+		/*
+		 * Making it compatible with older versions of Ontimize that has not got
+		 * TabbedFormManager
+		 */
+		try {
+			if (c.getParent() instanceof com.ontimize.gui.manager.TabbedFormManager.ButtonTabComponent) {
+				JTabbedPane tabbedPane = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, c);
+				if ((com.ontimize.gui.manager.TabbedFormManager.ButtonTabComponent) c.getParent() == tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex())) {
+					state = SynthConstants.SELECTED;
+					if (c.getParent().hasFocus()) {
+						state |= SynthConstants.FOCUSED;
+					}
 				}
 			}
-		}
+		} catch (Throwable e) {}
 
 		return state;
 	}
