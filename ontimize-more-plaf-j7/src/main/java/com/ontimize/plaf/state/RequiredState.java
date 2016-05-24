@@ -19,38 +19,52 @@
  */
 package com.ontimize.plaf.state;
 
+import java.awt.Container;
+
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.nimbus.State;
 
 import com.ontimize.gui.field.DataField;
+
 /**
  * Is the toolbar on the (top) north?
  */
 public class RequiredState extends State {
 
-    /**
-     * Creates a new RequiredStare object.
-     */
-    public RequiredState() {
-        super("Required");
-    }
-    
+	/**
+	 * Creates a new RequiredStare object.
+	 */
+	public RequiredState() {
+		super("Required");
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isInState(JComponent c) {
-    	if(c.getParent() instanceof DataField && c.isEnabled()){
-    		DataField dF = (DataField)c.getParent();
-    		if(dF.isRequired()){
-    			return true;
-    		}
-    	} else if(c.getParent() != null && c.getParent().getParent() instanceof DataField && c.isEnabled()){
-    		DataField dF = (DataField)c.getParent().getParent();
-    		if(dF.isRequired()){
-    			return true;
-    		}
-    	}
-        return false;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isInState(JComponent c) {
+
+		Container container = SwingUtilities.getAncestorOfClass(DataField.class, c);
+		if (container instanceof DataField) {
+			DataField dF = (DataField) container;
+			if (dF.isRequired()) {
+				return true;
+			}
+		}
+
+		// if(c.getParent() instanceof DataField && c.isEnabled()){
+		// DataField dF = (DataField)c.getParent();
+		// if(dF.isRequired()){
+		// return true;
+		// }
+		// } else if(c.getParent() != null && c.getParent().getParent()
+		// instanceof DataField && c.isEnabled()){
+		// DataField dF = (DataField)c.getParent().getParent();
+		// if(dF.isRequired()){
+		// return true;
+		// }
+		// }
+		return false;
+	}
 }

@@ -216,9 +216,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	protected Font defaultFont;
 
 	public static final String[] NIMBUS_COLORS_KEYS = new String[] { "nimbusSelectionBackground", "text", "nimbusSelectedText", "nimbusDisabledText", "nimbusLightBackground",
-		"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
-		"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
-		"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
+			"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
+			"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
+			"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
 
 	/**
 	 * Constructor method. Here it is indicated: - initialize the map of styles
@@ -644,13 +644,20 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		ColorUIResource requiredFgColor = StyleUtil.getColorUI(compName, "[Required].textForeground", "#FFFFFF");
+		DataField.requiredFieldForegroundColor = requiredFgColor;
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
 
 		d.put(compName + "[Enabled].background", StyleUtil.getColorUI(compName, "[Enabled].background", "#FFFFFF"));
-		d.put(compName + "[Required].background", StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9"));
 		d.put(compName + "[Disabled].background", StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D"));
 		d.put(compName + "[Selected].background", StyleUtil.getColorUI(compName, "[Selected].background", "#FFFFFF"));
+		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
+		d.put(compName + "[Required].background", requiredColor);
+		d.put(compName + "[Focused+Required].background", requiredColor);
+		DataField.requiredFieldBackgroundColor = requiredColor;
 
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E5"));
+		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
 		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
 
@@ -663,21 +670,28 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTextAreaPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "6 6 6 6"), new Dimension(122, 24),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Selected,Disabled,Focused,NotInScrollPane");
+		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Selected,Disabled,Focused,Required,NotInScrollPane");
 		d.put(compName + ".NotInScrollPane", new OTextAreaNotInScrollPaneState());
+		d.put(compName + ".Required", new RequiredState());
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_REQUIRED, ctx));
 		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_DISABLED, ctx));
 		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED, ctx));
 		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED_REQUIRED, ctx));
 
 		// TextArea not in scroll pane
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_FOCUSED, ctx));
 		d.put(compName + "[Disabled+NotInScrollPane].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_DISABLED_NOTINSCROLLPANE, ctx));
 		d.put(compName + "[Enabled+NotInScrollPane].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_ENABLED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Required+NotInScrollPane].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_REQUIRED_NOTINSCROLLPANE, ctx));
 		d.put(compName + "[Disabled+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_DISABLED_NOTINSCROLLPANE, ctx));
 		d.put(compName + "[Focused+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED_NOTINSCROLLPANE, ctx));
 		d.put(compName + "[Enabled+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_ENABLED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Required+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_REQUIRED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Focused+Required+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED_REQUIRED_NOTINSCROLLPANE, ctx));
 	}
 
 	protected void definePassword(UIDefaults d) {

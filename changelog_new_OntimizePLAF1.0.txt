@@ -38,6 +38,8 @@ FormTabbedPane. Fixing problems on fixing foreground and background colors of ta
 \\
 ComboBox. Fixing problems on painting border when 'Required' state.
 \\
+MemoDataField. Fixing problems on painting field when 'Required' state.
+\\
 
 -----------------------------------------%1.0.9%
 ======== Warning ======
