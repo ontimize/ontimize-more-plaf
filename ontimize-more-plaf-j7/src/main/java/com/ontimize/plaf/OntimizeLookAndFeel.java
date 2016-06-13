@@ -575,31 +575,52 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		// Background of the selected text
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "textBackground", "#39698a");
 
+		// TextForeground:
+		ColorUIResource disabledFgColor = StyleUtil.getColorUI(compName, "[Disabled].textForeground", "#8e8f91");// #8F9CA4
+		ColorUIResource disabledRequiredFgColor = StyleUtil.getColorUI(compName, "[Disabled+Required].textForeground", null);
+		disabledRequiredFgColor = disabledRequiredFgColor != null ? disabledRequiredFgColor : disabledFgColor;
+		ColorUIResource requiredFgColor = StyleUtil.getColorUI(compName, "[Required].textForeground", "#FFFFFF");
+		ColorUIResource focusedRequiredFgColor = StyleUtil.getColorUI(compName, "[Focused+Required].textForeground", null);
+		focusedRequiredFgColor = focusedRequiredFgColor != null ? focusedRequiredFgColor : requiredFgColor;
+
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		d.put(compName + "[Disabled].textForeground", disabledFgColor);
+		d.put(compName + "[Disabled+Required].textForeground", disabledRequiredFgColor);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		ColorUIResource requiredFgColor = StyleUtil.getColorUI(compName, "[Required].textForeground", "#FFFFFF");
+		d.put(compName + "[Required].textForeground", requiredFgColor);
+		d.put(compName + "[Focused+Required].textForeground", focusedRequiredFgColor);
 		DataField.requiredFieldForegroundColor = requiredFgColor;
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+
+		// Background:
+		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
+		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
+		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
+		ColorUIResource disabledRequiredColor = StyleUtil.getColorUI(compName, "[Disabled+Required].background", null);
+		disabledRequiredColor = disabledRequiredColor != null ? disabledRequiredColor : new ColorUIResource(OntimizeLAFColorUtils.setAlpha(requiredColor, 0.5));
+		ColorUIResource focusedRequiredColor = StyleUtil.getColorUI(compName, "[Focused+Required].background", null);
+		focusedRequiredColor = focusedRequiredColor != null ? focusedRequiredColor : requiredColor;
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
-		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
 		d.put(compName + "[Disabled].background", disabledColor);
-		DataField.defaultDisableBackgroundColor = disabledColor;
-		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
 		d.put(compName + "[Focused].background", focusedColor);
-		DataField.FOCUS_BACKGROUNDCOLOR = focusedColor;
-
-		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
 		d.put(compName + "[Required].background", requiredColor);
-		d.put(compName + "[Focused+Required].background", requiredColor);
+		d.put(compName + "[Focused+Required].background", focusedRequiredColor);
+		d.put(compName + "[Disabled+Required].background", disabledRequiredColor);
+		DataField.defaultDisableBackgroundColor = disabledColor;
+		DataField.FOCUS_BACKGROUNDCOLOR = focusedColor;
 		DataField.requiredFieldBackgroundColor = requiredColor;
 
+		// Border:
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
-		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
+		d.put(compName + "[Disabled+Required].border", StyleUtil.getArrayColorUI(compName, "[Disabled+Required].border", "#E5E5E57D"));
+		ColorUIResource[] focusedBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819");
+		d.put(compName + "[Focused].border", focusedBorderColors);
+		ColorUIResource[] focusedRequiredBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused+Required].border", null);
+		focusedRequiredBorderColors = focusedRequiredBorderColors != null ? focusedRequiredBorderColors : focusedBorderColors;
+		d.put(compName + "[Focused+Required].border", focusedRequiredBorderColors);
 		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
 
 		// Editor inner border...
@@ -614,14 +635,17 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
 		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED_REQUIRED, ctx));
 		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
 		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
 		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
 		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
 		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
 
 	}
 
@@ -641,10 +665,18 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		// Background of the selected text
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "textBackground", "#39698a");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		ColorUIResource disabledFgColor = StyleUtil.getColorUI(compName, "[Disabled].textForeground", "#8e8f91");
+		d.put(compName + "[Disabled].textForeground", disabledFgColor);
+		ColorUIResource disabledRequiredFgColor = StyleUtil.getColorUI(compName, "[Disabled+Required].textForeground", null);
+		disabledRequiredFgColor = disabledRequiredFgColor != null ? disabledRequiredFgColor : disabledFgColor;
+		d.put(compName + "[Disabled+Required].textForeground", disabledRequiredFgColor);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+		ColorUIResource requiredFgColor = StyleUtil.getColorUI(compName, "[Required].textForeground", "#FFFFFF");
+		d.put(compName + "[Required].textForeground", requiredFgColor);
+		ColorUIResource focusedRequiredFgColor = StyleUtil.getColorUI(compName, "[Focused+Required].textForeground", null);
+		focusedRequiredFgColor = focusedRequiredFgColor != null ? focusedRequiredFgColor : requiredFgColor;
+		d.put(compName + "[Focused+Required].textForeground", focusedRequiredFgColor);
 
 		d.put(compName + "[Enabled].background", StyleUtil.getColorUI(compName, "[Enabled].background", "#FFFFFF"));
 		d.put(compName + "[Disabled].background", StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D"));
@@ -701,25 +733,53 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			compName = "PasswordField";
 		}
 
+		d.put(compName + ".States", "Enabled,Disabled,Focused,Selected,Required");
+		d.put(compName + ".Required", new RequiredState());
+
 		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
-
-		OntimizeLookAndFeel.setDouble(d, "Application", "radius", ((Double) OntimizeLookAndFeel.defaultRadius).toString());
+		// Background of the selected text
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textBackground", "#39698a");
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		ColorUIResource disabledFgColor = StyleUtil.getColorUI(compName, "[Disabled].textForeground", "#8e8f91");
+		d.put(compName + "[Disabled].textForeground", disabledFgColor);
+		ColorUIResource disabledRequiredFgColor = StyleUtil.getColorUI(compName, "[Disabled+Required].textForeground", null);
+		disabledRequiredFgColor = disabledRequiredFgColor != null ? disabledRequiredFgColor : disabledFgColor;
+		d.put(compName + "[Disabled+Required].textForeground", disabledRequiredFgColor);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+		ColorUIResource requiredFgColor = StyleUtil.getColorUI(compName, "[Required].textForeground", "#FFFFFF");
+		d.put(compName + "[Required].textForeground", requiredFgColor);
+		ColorUIResource focusedRequiredFgColor = StyleUtil.getColorUI(compName, "[Focused+Required].textForeground", null);
+		focusedRequiredFgColor = focusedRequiredFgColor != null ? focusedRequiredFgColor : requiredFgColor;
+		d.put(compName + "[Focused+Required].textForeground", focusedRequiredFgColor);
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
+		d.put(compName + "[Disabled].background", disabledColor);
+
+		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
+		d.put(compName + "[Focused].background", focusedColor);
+
 		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
 		d.put(compName + "[Required].background", requiredColor);
+
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Required].background", "#89A5B9");
+
+		ColorUIResource disabledRrequiredColor = StyleUtil.getColorUI(compName, "[Disabled+Required].background", null);
+		disabledRrequiredColor = disabledRrequiredColor != null ? disabledRrequiredColor : new ColorUIResource(OntimizeLAFColorUtils.setAlpha(requiredColor, 0.5));
+		d.put(compName + "[Disabled+Required].background", disabledRrequiredColor);
 
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
-		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
+		d.put(compName + "[Disabled+Required].border", StyleUtil.getArrayColorUI(compName, "[Disabled+Required].border", "#E5E5E57D"));
+		ColorUIResource[] focusedBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819");
+		d.put(compName + "[Focused].border", focusedBorderColors);
+		ColorUIResource[] focusedRequiredBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused+Required].border", null);
+		focusedRequiredBorderColors = focusedRequiredBorderColors != null ? focusedRequiredBorderColors : focusedBorderColors;
+		d.put(compName + "[Focused+Required].border", focusedRequiredBorderColors);
 		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
 
 		// Editor inner border...
@@ -734,14 +794,16 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
 		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
 		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
 		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
 		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
-
+		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
 	}
 
 	protected void defineReferenceExtComponent(UIDefaults d) {
@@ -754,41 +816,72 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			compName = "TextField:\"TextField.ReferenceExt\"";
 		}
 
+		d.put(compName + ".States", "Enabled,Disabled,Focused,Selected,Required");
+		d.put(compName + ".Required", new RequiredState());
+
 		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
 
+		// Background of the selected text
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textBackground", "#39698a");
+		// TextForeground
+		ColorUIResource disabledFgColor = StyleUtil.getColorUI(compName, "[Disabled].textForeground", "#8e8f91");
+		ColorUIResource disabledRequiredFgColor = StyleUtil.getColorUI(compName, "[Disabled+Required].textForeground", null);
+		disabledRequiredFgColor = disabledRequiredFgColor != null ? disabledRequiredFgColor : disabledFgColor;
+		ColorUIResource requiredFgColor = StyleUtil.getColorUI(compName, "[Required].textForeground", "#FFFFFF");
+		ColorUIResource focusedRequiredFgColor = StyleUtil.getColorUI(compName, "[Focused+Required].textForeground", null);
+		focusedRequiredFgColor = focusedRequiredFgColor != null ? focusedRequiredFgColor : requiredFgColor;
+
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		d.put(compName + "[Disabled].textForeground", disabledFgColor);
+		d.put(compName + "[Disabled+Required].textForeground", disabledRequiredFgColor);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+		d.put(compName + "[Required].textForeground", requiredFgColor);
+		d.put(compName + "[Focused+Required].textForeground", focusedRequiredFgColor);
+
+		// Background
+		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
+		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
+		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
+		ColorUIResource disabledRequiredColor = StyleUtil.getColorUI(compName, "[Disabled+Required].background", null);
+		disabledRequiredColor = disabledRequiredColor != null ? disabledRequiredColor : new ColorUIResource(OntimizeLAFColorUtils.setAlpha(requiredColor, 0.5));
+		ColorUIResource focusedRequiredColor = StyleUtil.getColorUI(compName, "[Focused+Required].background", null);
+		focusedRequiredColor = focusedRequiredColor != null ? focusedRequiredColor : requiredColor;
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
-		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
-		d.put(compName + "[Required].background", requiredColor);
-
-		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
 		d.put(compName + "[Disabled].background", disabledColor);
-		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
 		d.put(compName + "[Focused].background", focusedColor);
+		d.put(compName + "[Required].background", requiredColor);
+		d.put(compName + "[Focused+Required].background", focusedRequiredColor);
+		d.put(compName + "[Disabled+Required].background", disabledRequiredColor);
+
+		// Border
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
-		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
+		d.put(compName + "[Disabled+Required].border", StyleUtil.getArrayColorUI(compName, "[Disabled+Required].border", "#E5E5E57D"));
+		ColorUIResource[] focusedBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819");
+		d.put(compName + "[Focused].border", focusedBorderColors);
+		ColorUIResource[] focusedRequiredBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused+Required].border", null);
+		focusedRequiredBorderColors = focusedRequiredBorderColors != null ? focusedRequiredBorderColors : focusedBorderColors;
+		d.put(compName + "[Focused+Required].border", focusedRequiredBorderColors);
 		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
 
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OReferenceExtFieldPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
 		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
 		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
 		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
 		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
 		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
 
 	}
 
@@ -802,41 +895,74 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			compName = "TextField:\"TextField.ReferenceExtCode\"";
 		}
 
+		d.put(compName + ".States", "Enabled,Disabled,Focused,Selected,Required");
+		d.put(compName + ".Required", new RequiredState());
+
 		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 14 4 14");
 
+		// Background of the selected text
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "textBackground", "#39698a");
+		// TextForeground
+		ColorUIResource disabledFgColor = StyleUtil.getColorUI(compName, "[Disabled].textForeground", "#8e8f91");
+		ColorUIResource disabledRequiredFgColor = StyleUtil.getColorUI(compName, "[Disabled+Required].textForeground", null);
+		disabledRequiredFgColor = disabledRequiredFgColor != null ? disabledRequiredFgColor : disabledFgColor;
+		ColorUIResource requiredFgColor = StyleUtil.getColorUI(compName, "[Required].textForeground", "#FFFFFF");
+		ColorUIResource focusedRequiredFgColor = StyleUtil.getColorUI(compName, "[Focused+Required].textForeground", null);
+		focusedRequiredFgColor = focusedRequiredFgColor != null ? focusedRequiredFgColor : requiredFgColor;
+
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		d.put(compName + "[Disabled].textForeground", disabledFgColor);
+		d.put(compName + "[Disabled+Required].textForeground", disabledRequiredFgColor);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+		d.put(compName + "[Required].textForeground", requiredFgColor);
+		d.put(compName + "[Focused+Required].textForeground", focusedRequiredFgColor);
+
+		// Background
+		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
+		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
+		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
+		ColorUIResource disabledRequiredColor = StyleUtil.getColorUI(compName, "[Disabled+Required].background", null);
+		disabledRequiredColor = disabledRequiredColor != null ? disabledRequiredColor : new ColorUIResource(OntimizeLAFColorUtils.setAlpha(requiredColor, 0.5));
+		ColorUIResource focusedRequiredColor = StyleUtil.getColorUI(compName, "[Focused+Required].background", null);
+		focusedRequiredColor = focusedRequiredColor != null ? focusedRequiredColor : requiredColor;
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
-		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
-		d.put(compName + "[Required].background", requiredColor);
-
-		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
 		d.put(compName + "[Disabled].background", disabledColor);
-		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
 		d.put(compName + "[Focused].background", focusedColor);
+		d.put(compName + "[Required].background", requiredColor);
+		d.put(compName + "[Focused+Required].background", focusedRequiredColor);
+		d.put(compName + "[Disabled+Required].background", disabledRequiredColor);
+
+		// Border
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
-		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
+		d.put(compName + "[Disabled+Required].border", StyleUtil.getArrayColorUI(compName, "[Disabled+Required].border", "#E5E5E57D"));
+		ColorUIResource[] focusedBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819");
+		d.put(compName + "[Focused].border", focusedBorderColors);
+		ColorUIResource[] focusedRequiredBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused+Required].border", null);
+		focusedRequiredBorderColors = focusedRequiredBorderColors != null ? focusedRequiredBorderColors : focusedBorderColors;
+		d.put(compName + "[Focused+Required].border", focusedRequiredBorderColors);
 		d.put(compName + "[Focused].innerShadow", StyleUtil.getColor(compName, "[Focused].innerShadow", "#CACACA"));
 
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OReferenceExtCodeFieldPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
 		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED_REQUIRED, ctx));
 		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
 		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
 		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
 		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
+
 	}
 
 	protected void defineQuickFilter(UIDefaults d) {
@@ -856,7 +982,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 14 4 30");
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
@@ -1199,7 +1325,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		compName = "\"PageFetcher.Label\"";
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
 
@@ -1533,15 +1659,24 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setFont(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont));
 		d.put(compName + ".contentMargins", new InsetsUIResource(0, 0, 0, 0));
 
+		d.put(compName + ".States", "Disabled,Enabled,Focused,Selected,Required");
+		d.put(compName + ".Required", new RequiredState());
+
 		/*
 		 * Note: Colors with state ([Enables]...) are used on renderers of
 		 * Combos, Lists, etc. Due to, background of this components is white,
 		 * the color of the font is #335971
 		 */
+		ColorUIResource disabledFgColor = StyleUtil.getColorUI(compName, "[Disabled].textForeground", "#243b4aCC");
+		ColorUIResource disabledRequiredFgColor = StyleUtil.getColorUI(compName, "[Disabled+Required].textForeground", null);
+		disabledRequiredFgColor = disabledRequiredFgColor != null ? disabledRequiredFgColor : disabledFgColor;
+
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#243b4aCC");
+		d.put(compName + "[Disabled].textForeground", disabledFgColor);
+		d.put(compName + "[Disabled+Required].textForeground", disabledRequiredFgColor);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
 		/*
 		 * Generic colors of the Label when used alone, that is, when label
 		 * background is not set and then, white color is used.
@@ -1598,7 +1733,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", null);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", null);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].textForeground", null);
@@ -1666,7 +1801,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", null);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", null);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].textForeground", null);
@@ -1900,36 +2035,63 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", "#335971");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", "#FFFFFF7D");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", "#8F9CA4");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", "#8e8f91");
 		OntimizeLookAndFeel.setColor(d, compName, "selectionForeground", "#FFFFFF");
 		OntimizeLookAndFeel.setColor(d, compName, "selectionBackground", "#36627F");
 
+		// TextForeground:
+		ColorUIResource disabledFgColor = StyleUtil.getColorUI(compName, "[Disabled].textForeground", "#8e8f91");// #8F9CA4
+		ColorUIResource disabledRequiredFgColor = StyleUtil.getColorUI(compName, "[Disabled+Required].textForeground", null);
+		disabledRequiredFgColor = disabledRequiredFgColor != null ? disabledRequiredFgColor : disabledFgColor;
+		ColorUIResource requiredFgColor = StyleUtil.getColorUI(compName, "[Required].textForeground", "#FFFFFF");
+		ColorUIResource focusedRequiredFgColor = StyleUtil.getColorUI(compName, "[Focused+Required].textForeground", null);
+		focusedRequiredFgColor = focusedRequiredFgColor != null ? focusedRequiredFgColor : requiredFgColor;
+
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+		d.put(compName + "[Disabled].textForeground", disabledFgColor);
+		d.put(compName + "[Disabled+Required].textForeground", disabledRequiredFgColor);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
+		d.put(compName + "[Required].textForeground", requiredFgColor);
+		d.put(compName + "[Focused+Required].textForeground", focusedRequiredFgColor);
 
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#FFFFFF7D");
+		// Background:
+		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
+		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
+		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
+		ColorUIResource disabledRequiredColor = StyleUtil.getColorUI(compName, "[Disabled+Required].background", null);
+		disabledRequiredColor = disabledRequiredColor != null ? disabledRequiredColor : new ColorUIResource(OntimizeLAFColorUtils.setAlpha(requiredColor, 0.5));
+		ColorUIResource focusedRequiredColor = StyleUtil.getColorUI(compName, "[Focused+Required].background", null);
+		focusedRequiredColor = focusedRequiredColor != null ? focusedRequiredColor : requiredColor;
+
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#FFFFFF");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].background", "#89A5B9");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Required].background", "#89A5B9");
+		d.put(compName + "[Disabled].background", disabledColor);
+		d.put(compName + "[Focused].background", focusedColor);
+		d.put(compName + "[Required].background", requiredColor);
+		d.put(compName + "[Focused+Required].background", focusedRequiredColor);
+		d.put(compName + "[Disabled+Required].background", disabledRequiredColor);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+MouseOver].background", "#FFFFFF");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#FFFFFF");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].background", "#FFFFFF");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Pressed].background", "#FFFFFF");
 
+		// Border:
 		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
-		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
+		d.put(compName + "[Disabled+Required].border", StyleUtil.getArrayColorUI(compName, "[Disabled+Required].border", "#E5E5E57D"));
+		ColorUIResource[] focusedBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819");
+		d.put(compName + "[Focused].border", focusedBorderColors);
+		ColorUIResource[] focusedRequiredBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused+Required].border", null);
+		focusedRequiredBorderColors = focusedRequiredBorderColors != null ? focusedRequiredBorderColors : focusedBorderColors;
+		d.put(compName + "[Focused+Required].border", focusedRequiredBorderColors);
 
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OComboBoxPainter");
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 13 2 4"), new Dimension(83, 24), false,
-				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, 2.0);
+				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, 2.0);
 		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED, ctx));
 		d.put(compName + "[Disabled+Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED_PRESSED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
 		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_ENABLED, ctx));
 		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_FOCUSED, ctx));
 		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
@@ -1991,7 +2153,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			compName = "ComboBox:\"ComboBox.arrowButton\"";
 		}
 		d.put(compName + ".contentMargins", new InsetsUIResource(1, 1, 1, 1));
-		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Disabled,Editable");
+		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Disabled,Editable,Required");
 		d.put(compName + ".Required", new RequiredState());
 		d.put(compName + ".Editable", new OComboBoxArrowButtonEditableState());
 		d.put(compName + ".size", new Integer(21));
@@ -1999,26 +2161,30 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		/*
 		 * Note: background arrow button is painted into OComboBoxPainter.
 		 */
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].background", "#2639457D");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Required].background", "#2639457D");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Required].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Pressed].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].background", "#263945");
 
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Editable].background", "#263945");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Editable].background", "#2639457D");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Enabled].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Focused].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+MouseOver].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Pressed].background", "#263945");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Editable+Required].background", "#263945");
 
-		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].foreground", "#FFFFFF");
+		OntimizeLookAndFeel.setColor(d, compName, "[Disabled].foreground", "#FFFFFF7D");
+		OntimizeLookAndFeel.setColor(d, compName, "[Disabled+Required].foreground", "#FFFFFF7D");
 		OntimizeLookAndFeel.setColor(d, compName, "[Enabled].foreground", "#FFFFFF");
 		OntimizeLookAndFeel.setColor(d, compName, "[Selected].foreground", "#000000");
 		OntimizeLookAndFeel.setColor(d, compName, "[MouseOver].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[MouseOver+Required].foreground", "#000000");
 		OntimizeLookAndFeel.setColor(d, compName, "[Pressed].foreground", "#000000");
-		OntimizeLookAndFeel.setColor(d, compName, "[Required].foreground", "#000000");
+		OntimizeLookAndFeel.setColor(d, compName, "[Required].foreground", "#FFFFFF");
 
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OComboBoxArrowButtonPainter");
 		PaintContext ctx = new PaintContext(new Insets(1, 1, 1, 1), new Dimension(20, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING,
@@ -2033,7 +2199,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_ENABLED, ctx));
 		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[MouseOver+Required].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_MOUSEOVER_REQUIRED, ctx));
 		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_DISABLED_REQUIRED, ctx));
 		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_PRESSED, ctx));
 		d.put(compName + "[Selected].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_SELECTED, ctx));
 		d.put(compName + "[Required].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_REQUIRED, ctx));
@@ -2067,12 +2235,23 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		if (compName == null) {
 			compName = "ComboBox:\"ComboBox.renderer\"";
 		}
+
+		d.put(compName + ".States", "Disabled,Selected,Required");
+		d.put(compName + ".Required", new RequiredState());
+
 		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 4 2 4");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff");
-		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
+
+		ColorUIResource disabledFgColor = StyleUtil.getColorUI(compName, "[Disabled].textForeground", "#8e8f91");
+		ColorUIResource disabledRequiredFgColor = StyleUtil.getColorUI(compName, "[Disabled+Required].textForeground", null);
+		disabledRequiredFgColor = disabledRequiredFgColor != null ? disabledRequiredFgColor : disabledFgColor;
+
+		d.put(compName + "[Disabled].textForeground", disabledFgColor);
+		d.put(compName + "[Disabled+Required].textForeground", disabledRequiredFgColor);
 		OntimizeLookAndFeel.setColor(d, compName, "[Selected].textForeground", "#ffffff");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#36627F");
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#FFFFFF");
 	}
 
 	protected void defineComboBoxScrollPane(UIDefaults d) {

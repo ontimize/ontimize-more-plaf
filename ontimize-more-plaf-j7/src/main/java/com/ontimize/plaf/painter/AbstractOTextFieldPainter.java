@@ -20,20 +20,20 @@ import com.ontimize.plaf.OntimizeLookAndFeel;
 /**
  * <pre>
  * Painter for the background, border and shape of the TextField (to configure border and background colors, painters, images, ...)
- *
+ * 
  * In this case, we would like to be able to configure some TextFields in a different ways that other TextFields.
  * That is, for TextField which are embedded in Ontimize FormTitle classes and so on, we must be able to configure the same properties in
  * other way.
- *
+ * 
  * For that reason, this abstract class is included. It indicates how painters must be painted, and also their configuration parameters.
  * However the configuration key is got using the method getComponentKeyName(), which will be defined in the non-abstract classes, that extends this one.
  * For instance, to be able to get a configuration key called something[X].Y:
  *   - OTextFieldPainter will return "TextField" => the readed configuration key will be: TextField[X].Y
  *   - OFormTitlePainter will return "\"FormTitle\"" => the readed configuration key will be: "FormTitle\"[X].Y
- *
+ * 
  * (Typically, X has values as Enabled, Focused, Pressed, ... and Y becomes values like: backgroundPainter_bgPainter, backgroundPainter_border, ...)
- *
- *
+ * 
+ * 
  * @author Imatia Innovation
  *
  * </pre>
@@ -44,11 +44,14 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 	public static final int BACKGROUND_ENABLED = 2;
 	public static final int BACKGROUND_FOCUSED = 3;
 	public static final int BACKGROUND_REQUIRED = 222;
+	public static final int BACKGROUND_DISABLED_REQUIRED = 223;
+	public static final int BACKGROUND_FOCUSED_REQUIRED = 224;
 	public static final int BORDER_DISABLED = 4;
 	public static final int BORDER_FOCUSED = 5;
 	public static final int BORDER_ENABLED = 6;
 	public static final int BORDER_REQUIRED = 666;
 	public static final int BORDER_FOCUSED_REQUIRED = 667;
+	public static final int BORDER_DISABLED_REQUIRED = 668;
 
 	/**
 	 * The number of pixels that compounds the border width of the component.
@@ -65,11 +68,15 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 	protected Paint backgroundColorEnabled;
 	protected Paint backgroundColorRequired;
 	protected Paint backgroundColorFocused;
+	protected Paint backgroundColorFocusedRequired;
+	protected Paint backgroundColorDisabledRequired;
 
 	// arrays to round the component (several rounded borders with degradation):
 	protected Paint[] degradatedBorderColorEnabled;
 	protected Paint[] degradatedBorderColorDisabled;
+	protected Paint[] degradatedBorderColorDisabledRequired;
 	protected Paint[] degradatedBorderColorFocused;
+	protected Paint[] degradatedBorderColorFocusedRequired;
 	protected Paint[] degradatedBorderColorRequired;
 
 	protected Paint focusInnerShadow;
@@ -115,6 +122,7 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 		// populate componentColors array with colors calculated in
 		// getExtendedCacheKeys call
 		this.componentColors = extendedCacheKeys;
+
 		Insets insets = c.getInsets();
 		int x = insets.left;
 		int y = insets.top;
@@ -127,17 +135,26 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 		case BACKGROUND_DISABLED:
 			this.paintBackgroundDisabled(g, c, x, y, cwidth, cheight);
 			break;
+		case BACKGROUND_DISABLED_REQUIRED:
+			this.paintBackgroundDisabledRequired(g, c, x, y, cwidth, cheight);
+			break;
 		case BACKGROUND_ENABLED:
 			this.paintBackgroundEnabled(g, c, x, y, cwidth, cheight);
 			break;
 		case BACKGROUND_FOCUSED:
 			this.paintBackgroundFocused(g, c, x, y, cwidth, cheight);
 			break;
+		case BACKGROUND_FOCUSED_REQUIRED:
+			this.paintBackgroundFocusedRequired(g, c, x, y, cwidth, cheight);
+			break;
 		case BACKGROUND_REQUIRED:
 			this.paintBackgroundRequired(g, c, x, y, cwidth, cheight);
 			break;
 		case BORDER_DISABLED:
 			this.paintBorderDisabled(g, c, 0, 0, width, height);
+			break;
+		case BORDER_DISABLED_REQUIRED:
+			this.paintBorderDisabledRequired(g, c, 0, 0, width, height);
 			break;
 		case BORDER_FOCUSED:
 			this.paintBorderFocused(g, c, 0, 0, width, height);
@@ -172,6 +189,7 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 			break;
 		}
 		return extendedCacheKeys;
+
 	}
 
 	@Override
@@ -212,6 +230,14 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 			this.backgroundColorDisabled = this.color1;
 		}
 
+		// disable + required:
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Disabled+Required].background");
+		if (obj instanceof Paint) {
+			this.backgroundColorDisabledRequired = (Paint) obj;
+		} else {
+			this.backgroundColorDisabledRequired = this.color1;
+		}
+
 		// enable:
 		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Enabled].background");
 		if (obj instanceof Paint) {
@@ -234,6 +260,14 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 			this.backgroundColorRequired = (Paint) obj;
 		} else {
 			this.backgroundColorRequired = this.color9;
+		}
+
+		// focused + required:
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Focused+Required].background");
+		if (obj instanceof Paint) {
+			this.backgroundColorFocusedRequired = (Paint) obj;
+		} else {
+			this.backgroundColorFocusedRequired = this.color9;
 		}
 
 		// BORDER COLORS
@@ -267,6 +301,16 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 			this.degradatedBorderColorDisabled = new Color[] { this.color3, this.decodeColor(this.color3, this.color4, 0.5f), this.color4 };
 		}
 
+		// disable + required
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Disabled+Required].border");
+		if (obj instanceof Paint) {
+			this.degradatedBorderColorDisabledRequired = new Paint[] { (Paint) obj };
+		} else if (obj instanceof Paint[]) {
+			this.degradatedBorderColorDisabledRequired = (Paint[]) obj;
+		} else {
+			this.degradatedBorderColorDisabledRequired = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
+		}
+
 		// Focused:
 		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Focused].border");
 		if (obj instanceof Paint) {
@@ -275,6 +319,16 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 			this.degradatedBorderColorFocused = (Paint[]) obj;
 		} else {
 			this.degradatedBorderColorFocused = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
+		}
+
+		// Focused + required
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Focused+Required].border");
+		if (obj instanceof Paint) {
+			this.degradatedBorderColorFocusedRequired = new Paint[] { (Paint) obj };
+		} else if (obj instanceof Paint[]) {
+			this.degradatedBorderColorFocusedRequired = (Paint[]) obj;
+		} else {
+			this.degradatedBorderColorFocusedRequired = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
 		}
 
 		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Focused].innerShadow");
@@ -301,6 +355,11 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 		this.drawBackground(g, c, x, y, width, height, this.backgroundColorDisabled);
 	}
 
+	protected void paintBackgroundDisabledRequired(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+
+		this.drawBackground(g, c, x, y, width, height, this.backgroundColorDisabledRequired);
+	}
+
 	protected void paintBackgroundEnabled(Graphics2D g, JComponent c, int x, int y, int width, int height) {
 
 		if (c.getParent() instanceof JTable) {
@@ -322,11 +381,19 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 		this.drawBackground(g, c, x, y, width, height, this.backgroundColorFocused);
 	}
 
+	protected void paintBackgroundFocusedRequired(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+
+		this.drawBackground(g, c, x, y, width, height, this.backgroundColorFocusedRequired);
+	}
+
 	protected Paint getBackgroundForState(JComponent c) {
 		Paint paint = null;
 		switch (this.state) {
 		case BACKGROUND_DISABLED:
 			paint = this.getBackgroundColor(c, this.backgroundColorDisabled);
+			break;
+		case BACKGROUND_DISABLED_REQUIRED:
+			paint = this.getBackgroundColor(c, this.backgroundColorDisabledRequired);
 			break;
 		case BACKGROUND_ENABLED:
 			paint = this.getBackgroundColor(c, this.backgroundColorEnabled);
@@ -337,8 +404,14 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 		case BACKGROUND_FOCUSED:
 			paint = this.getBackgroundColor(c, this.backgroundColorFocused);
 			break;
+		case BACKGROUND_FOCUSED_REQUIRED:
+			paint = this.getBackgroundColor(c, this.backgroundColorFocusedRequired);
+			break;
 		case BORDER_DISABLED:
 			paint = this.getBackgroundColor(c, this.backgroundColorDisabled);
+			break;
+		case BORDER_DISABLED_REQUIRED:
+			paint = this.backgroundColorDisabledRequired != null ? this.backgroundColorDisabledRequired : c.getBackground();
 			break;
 		case BORDER_ENABLED:
 			paint = this.getBackgroundColor(c, this.backgroundColorEnabled);
@@ -350,7 +423,7 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 			paint = this.getBackgroundColor(c, this.backgroundColorFocused);
 			break;
 		case BORDER_FOCUSED_REQUIRED:
-			paint = this.backgroundColorRequired != null ? this.backgroundColorRequired : c.getBackground();
+			paint = this.backgroundColorFocusedRequired != null ? this.backgroundColorFocusedRequired : c.getBackground();
 			break;
 		default:
 			paint = c != null ? c.getBackground() : null;
@@ -374,11 +447,17 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 		case BORDER_DISABLED:
 			paint = this.degradatedBorderColorDisabled[0];
 			break;
+		case BORDER_DISABLED_REQUIRED:
+			paint = this.degradatedBorderColorDisabledRequired[0];
+			break;
 		case BORDER_ENABLED:
 			paint = this.degradatedBorderColorEnabled[0];
 			break;
 		case BORDER_FOCUSED:
 			paint = this.degradatedBorderColorFocused[0];
+			break;
+		case BORDER_FOCUSED_REQUIRED:
+			paint = this.degradatedBorderColorFocusedRequired[0];
 			break;
 		default:
 			paint = this.degradatedBorderColorEnabled[0];
@@ -393,6 +472,13 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 		}
 	}
 
+	protected void paintBorderDisabledRequired(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+		if ((this.degradatedBorderColorDisabledRequired != null) && (this.degradatedBorderColorDisabledRequired.length > 0)) {
+			this.drawDegradatedBorders(g, c, x, y, width, height, this.degradatedBorderColorDisabledRequired);
+			g.drawImage(this.paddLock, 1, (int) (this.decodeY(2.0f) - 9), 10, 10, null);
+		}
+	}
+
 	protected void paintBorderFocused(Graphics2D g, JComponent c, int x, int y, int width, int height) {
 		if ((this.degradatedBorderColorFocused != null) && (this.degradatedBorderColorFocused.length > 0)) {
 			this.drawDegradatedBorders(g, c, x, y, width, height, this.degradatedBorderColorFocused);
@@ -401,8 +487,8 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 	}
 
 	protected void paintBorderFocusedRequired(Graphics2D g, JComponent c, int x, int y, int width, int height) {
-		if ((this.degradatedBorderColorFocused != null) && (this.degradatedBorderColorFocused.length > 0)) {
-			this.drawDegradatedBorders(g, c, x, y, width, height, this.degradatedBorderColorFocused);
+		if ((this.degradatedBorderColorFocusedRequired != null) && (this.degradatedBorderColorFocusedRequired.length > 0)) {
+			this.drawDegradatedBorders(g, c, x, y, width, height, this.degradatedBorderColorFocusedRequired);
 		}
 	}
 

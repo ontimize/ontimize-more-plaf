@@ -30,6 +30,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 	// by that instance.
 	public static final int BACKGROUND_DISABLED = 1;
 	public static final int BACKGROUND_DISABLED_PRESSED = 2;
+	public static final int BACKGROUND_DISABLED_REQUIRED = 22;
 	public static final int BACKGROUND_ENABLED = 3;
 	public static final int BACKGROUND_FOCUSED = 4;
 	public static final int BACKGROUND_MOUSEOVER_FOCUSED = 5;
@@ -49,6 +50,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 
 	// painters to fill the component
 	protected Paint backgroundColorDisabled;
+	protected Paint backgroundColorDisabledRequired;
 	protected Paint backgroundColorEnabled;
 	protected Paint backgroundColorFocused;
 	protected Paint backgroundColorFocusedMouseOver;
@@ -59,6 +61,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 	protected Paint backgroundColorRequired;
 
 	protected Paint backgroundArrowButtonColorDisabled;
+	protected Paint backgroundArrowButtonColorDisabledRequired;
 	protected Paint backgroundArrowButtonColorEnabled;
 	protected Paint backgroundArrowButtonColorFocused;
 	protected Paint backgroundArrowButtonColorRequired;
@@ -81,7 +84,9 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 	// arrays to round the component (several rounded borders with degradation):
 	protected Paint[] degradatedBorderColorEnabled;
 	protected Paint[] degradatedBorderColorDisabled;
+	protected Paint[] degradatedBorderColorDisabledRequired;
 	protected Paint[] degradatedBorderColorFocused;
+	protected Paint[] degradatedBorderColorFocusedRequired;
 	protected Paint[] degradatedBorderColorRequired;
 
 	// painters to fill the editor
@@ -192,6 +197,9 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			break;
 		case BACKGROUND_DISABLED_PRESSED:
 			this.paintBackgroundDisabledAndPressed(g);
+			break;
+		case BACKGROUND_DISABLED_REQUIRED:
+			this.paintBackgroundDisabledAndRequired(g);
 			break;
 		case BACKGROUND_ENABLED:
 			this.paintBackgroundEnabled(g);
@@ -361,6 +369,14 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			this.backgroundColorDisabled = this.color1;
 		}
 
+		// disable + Required:
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Disabled+Required].background");
+		if (obj instanceof Paint) {
+			this.backgroundColorDisabledRequired = (Paint) obj;
+		} else {
+			this.backgroundColorDisabledRequired = this.color1;
+		}
+
 		// enable:
 		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Enabled].background");
 		if (obj instanceof Paint) {
@@ -446,6 +462,16 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			this.degradatedBorderColorDisabled = new Color[] { this.color3, this.decodeColor(this.color3, this.color4, 0.5f), this.color4 };
 		}
 
+		// disable + Required:
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Disabled+Required].border");
+		if (obj instanceof Paint) {
+			this.degradatedBorderColorDisabledRequired = new Paint[] { (Paint) obj };
+		} else if (obj instanceof Paint[]) {
+			this.degradatedBorderColorDisabledRequired = (Paint[]) obj;
+		} else {
+			this.degradatedBorderColorDisabledRequired = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
+		}
+
 		// Focused:
 		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Focused].border");
 		if (obj instanceof Paint) {
@@ -456,7 +482,17 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			this.degradatedBorderColorFocused = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
 		}
 
-		// Focused:
+		// Focused + Required
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Focused+Required].border");
+		if (obj instanceof Paint) {
+			this.degradatedBorderColorFocusedRequired = new Paint[] { (Paint) obj };
+		} else if (obj instanceof Paint[]) {
+			this.degradatedBorderColorFocusedRequired = (Paint[]) obj;
+		} else {
+			this.degradatedBorderColorFocusedRequired = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
+		}
+
+		// Required:
 		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Required].border");
 		if (obj instanceof Paint) {
 			this.degradatedBorderColorRequired = new Paint[] { (Paint) obj };
@@ -500,6 +536,13 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			this.backgroundArrowButtonColorDisabled = this.color53;
 		}
 
+		obj = UIManager.getLookAndFeelDefaults().get("ComboBox:\"ComboBox.arrowButton\"[Disabled+Required].background");
+		if (obj instanceof Paint) {
+			this.backgroundArrowButtonColorDisabledRequired = (Paint) obj;
+		} else {
+			this.backgroundArrowButtonColorDisabledRequired = this.color53;
+		}
+
 		// enable:
 		obj = UIManager.getLookAndFeelDefaults().get("ComboBox:\"ComboBox.arrowButton\"[Enabled].background");
 		if (obj instanceof Paint) {
@@ -529,6 +572,13 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			this.backgroundArrowButtonColorFocused = (Paint) obj;
 		} else {
 			this.backgroundArrowButtonColorFocused = this.color53;
+		}
+
+		obj = UIManager.getLookAndFeelDefaults().get("ComboBox:\"ComboBox.arrowButton\"[Focused+Required].background");
+		if (obj instanceof Paint) {
+			this.backgroundArrowButtonColorFocusedRequired = (Paint) obj;
+		} else {
+			this.backgroundArrowButtonColorFocusedRequired = this.color53;
 		}
 
 		obj = UIManager.getLookAndFeelDefaults().get("ComboBox:\"ComboBox.arrowButton\"[Required].background");
@@ -626,6 +676,17 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorDisabled));
 		} else {
 			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorDisabled));
+			this.drawDegradatedBorders(g, this.degradatedBorderColorDisabled);
+			g.drawImage(this.paddLock, 1, (int) (this.decodeY(2.0f) - 10), 10, 10, null);
+		}
+	}
+
+	protected void paintBackgroundDisabledAndRequired(Graphics2D g) {
+
+		if (this.isTableEditor()) {
+			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorDisabledRequired));
+		} else {
+			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorDisabledRequired));
 			this.drawDegradatedBorders(g, this.degradatedBorderColorDisabled);
 			g.drawImage(this.paddLock, 1, (int) (this.decodeY(2.0f) - 10), 10, 10, null);
 		}
@@ -983,6 +1044,9 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		case BACKGROUND_DISABLED:
 			c = (Color) this.backgroundArrowButtonColorDisabled;
 			break;
+		case BACKGROUND_DISABLED_REQUIRED:
+			c = (Color) this.backgroundArrowButtonColorDisabledRequired;
+			break;
 		case BACKGROUND_ENABLED:
 			c = (Color) this.backgroundArrowButtonColorEnabled;
 			break;
@@ -999,7 +1063,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 			c = (Color) this.backgroundArrowButtonColorPressed;
 			break;
 		case BACKGROUND_REQUIRED_FOCUSED:
-			c = (Color) this.backgroundArrowButtonColorMouseOver;
+			c = (Color) this.backgroundArrowButtonColorFocusedRequired;
 			break;
 		case BACKGROUND_FOCUSED:
 			c = (Color) this.backgroundArrowButtonColorFocused;

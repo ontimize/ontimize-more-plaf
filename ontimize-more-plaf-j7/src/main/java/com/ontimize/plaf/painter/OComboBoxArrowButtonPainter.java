@@ -28,7 +28,9 @@ public class OComboBoxArrowButtonPainter extends AbstractRegionPainter {
 	public static final int BACKGROUND_SELECTED_EDITABLE = 9;
 	public static final int FOREGROUND_ENABLED = 10;
 	public static final int FOREGROUND_MOUSEOVER = 11;
+	public static final int FOREGROUND_MOUSEOVER_REQUIRED = 23;
 	public static final int FOREGROUND_DISABLED = 12;
+	public static final int FOREGROUND_DISABLED_REQUIRED = 22;
 	public static final int FOREGROUND_PRESSED = 13;
 	public static final int FOREGROUND_SELECTED = 14;
 	public static final int FOREGROUND_REQUIRED = 111;
@@ -78,8 +80,10 @@ public class OComboBoxArrowButtonPainter extends AbstractRegionPainter {
 	protected Color color31 = this.decodeColor("nimbusBase", 0.0f, -0.6357143f, 0.45098037f, 0);
 
 	protected Paint foregroundColorDisabled;
+	protected Paint foregroundColorDisabledRequired;
 	protected Paint foregroundColorEnabled;
 	protected Paint foregroundColorMouseOver;
+	protected Paint foregroundColorMouseOverRequired;
 	protected Paint foregroundColorPressed;
 	protected Paint foregroundColorSelected;
 	protected Paint foregroundColorRequired;
@@ -96,6 +100,7 @@ public class OComboBoxArrowButtonPainter extends AbstractRegionPainter {
 		// populate componentColors array with colors calculated in
 		// getExtendedCacheKeys call
 		this.componentColors = extendedCacheKeys;
+
 		// generate this entire method. Each state/bg/fg/border combo that has
 		// been painted gets its own KEY and paint method.
 		switch (this.state) {
@@ -105,8 +110,14 @@ public class OComboBoxArrowButtonPainter extends AbstractRegionPainter {
 		case FOREGROUND_MOUSEOVER:
 			this.paintForegroundMouseOver(g);
 			break;
+		case FOREGROUND_MOUSEOVER_REQUIRED:
+			this.paintForegroundMouseOverRequired(g);
+			break;
 		case FOREGROUND_DISABLED:
 			this.paintForegroundDisabled(g);
+			break;
+		case FOREGROUND_DISABLED_REQUIRED:
+			this.paintForegroundDisabledRequired(g);
 			break;
 		case FOREGROUND_PRESSED:
 			this.paintForegroundPressed(g);
@@ -114,7 +125,9 @@ public class OComboBoxArrowButtonPainter extends AbstractRegionPainter {
 		case FOREGROUND_SELECTED:
 			this.paintForegroundSelected(g);
 			break;
-
+		case FOREGROUND_REQUIRED:
+			this.paintForegroundRequired(g);
+			break;
 		}
 	}
 
@@ -132,6 +145,13 @@ public class OComboBoxArrowButtonPainter extends AbstractRegionPainter {
 			this.foregroundColorDisabled = (Paint) obj;
 		} else {
 			this.foregroundColorDisabled = this.color1;
+		}
+
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Disabled+Required].foreground");
+		if (obj instanceof Paint) {
+			this.foregroundColorDisabledRequired = (Paint) obj;
+		} else {
+			this.foregroundColorDisabledRequired = this.color1;
 		}
 
 		// enabled:
@@ -156,6 +176,13 @@ public class OComboBoxArrowButtonPainter extends AbstractRegionPainter {
 			this.foregroundColorMouseOver = (Paint) obj;
 		} else {
 			this.foregroundColorMouseOver = this.color2;
+		}
+
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[MouseOver+Required].foreground");
+		if (obj instanceof Paint) {
+			this.foregroundColorMouseOverRequired = (Paint) obj;
+		} else {
+			this.foregroundColorMouseOverRequired = this.color2;
 		}
 
 		// pressed:
@@ -194,9 +221,23 @@ public class OComboBoxArrowButtonPainter extends AbstractRegionPainter {
 
 	}
 
+	protected void paintForegroundMouseOverRequired(Graphics2D g) {
+		this.path = this.decodeArrow();
+		g.setPaint(this.foregroundColorMouseOverRequired);
+		g.fill(this.path);
+
+	}
+
 	protected void paintForegroundDisabled(Graphics2D g) {
 		this.path = this.decodeArrow();
 		g.setPaint(this.foregroundColorDisabled);
+		g.fill(this.path);
+
+	}
+
+	protected void paintForegroundDisabledRequired(Graphics2D g) {
+		this.path = this.decodeArrow();
+		g.setPaint(this.foregroundColorDisabledRequired);
 		g.fill(this.path);
 
 	}
@@ -211,6 +252,13 @@ public class OComboBoxArrowButtonPainter extends AbstractRegionPainter {
 	protected void paintForegroundSelected(Graphics2D g) {
 		this.path = this.decodeArrow();
 		g.setPaint(this.foregroundColorSelected);
+		g.fill(this.path);
+
+	}
+
+	protected void paintForegroundRequired(Graphics2D g) {
+		this.path = this.decodeArrow();
+		g.setPaint(this.foregroundColorRequired);
 		g.fill(this.path);
 
 	}
