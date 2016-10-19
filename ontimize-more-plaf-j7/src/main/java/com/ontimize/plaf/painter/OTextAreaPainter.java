@@ -7,8 +7,10 @@ import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Toolkit;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.net.URL;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
@@ -44,17 +46,24 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 	public static final int BACKGROUND_ENABLED_NOTINSCROLLPANE = 4;
 	public static final int BACKGROUND_FOCUSED = 5;
 	public static final int BACKGROUND_REQUIRED = 222;
+	public static final int BACKGROUND_DISABLED_REQUIRED = 223;
+	public static final int BACKGROUND_FOCUSED_REQUIRED = 224;
 	public static final int BACKGROUND_REQUIRED_NOTINSCROLLPANE = 333;
+	public static final int BACKGROUND_FOCUSED_NOTINSCROLLPANE = 336;
+	public static final int BACKGROUND_DISABLED_REQUIRED_NOTINSCROLLPANE = 334;
+	public static final int BACKGROUND_FOCUSED_REQUIRED_NOTINSCROLLPANE = 335;
 	public static final int BORDER_DISABLED = 6;
 	public static final int BORDER_FOCUSED = 7;
 	public static final int BORDER_ENABLED = 8;
 	public static final int BORDER_REQUIRED = 666;
 	public static final int BORDER_FOCUSED_REQUIRED = 667;
+	public static final int BORDER_DISABLED_REQUIRED = 668;
 	public static final int BORDER_DISABLED_NOTINSCROLLPANE = 9;
 	public static final int BORDER_FOCUSED_NOTINSCROLLPANE = 10;
 	public static final int BORDER_ENABLED_NOTINSCROLLPANE = 11;
 	public static final int BORDER_REQUIRED_NOTINSCROLLPANE = 777;
 	public static final int BORDER_FOCUSED_REQUIRED_NOTINSCROLLPANE = 778;
+	public static final int BORDER_DISABLED_REQUIRED_NOTINSCROLLPANE = 779;
 
 	/**
 	 * The number of pixels that compounds the border width of the component.
@@ -71,11 +80,15 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 	protected Paint backgroundColorEnabled;
 	protected Paint backgroundColorFocused;
 	protected Paint backgroundColorRequired;
+	protected Paint backgroundColorFocusedRequired;
+	protected Paint backgroundColorDisabledRequired;
 
 	// arrays to round the component (several rounded borders with degradation):
 	protected Paint[] degradatedBorderColorEnabled;
 	protected Paint[] degradatedBorderColorDisabled;
+	protected Paint[] degradatedBorderColorDisabledRequired;
 	protected Paint[] degradatedBorderColorFocused;
+	protected Paint[] degradatedBorderColorFocusedRequired;
 	protected Paint[] degradatedBorderColorRequired;
 
 	// All Colors used for painting are stored here. Ideally, only those colors
@@ -96,8 +109,15 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 
 	protected double radius;
 
+	protected java.awt.Image paddLock = null;
+
 	public OTextAreaPainter(int state, PaintContext ctx) {
 		super(state, ctx);
+
+		if (AbstractOTextFieldPainter.imgUrl != null) {
+			URL url = this.getClass().getClassLoader().getResource(AbstractOTextFieldPainter.imgUrl);
+			this.paddLock = Toolkit.getDefaultToolkit().getImage(url);
+		}
 	}
 
 	@Override
@@ -117,11 +137,17 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 		case BACKGROUND_DISABLED:
 			this.paintBackgroundDisabled(g, c, x, y, cwidth, cheight);
 			break;
+		case BACKGROUND_DISABLED_REQUIRED:
+			this.paintBackgroundDisabledRequired(g, c, x, y, cwidth, cheight);
+			break;
 		case BACKGROUND_ENABLED:
 			this.paintBackgroundEnabled(g, c, x, y, cwidth, cheight);
 			break;
 		case BACKGROUND_DISABLED_NOTINSCROLLPANE:
 			this.paintBackgroundDisabledAndNotInScrollPane(g, c, x, y, cwidth, cheight);
+			break;
+		case BACKGROUND_DISABLED_REQUIRED_NOTINSCROLLPANE:
+			this.paintBackgroundDisabledRequiredAndNotInScrollPane(g, c, x, y, cwidth, cheight);
 			break;
 		case BACKGROUND_ENABLED_NOTINSCROLLPANE:
 			this.paintBackgroundEnabledAndNotInScrollPane(g, c, x, y, cwidth, cheight);
@@ -129,17 +155,29 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 		case BACKGROUND_FOCUSED:
 			this.paintBackgroundFocused(g, c, x, y, cwidth, cheight);
 			break;
+		case BACKGROUND_FOCUSED_REQUIRED:
+			this.paintBackgroundFocusedRequired(g, c, x, y, cwidth, cheight);
+			break;
 		case BACKGROUND_REQUIRED:
 			this.paintBackgroundRequired(g, c, x, y, cwidth, cheight);
 			break;
 		case BACKGROUND_REQUIRED_NOTINSCROLLPANE:
 			this.paintBackgroundRequiredAndNotInScrollPane(g, c, x, y, cwidth, cheight);
 			break;
+		case BACKGROUND_FOCUSED_NOTINSCROLLPANE:
+			this.paintBackgroundFocusedAndNotInScrollPane(g, c, x, y, cwidth, cheight);
+			break;
+		case BACKGROUND_FOCUSED_REQUIRED_NOTINSCROLLPANE:
+			this.paintBackgroundFocusedRequiredAndNotInScrollPane(g, c, x, y, cwidth, cheight);
+			break;
 		}
 		// }
 		switch (this.state) {
 		case BORDER_DISABLED:
 			this.paintBorderDisabledInScrollPane(g, c, 0, 0);
+			break;
+		case BORDER_DISABLED_REQUIRED:
+			this.paintBorderDisabledRequiredInScrollPane(g, c, 0, 0);
 			break;
 		case BORDER_FOCUSED:
 			this.paintBorderFocusedInScrollPane(g, c, 0, 0);
@@ -155,6 +193,9 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 			break;
 		case BORDER_DISABLED_NOTINSCROLLPANE:
 			this.paintBorderDisabledAndNotInScrollPane(g, c, 0, 0, width, height);
+			break;
+		case BORDER_DISABLED_REQUIRED_NOTINSCROLLPANE:
+			this.paintBorderDisabledRequiredAndNotInScrollPane(g, c, 0, 0, width, height);
 			break;
 		case BORDER_FOCUSED_NOTINSCROLLPANE:
 			this.paintBorderFocusedAndNotInScrollPane(g, c, 0, 0, width, height);
@@ -216,6 +257,14 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 			this.backgroundColorDisabled = this.color1;
 		}
 
+		// disable + required:
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Disabled+Required].background");
+		if (obj instanceof Paint) {
+			this.backgroundColorDisabledRequired = (Paint) obj;
+		} else {
+			this.backgroundColorDisabledRequired = this.color1;
+		}
+
 		// enable:
 		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Enabled].background");
 		if (obj instanceof Paint) {
@@ -230,6 +279,14 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 			this.backgroundColorFocused = (Paint) obj;
 		} else {
 			this.backgroundColorFocused = this.color2;
+		}
+
+		// focused + required:
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Focused+Required].background");
+		if (obj instanceof Paint) {
+			this.backgroundColorFocusedRequired = (Paint) obj;
+		} else {
+			this.backgroundColorFocusedRequired = this.color9;
 		}
 
 		// required:
@@ -261,6 +318,16 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 			this.degradatedBorderColorDisabled = new Color[] { this.color3, this.decodeColor(this.color3, this.color4, 0.5f), this.color4 };
 		}
 
+		// disable + required
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Disabled+Required].border");
+		if (obj instanceof Paint) {
+			this.degradatedBorderColorDisabledRequired = new Paint[] { (Paint) obj };
+		} else if (obj instanceof Paint[]) {
+			this.degradatedBorderColorDisabledRequired = (Paint[]) obj;
+		} else {
+			this.degradatedBorderColorDisabledRequired = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
+		}
+
 		// Focused:
 		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Focused].border");
 		if (obj instanceof Paint) {
@@ -269,6 +336,16 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 			this.degradatedBorderColorFocused = (Paint[]) obj;
 		} else {
 			this.degradatedBorderColorFocused = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
+		}
+
+		// Focused + required
+		obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Focused+Required].border");
+		if (obj instanceof Paint) {
+			this.degradatedBorderColorFocusedRequired = new Paint[] { (Paint) obj };
+		} else if (obj instanceof Paint[]) {
+			this.degradatedBorderColorFocusedRequired = (Paint[]) obj;
+		} else {
+			this.degradatedBorderColorFocusedRequired = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
 		}
 
 		// required:
@@ -292,6 +369,10 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 		this.drawBackground(g, c, x, y, width, height, this.backgroundColorDisabled);
 	}
 
+	protected void paintBackgroundDisabledRequired(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+		this.drawBackground(g, c, x, y, width, height, this.backgroundColorDisabledRequired);
+	}
+
 	protected void paintBackgroundEnabled(Graphics2D g, JComponent c, int x, int y, int width, int height) {
 		this.drawBackground(g, c, x, y, width, height, this.backgroundColorEnabled);
 	}
@@ -304,8 +385,16 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 		this.drawBackground(g, c, x, y, width, height, this.backgroundColorFocused);
 	}
 
+	protected void paintBackgroundFocusedRequired(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+		this.drawBackground(g, c, x, y, width, height, this.backgroundColorFocusedRequired);
+	}
+
 	protected void paintBackgroundDisabledAndNotInScrollPane(Graphics2D g, JComponent c, int x, int y, int width, int height) {
 		this.drawBackground(g, c, x, y, width, height, this.backgroundColorDisabled);
+	}
+
+	protected void paintBackgroundDisabledRequiredAndNotInScrollPane(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+		this.drawBackground(g, c, x, y, width, height, this.backgroundColorDisabledRequired);
 	}
 
 	protected void paintBackgroundEnabledAndNotInScrollPane(Graphics2D g, JComponent c, int x, int y, int width, int height) {
@@ -316,15 +405,39 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 		this.drawBackground(g, c, x, y, width, height, this.backgroundColorRequired);
 	}
 
+	protected void paintBackgroundFocusedAndNotInScrollPane(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+		this.drawBackground(g, c, x, y, width, height, this.backgroundColorFocused);
+	}
+
+	protected void paintBackgroundFocusedRequiredAndNotInScrollPane(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+		this.drawBackground(g, c, x, y, width, height, this.backgroundColorFocusedRequired);
+	}
+
 	protected void paintBorderDisabledAndNotInScrollPane(Graphics2D g, JComponent c, int x, int y, int width, int height) {
 		if ((this.degradatedBorderColorDisabled != null) && (this.degradatedBorderColorDisabled.length > 0)) {
 			this.drawDegradatedBorders(g, c, x, y, width, height, this.degradatedBorderColorDisabled);
+			g.drawImage(this.paddLock, -2, (int) (this.decodeY(2.0f) - 4), 10, 10, null);
+		}
+	}
+
+	protected void paintBorderDisabledRequiredAndNotInScrollPane(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+		if ((this.degradatedBorderColorDisabledRequired != null) && (this.degradatedBorderColorDisabledRequired.length > 0)) {
+			this.drawDegradatedBorders(g, c, x, y, width, height, this.degradatedBorderColorDisabledRequired);
+			g.drawImage(this.paddLock, -2, (int) (this.decodeY(2.0f) - 4), 10, 10, null);
 		}
 	}
 
 	protected void paintBorderDisabledInScrollPane(Graphics2D g, JComponent c, int x, int y) {
 		if ((this.degradatedBorderColorDisabled != null) && (this.degradatedBorderColorDisabled.length > 0)) {
 			this.drawDegradatedBordersInScrollPane(g, c, x, y, this.degradatedBorderColorDisabled);
+			g.drawImage(this.paddLock, -2, (int) (this.decodeY(2.0f) - 4), 10, 10, null);
+		}
+	}
+
+	protected void paintBorderDisabledRequiredInScrollPane(Graphics2D g, JComponent c, int x, int y) {
+		if ((this.degradatedBorderColorDisabledRequired != null) && (this.degradatedBorderColorDisabledRequired.length > 0)) {
+			this.drawDegradatedBordersInScrollPane(g, c, x, y, this.degradatedBorderColorDisabledRequired);
+			g.drawImage(this.paddLock, -2, (int) (this.decodeY(2.0f) - 4), 10, 10, null);
 		}
 	}
 
@@ -490,6 +603,9 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 		case BORDER_DISABLED:
 			filler = this.getBackgroundColor(c, s, this.backgroundColorDisabled);
 			break;
+		case BORDER_DISABLED_REQUIRED:
+			filler = this.getBackgroundColor(c, s, this.backgroundColorDisabledRequired);
+			break;
 		case BORDER_ENABLED:
 			filler = this.getBackgroundColor(c, s, this.backgroundColorEnabled);
 			break;
@@ -504,6 +620,9 @@ public class OTextAreaPainter extends AbstractRegionPainter {
 			break;
 		case BORDER_DISABLED_NOTINSCROLLPANE:
 			filler = this.getBackgroundColor(c, s, this.backgroundColorDisabled);
+			break;
+		case BORDER_DISABLED_REQUIRED_NOTINSCROLLPANE:
+			filler = this.getBackgroundColor(c, s, this.backgroundColorDisabledRequired);
 			break;
 		case BORDER_ENABLED_NOTINSCROLLPANE:
 			filler = this.getBackgroundColor(c, s, this.backgroundColorEnabled);

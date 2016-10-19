@@ -22,6 +22,7 @@ package com.ontimize.plaf.state;
 import java.awt.Container;
 
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.nimbus.State;
 
@@ -44,27 +45,18 @@ public class RequiredState extends State {
 	 */
 	@Override
 	public boolean isInState(JComponent c) {
+		JComponent comp = c;
+		if (c instanceof JScrollPane) {
+			comp = (JComponent) ((javax.swing.JScrollPane) c).getViewport().getView();
+		}
 
-		Container container = SwingUtilities.getAncestorOfClass(DataField.class, c);
+		Container container = SwingUtilities.getAncestorOfClass(DataField.class, comp);
 		if (container instanceof DataField) {
 			DataField dF = (DataField) container;
 			if (dF.isRequired()) {
 				return true;
 			}
 		}
-
-		// if(c.getParent() instanceof DataField && c.isEnabled()){
-		// DataField dF = (DataField)c.getParent();
-		// if(dF.isRequired()){
-		// return true;
-		// }
-		// } else if(c.getParent() != null && c.getParent().getParent()
-		// instanceof DataField && c.isEnabled()){
-		// DataField dF = (DataField)c.getParent().getParent();
-		// if(dF.isRequired()){
-		// return true;
-		// }
-		// }
 		return false;
 	}
 }

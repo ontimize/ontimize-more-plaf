@@ -527,6 +527,22 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		}
 	}
 
+	protected LazyPainter createLazyPainter(String className, int which) {
+		return new LazyPainter(className, which);
+	}
+
+	protected LazyPainter createLazyPainter(String className, int which, String path) {
+		return new LazyPainter(className, which, path);
+	}
+
+	protected LazyPainter createLazyPainter(String className, int which, PaintContext ctx) {
+		return new LazyPainter(className, which, ctx);
+	}
+
+	protected LazyPainter createLazyPainter(String className, int which, PaintContext ctx, String path) {
+		return new LazyPainter(className, which, ctx, path);
+	}
+
 	protected void defineTextPane(UIDefaults d) {
 		// Initialize TextPane
 		String compName = "TextPane";
@@ -634,18 +650,18 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTextFieldPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Disabled+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
-		d.put(compName + "[Focused+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED_REQUIRED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
-		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Disabled+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Required].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Focused].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
 
 	}
 
@@ -664,6 +680,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "6 6 6 6");
 		// Background of the selected text
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "textBackground", "#39698a");
+
+		// TextForeground
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
 		ColorUIResource disabledFgColor = StyleUtil.getColorUI(compName, "[Disabled].textForeground", "#8e8f91");
 		d.put(compName + "[Disabled].textForeground", disabledFgColor);
@@ -678,17 +696,33 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		focusedRequiredFgColor = focusedRequiredFgColor != null ? focusedRequiredFgColor : requiredFgColor;
 		d.put(compName + "[Focused+Required].textForeground", focusedRequiredFgColor);
 
-		d.put(compName + "[Enabled].background", StyleUtil.getColorUI(compName, "[Enabled].background", "#FFFFFF"));
-		d.put(compName + "[Disabled].background", StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D"));
-		d.put(compName + "[Selected].background", StyleUtil.getColorUI(compName, "[Selected].background", "#FFFFFF"));
+		// Background
+		ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
+		ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
 		ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
-		d.put(compName + "[Required].background", requiredColor);
-		d.put(compName + "[Focused+Required].background", requiredColor);
+		ColorUIResource disabledRequiredColor = StyleUtil.getColorUI(compName, "[Disabled+Required].background", null);
+		disabledRequiredColor = disabledRequiredColor != null ? disabledRequiredColor : new ColorUIResource(OntimizeLAFColorUtils.setAlpha(requiredColor, 0.5));
+		ColorUIResource focusedRequiredColor = StyleUtil.getColorUI(compName, "[Focused+Required].background", null);
+		focusedRequiredColor = focusedRequiredColor != null ? focusedRequiredColor : requiredColor;
 
-		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E5"));
+		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+		d.put(compName + "[Disabled].background", disabledColor);
+		d.put(compName + "[Focused].background", focusedColor);
+		d.put(compName + "[Selected].background", StyleUtil.getColorUI(compName, "[Selected].background", "#FFFFFF"));
+		d.put(compName + "[Required].background", requiredColor);
+		d.put(compName + "[Focused+Required].background", focusedRequiredColor);
+		d.put(compName + "[Disabled+Required].background", disabledRequiredColor);
+
+		// Border
+		d.put(compName + "[Enabled].border", StyleUtil.getArrayColorUI(compName, "[Enabled].border", "#E5E5E57D"));
 		d.put(compName + "[Required].border", StyleUtil.getArrayColorUI(compName, "[Required].border", "#E5E5E57D"));
 		d.put(compName + "[Disabled].border", StyleUtil.getArrayColorUI(compName, "[Disabled].border", "#A5B6C0"));
-		d.put(compName + "[Focused].border", StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819"));
+		d.put(compName + "[Disabled+Required].border", StyleUtil.getArrayColorUI(compName, "[Disabled+Required].border", "#E5E5E57D"));
+		ColorUIResource[] focusedBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused].border", "#61BEE8FF #61BEE8B3 #61BEE866 #61BEE819");
+		d.put(compName + "[Focused].border", focusedBorderColors);
+		ColorUIResource[] focusedRequiredBorderColors = StyleUtil.getArrayColorUI(compName, "[Focused+Required].border", null);
+		focusedRequiredBorderColors = focusedRequiredBorderColors != null ? focusedRequiredBorderColors : focusedBorderColors;
+		d.put(compName + "[Focused+Required].border", focusedRequiredBorderColors);
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", null);
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "foreground", null);
@@ -702,25 +736,34 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + ".States", "Enabled,MouseOver,Pressed,Selected,Disabled,Focused,Required,NotInScrollPane");
 		d.put(compName + ".NotInScrollPane", new OTextAreaNotInScrollPaneState());
 		d.put(compName + ".Required", new RequiredState());
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_REQUIRED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_REQUIRED, ctx));
-		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Required].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Focused+Required].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Focused].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Required].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED_REQUIRED, ctx));
 
 		// TextArea not in scroll pane
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Disabled+NotInScrollPane].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_DISABLED_NOTINSCROLLPANE, ctx));
-		d.put(compName + "[Enabled+NotInScrollPane].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_ENABLED_NOTINSCROLLPANE, ctx));
-		d.put(compName + "[Required+NotInScrollPane].backgroundPainter", new LazyPainter(pClass, OTextAreaPainter.BACKGROUND_REQUIRED_NOTINSCROLLPANE, ctx));
-		d.put(compName + "[Disabled+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_DISABLED_NOTINSCROLLPANE, ctx));
-		d.put(compName + "[Focused+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED_NOTINSCROLLPANE, ctx));
-		d.put(compName + "[Enabled+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_ENABLED_NOTINSCROLLPANE, ctx));
-		d.put(compName + "[Required+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_REQUIRED_NOTINSCROLLPANE, ctx));
-		d.put(compName + "[Focused+Required+NotInScrollPane].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED_REQUIRED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Disabled+NotInScrollPane].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_DISABLED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Disabled+Required+NotInScrollPane].backgroundPainter",
+				this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_DISABLED_REQUIRED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Enabled+NotInScrollPane].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_ENABLED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Focused+NotInScrollPane].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_FOCUSED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Required+NotInScrollPane].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_REQUIRED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Focused+Required+NotInScrollPane].backgroundPainter", this.createLazyPainter(pClass, OTextAreaPainter.BACKGROUND_FOCUSED_REQUIRED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Disabled+NotInScrollPane].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_DISABLED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Disabled+Required+NotInScrollPane].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_DISABLED_REQUIRED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Focused+NotInScrollPane].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Enabled+NotInScrollPane].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_ENABLED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Required+NotInScrollPane].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_REQUIRED_NOTINSCROLLPANE, ctx));
+		d.put(compName + "[Focused+Required+NotInScrollPane].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED_REQUIRED_NOTINSCROLLPANE, ctx));
 	}
 
 	protected void definePassword(UIDefaults d) {
@@ -793,17 +836,17 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTextFieldPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Disabled+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
-		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Disabled+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Required].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
 	}
 
 	protected void defineReferenceExtComponent(UIDefaults d) {
@@ -871,17 +914,17 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OReferenceExtFieldPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Disabled+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
-		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Disabled+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Required].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
 
 	}
 
@@ -950,18 +993,18 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OReferenceExtCodeFieldPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "4 14 4 14"), new Dimension(122, 26),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Disabled+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
-		d.put(compName + "[Focused+Required].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED_REQUIRED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
-		d.put(compName + "[Focused+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Disabled+Required].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Required].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Focused].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED_REQUIRED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
 
 	}
 
@@ -1001,12 +1044,12 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(4, 14, 4, 30), new Dimension(122, 26), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Focused].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
 
 		QuickFieldText.paintFindText = false;
 	}
@@ -1040,12 +1083,12 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OEditorPanePainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(10, 10, 10, 10), new Dimension(122, 24), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OEditorPanePainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OEditorPanePainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OEditorPanePainter.BACKGROUND_SELECTED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Focused].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTextAreaPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OEditorPanePainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OEditorPanePainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, OEditorPanePainter.BACKGROUND_SELECTED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Focused].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, OTextAreaPainter.BORDER_ENABLED, ctx));
 
 	}
 
@@ -1070,7 +1113,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFileChooserPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(10, 10, 10, 10), new Dimension(122, 24), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OEditorPanePainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OEditorPanePainter.BACKGROUND_ENABLED, ctx));
 
 	}
 
@@ -1111,13 +1154,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
 		OntimizeLookAndFeel.setBoolean(d, compName, "useChildTextComponentFocus", "true");
 
-		d.put(compName + "[Enabled+Focused].borderPainter", new LazyPainter(pClass, OScrollPanePainter.BORDER_ENABLED_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OScrollPanePainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OScrollPanePainter.BORDER_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OScrollPanePainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".States", "Enabled,Disabled,Focused,Required");
+		d.put(compName + ".Required", new RequiredState());
+
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OScrollPanePainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, OScrollPanePainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Enabled+Focused].borderPainter", this.createLazyPainter(pClass, OScrollPanePainter.BORDER_ENABLED_FOCUSED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, OScrollPanePainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].borderPainter", this.createLazyPainter(pClass, OScrollPanePainter.BORDER_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Required].borderPainter", this.createLazyPainter(pClass, OScrollPanePainter.BORDER_REQUIRED, ctx));
+		d.put(compName + "[Focused+Required].borderPainter", this.createLazyPainter(pClass, OScrollPanePainter.BORDER_FOCUSED_REQUIRED, ctx));
 
 		// Store ScrollPane Corner Component
-		d.put(compName + ".cornerPainter", new LazyPainter(pClass, OScrollPanePainter.CORNER_ENABLED, ctx));
+		d.put(compName + ".cornerPainter", this.createLazyPainter(pClass, OScrollPanePainter.CORNER_ENABLED, ctx));
 	}
 
 	protected void defineFormScrollPanel(UIDefaults d) {
@@ -1177,8 +1226,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "6 6 6 6"), new Dimension(122, 24),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		d.put(compName + ".States", "Enabled,Disabled");
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OScrollBarPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OScrollBarPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, OScrollBarPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, OScrollBarPainter.BORDER_DISABLED, ctx));
 
 	}
 
@@ -1209,10 +1258,10 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(25, 16),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_DISABLED, ctx));
-		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_PRESSED, ctx));
+		d.put(compName + "[Enabled].foregroundPainter", this.createLazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].foregroundPainter", this.createLazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_DISABLED, ctx));
+		d.put(compName + "[MouseOver].foregroundPainter", this.createLazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Pressed].foregroundPainter", this.createLazyPainter(pClass, OScrollBarButtonPainter.FOREGROUND_PRESSED, ctx));
 	}
 
 	protected void defineScrollBarThumb(UIDefaults d) {
@@ -1240,9 +1289,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 2 2 2"), new Dimension(38, 15),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, 2.0);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OScrollBarThumbPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OScrollBarThumbPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, OScrollBarThumbPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OScrollBarThumbPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, OScrollBarThumbPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, OScrollBarThumbPainter.BACKGROUND_PRESSED, ctx));
 	}
 
 	protected void defineScrollBarTrack(UIDefaults d) {
@@ -1264,8 +1313,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(18, 15),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, 2.0);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OScrollBarTrackPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OScrollBarTrackPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OScrollBarTrackPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OScrollBarTrackPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineTable(UIDefaults d) {
@@ -1454,7 +1503,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(5, 5, 5, 5), new Dimension(22, 20), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineTableCellEditor(UIDefaults d) {
@@ -1494,12 +1543,12 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new PaintContext(new Insets(1, 1, 1, 1), new Dimension(31, 17), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
 
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused+Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Focused+Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused+Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Focused+Enabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_FOCUSED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
 
 		// ************Ontimize Table Configuration***********
 		compName = "Table:\"Table.cellEditor\"";
@@ -1568,8 +1617,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTableHeaderPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 0, 0, 0), new Dimension(31, 17), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put(compName + "[Enabled].ascendingSortIconPainter", new LazyPainter(pClass, OTableHeaderPainter.ASCENDINGSORTICON_ENABLED, ctx));
-		d.put(compName + "[Enabled].descendingSortIconPainter", new LazyPainter(pClass, OTableHeaderPainter.DESCENDINGSORTICON_ENABLED, ctx));
+		d.put(compName + "[Enabled].ascendingSortIconPainter", this.createLazyPainter(pClass, OTableHeaderPainter.ASCENDINGSORTICON_ENABLED, ctx));
+		d.put(compName + "[Enabled].descendingSortIconPainter", this.createLazyPainter(pClass, OTableHeaderPainter.DESCENDINGSORTICON_ENABLED, ctx));
 
 	}
 
@@ -1607,14 +1656,14 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTableHeaderRendererPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(22, 20), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Enabled+Focused].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Enabled+Sorted].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED_SORTED, ctx));
-		d.put(compName + "[Enabled+Focused+Sorted].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED_FOCUSED_SORTED, ctx));
-		d.put(compName + "[Disabled+Sorted].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_DISABLED_SORTED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled+Focused].backgroundPainter", this.createLazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Enabled+Sorted].backgroundPainter", this.createLazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED_SORTED, ctx));
+		d.put(compName + "[Enabled+Focused+Sorted].backgroundPainter", this.createLazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED_FOCUSED_SORTED, ctx));
+		d.put(compName + "[Disabled+Sorted].backgroundPainter", this.createLazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_DISABLED_SORTED, ctx));
 
 	}
 
@@ -1642,7 +1691,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(22, 20),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OTableHeaderRendererPainter.BACKGROUND_ENABLED, ctx));
 
 	}
 
@@ -1768,20 +1817,20 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 7 7"), new Dimension(104, 33), false, PaintContext.CacheMode.NO_CACHING,
 				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
-		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
 
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
 
 	protected void defineToggleButton(UIDefaults d) {
@@ -1838,21 +1887,21 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToggleButtonPainter");
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 7 7"), new Dimension(104, 33), false, PaintContext.CacheMode.NO_CACHING,
 				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED, ctx));
-		d.put(compName + "[Disabled+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_DISABLED_SELECTED, ctx));
-		d.put(compName + "[Focused+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
-		d.put(compName + "[MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED, ctx));
-		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED_FOCUSED, ctx));
-		d.put(compName + "[Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED, ctx));
-		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED, ctx));
+		d.put(compName + "[Disabled+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_DISABLED_SELECTED, ctx));
+		d.put(compName + "[Focused+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED, ctx));
+		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[Pressed+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED, ctx));
+		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED_FOCUSED, ctx));
 
 	}
 
@@ -1888,46 +1937,46 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		// // addColor(d, "CheckBox[Disabled].textForeground",
 		// "nimbusDisabledText", 0.0f, 0.0f, 0.0f, 0);
 		String path = StyleUtil.getIconPath(compName, "[Disabled].icon", iconBasePath + "18x18_ico_checkbox_disabled.png");
-		d.put(compName + "[Disabled].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_DISABLED, ctx, path));
+		d.put(compName + "[Disabled].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_DISABLED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Enabled].icon", iconBasePath + "18x18_ico_checkbox_enabled.png");
-		d.put(compName + "[Enabled].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_ENABLED, ctx, path));
+		d.put(compName + "[Enabled].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_ENABLED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused].icon", iconBasePath + "18x18_ico_checkbox_focused.png");
-		d.put(compName + "[Focused].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_FOCUSED, ctx, path));
+		d.put(compName + "[Focused].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[MouseOver].icon", iconBasePath + "18x18_ico_checkbox_mouseover.png");
-		d.put(compName + "[MouseOver].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER, ctx, path));
+		d.put(compName + "[MouseOver].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+MouseOver].icon", iconBasePath + "18x18_ico_checkbox_mouseover-focused.png");
-		d.put(compName + "[Focused+MouseOver].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+MouseOver].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Pressed].icon", iconBasePath + "18x18_ico_checkbox_pressed.png");
-		d.put(compName + "[Pressed].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED, ctx, path));
+		d.put(compName + "[Pressed].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed].icon", iconBasePath + "18x18_ico_checkbox_pressed-focused.png");
-		d.put(compName + "[Focused+Pressed].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Pressed].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Selected].icon", iconBasePath + "18x18_ico_checkbox_selected.png");
-		d.put(compName + "[Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_SELECTED, ctx, path));
+		d.put(compName + "[Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-focused.png");
-		d.put(compName + "[Focused+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Pressed+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-pressed.png");
-		d.put(compName + "[Pressed+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_SELECTED, ctx, path));
+		d.put(compName + "[Pressed+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-pressed-focused.png");
-		d.put(compName + "[Focused+Pressed+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Pressed+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[MouseOver+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-mouseover.png");
-		d.put(compName + "[MouseOver+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_SELECTED, ctx, path));
+		d.put(compName + "[MouseOver+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+MouseOver+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-mouseover-focussed.png");
-		d.put(compName + "[Focused+MouseOver+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+MouseOver+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Disabled+Selected].icon", iconBasePath + "18x18_ico_checkbox_disabled-selected.png");
-		d.put(compName + "[Disabled+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_DISABLED_SELECTED, ctx, path));
+		d.put(compName + "[Disabled+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_DISABLED_SELECTED, ctx, path));
 
 	}
 
@@ -1960,46 +2009,46 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		d.put(compName + ".contentMargins", StyleUtil.getInsetsUI(compName, "contentMargins", "0 0 0 0"));
 		String path = StyleUtil.getIconPath(compName, "[Disabled].icon", iconBasePath + "18x18_ico_checkbox_disabled.png");
-		d.put(compName + "[Disabled].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_DISABLED, ctx, path));
+		d.put(compName + "[Disabled].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_DISABLED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Enabled].icon", iconBasePath + "18x18_ico_checkbox_enabled.png");
-		d.put(compName + "[Enabled].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_ENABLED, ctx, path));
+		d.put(compName + "[Enabled].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_ENABLED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused].icon", iconBasePath + "18x18_ico_checkbox_focused.png");
-		d.put(compName + "[Focused].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_FOCUSED, ctx, path));
+		d.put(compName + "[Focused].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[MouseOver].icon", iconBasePath + "18x18_ico_checkbox_mouseover.png");
-		d.put(compName + "[MouseOver].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER, ctx, path));
+		d.put(compName + "[MouseOver].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+MouseOver].icon", iconBasePath + "18x18_ico_checkbox_mouseover-focused.png");
-		d.put(compName + "[Focused+MouseOver].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+MouseOver].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Pressed].icon", iconBasePath + "18x18_ico_checkbox_pressed.png");
-		d.put(compName + "[Pressed].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED, ctx, path));
+		d.put(compName + "[Pressed].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed].icon", iconBasePath + "18x18_ico_checkbox_pressed-focused.png");
-		d.put(compName + "[Focused+Pressed].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Pressed].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Selected].icon", iconBasePath + "18x18_ico_checkbox_selected.png");
-		d.put(compName + "[Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_SELECTED, ctx, path));
+		d.put(compName + "[Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-focused.png");
-		d.put(compName + "[Focused+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Pressed+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-pressed.png");
-		d.put(compName + "[Pressed+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_SELECTED, ctx, path));
+		d.put(compName + "[Pressed+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-pressed-focused.png");
-		d.put(compName + "[Focused+Pressed+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Pressed+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[MouseOver+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-mouseover.png");
-		d.put(compName + "[MouseOver+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_SELECTED, ctx, path));
+		d.put(compName + "[MouseOver+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+MouseOver+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-mouseover-focussed.png");
-		d.put(compName + "[Focused+MouseOver+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+MouseOver+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_MOUSEOVER_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Disabled+Selected].icon", iconBasePath + "18x18_ico_checkbox_disabled-selected.png");
-		d.put(compName + "[Disabled+Selected].iconPainter", new LazyPainter(pClass, OCheckBoxPainter.ICON_DISABLED_SELECTED, ctx, path));
+		d.put(compName + "[Disabled+Selected].iconPainter", this.createLazyPainter(pClass, OCheckBoxPainter.ICON_DISABLED_SELECTED, ctx, path));
 
 	}
 
@@ -2024,7 +2073,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + ".Editable", new OComboBoxEditableState());
 		d.put(compName + ".forceOpaque", Boolean.TRUE);
 		d.put(compName + ".buttonWhenNotEditable", Boolean.TRUE);
-		d.put(compName + ".rendererUseListColors", Boolean.FALSE);
+		d.put(compName + ".rendererUseListColors", Boolean.TRUE);
 		d.put(compName + ".pressedWhenPopupVisible", Boolean.TRUE);
 		d.put(compName + ".squareButton", Boolean.FALSE);
 		d.put(compName + ".popupInsets", new InsetsUIResource(-2, 2, 0, 2));
@@ -2089,23 +2138,23 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OComboBoxPainter");
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 13 2 4"), new Dimension(83, 24), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, 2.0);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Disabled+Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED_PRESSED, ctx));
-		d.put(compName + "[Disabled+Required].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Required].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_REQUIRED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
-		d.put(compName + "[Focused+Required].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_REQUIRED_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Enabled+Selected].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_ENABLED_SELECTED, ctx));
-		d.put(compName + "[Disabled+Editable].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED_EDITABLE, ctx));
-		d.put(compName + "[Editable+Enabled].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_ENABLED_EDITABLE, ctx));
-		d.put(compName + "[Editable+Focused].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_FOCUSED_EDITABLE, ctx));
-		d.put(compName + "[Editable+MouseOver].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER_EDITABLE, ctx));
-		d.put(compName + "[Editable+Pressed].backgroundPainter", new LazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED_EDITABLE, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Pressed].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED_PRESSED, ctx));
+		d.put(compName + "[Disabled+Required].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Required].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_REQUIRED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Focused+Required].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_REQUIRED_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Enabled+Selected].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_ENABLED_SELECTED, ctx));
+		d.put(compName + "[Disabled+Editable].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_DISABLED_EDITABLE, ctx));
+		d.put(compName + "[Editable+Enabled].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_ENABLED_EDITABLE, ctx));
+		d.put(compName + "[Editable+Focused].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_FOCUSED_EDITABLE, ctx));
+		d.put(compName + "[Editable+MouseOver].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_MOUSEOVER_EDITABLE, ctx));
+		d.put(compName + "[Editable+Pressed].backgroundPainter", this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED_EDITABLE, ctx));
 
 	}
 
@@ -2137,9 +2186,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(64, 24), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, 2.0);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OComboBoxTextFieldPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OComboBoxTextFieldPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OComboBoxTextFieldPainter.BACKGROUND_SELECTED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OComboBoxTextFieldPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OComboBoxTextFieldPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, OComboBoxTextFieldPainter.BACKGROUND_SELECTED, ctx));
 	}
 
 	protected void defineComboBoxArrow(UIDefaults d) {
@@ -2197,14 +2246,14 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.remove(compName + "[Editable+Selected].backgroundPainter");
 		d.remove(compName + "[Editable+Required].backgroundPainter");
 
-		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_ENABLED, ctx));
-		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[MouseOver+Required].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_MOUSEOVER_REQUIRED, ctx));
-		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_DISABLED, ctx));
-		d.put(compName + "[Disabled+Required].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_DISABLED_REQUIRED, ctx));
-		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_PRESSED, ctx));
-		d.put(compName + "[Selected].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_SELECTED, ctx));
-		d.put(compName + "[Required].foregroundPainter", new LazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_REQUIRED, ctx));
+		d.put(compName + "[Enabled].foregroundPainter", this.createLazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_ENABLED, ctx));
+		d.put(compName + "[MouseOver].foregroundPainter", this.createLazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[MouseOver+Required].foregroundPainter", this.createLazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_MOUSEOVER_REQUIRED, ctx));
+		d.put(compName + "[Disabled].foregroundPainter", this.createLazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Required].foregroundPainter", this.createLazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_DISABLED_REQUIRED, ctx));
+		d.put(compName + "[Pressed].foregroundPainter", this.createLazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_PRESSED, ctx));
+		d.put(compName + "[Selected].foregroundPainter", this.createLazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_SELECTED, ctx));
+		d.put(compName + "[Required].foregroundPainter", this.createLazyPainter(pClass, OComboBoxArrowButtonPainter.FOREGROUND_REQUIRED, ctx));
 	}
 
 	protected void defineComboBoxListRenderer(UIDefaults d) {
@@ -2295,7 +2344,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "3 10 3 10"), new Dimension(100, 30),
 				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put(compName + "[Enabled+Selected].backgroundPainter", new LazyPainter(pClass, OMenuPainter.BACKGROUND_ENABLED_SELECTED, ctx));
+		d.put(compName + "[Enabled+Selected].backgroundPainter", this.createLazyPainter(pClass, OMenuPainter.BACKGROUND_ENABLED_SELECTED, ctx));
 
 		// Arrow...
 		d.put(compName + "[Enabled].arrowBackground", StyleUtil.getColor(compName, "[Enabled].arrowBackground", "#FFFFFF7D"));
@@ -2306,9 +2355,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + ".arrowBackground_bottomShadow", StyleUtil.getColor(compName, "arrowBackground_bottomShadow", "#ffffff7d"));
 		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 1, 1, 1), new Dimension(6, 13), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put(compName + "[Disabled].arrowIconPainter", new LazyPainter(pClass, OMenuPainter.ARROWICON_DISABLED, ctx));
-		d.put(compName + "[Enabled].arrowIconPainter", new LazyPainter(pClass, OMenuPainter.ARROWICON_ENABLED, ctx));
-		d.put(compName + "[Enabled+Selected].arrowIconPainter", new LazyPainter(pClass, OMenuPainter.ARROWICON_ENABLED_SELECTED, ctx));
+		d.put(compName + "[Disabled].arrowIconPainter", this.createLazyPainter(pClass, OMenuPainter.ARROWICON_DISABLED, ctx));
+		d.put(compName + "[Enabled].arrowIconPainter", this.createLazyPainter(pClass, OMenuPainter.ARROWICON_ENABLED, ctx));
+		d.put(compName + "[Enabled+Selected].arrowIconPainter", this.createLazyPainter(pClass, OMenuPainter.ARROWICON_ENABLED_SELECTED, ctx));
 	}
 
 	protected void defineMenuBar(UIDefaults d) {
@@ -2333,11 +2382,11 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 5 0 5"), new Dimension(18, 22),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OMenuBarPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OMenuBarPainter.BACKGROUND_ENABLED, ctx));
 
 		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 5 0 5"), new Dimension(30, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OMenuBarPainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, OMenuBarPainter.BORDER_ENABLED, ctx));
 
 	}
 
@@ -2365,7 +2414,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "3 15 0 15"), new Dimension(100, 30),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OMenuBarMenuPainter.BACKGROUND_SELECTED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, OMenuBarMenuPainter.BACKGROUND_SELECTED, ctx));
 	}
 
 	protected void defineMenuItem(UIDefaults d) {
@@ -2395,9 +2444,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 10 2 10"), new Dimension(100, 3),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 		d.put(compName + ".contentMargins", StyleUtil.getInsetsUI(compName, "contentMargins", "2 10 2 10"));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OMenuItemPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OMenuItemPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OMenuItemPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, OMenuItemPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OMenuItemPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OMenuItemPainter.BACKGROUND_DISABLED, ctx));
 
 		// MenuItemAccelerator
 		OntimizeLookAndFeel.setColorUIResource(d, compName, ":MenuItemAccelerator[Disabled].textForeground", "#FFFFFF7F");
@@ -2429,9 +2478,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 10 1 10"), new Dimension(100, 3),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 		d.put(compName + ".contentMargins", StyleUtil.getInsetsUI(compName, "contentMargins", "1 10 1 10"));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OPopupItemPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OPopupItemPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OPopupItemPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, OPopupItemPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OPopupItemPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OPopupItemPainter.BACKGROUND_DISABLED, ctx));
 
 	}
 
@@ -2469,56 +2518,58 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 10 2 10"), new Dimension(100, 3),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.BACKGROUND_DISABLED, ctx));
 
 		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 10 1 10"), new Dimension(18, 18), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 
 		String path = StyleUtil.getIconPath(compName, "[Disabled].icon", iconBasePath + "18x18_ico_radiobutton_disabled.png");
-		d.put(compName + "[Disabled].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_DISABLED, ctx, path));
+		d.put(compName + "[Disabled].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_DISABLED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Enabled].icon", iconBasePath + "18x18_ico_radiobutton_enabled.png");
-		d.put(compName + "[Enabled].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_ENABLED, ctx, path));
+		d.put(compName + "[Enabled].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_ENABLED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused].icon", iconBasePath + "18x18_ico_radiobutton_focused.png");
-		d.put(compName + "[Focused].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_FOCUSED, ctx, path));
+		d.put(compName + "[Focused].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[MouseOver].icon", iconBasePath + "18x18_ico_radiobutton_mouseover.png");
-		d.put(compName + "[MouseOver].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_MOUSEOVER, ctx, path));
+		d.put(compName + "[MouseOver].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_MOUSEOVER, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+MouseOver].icon", iconBasePath + "18x18_ico_radiobutton_mouseover-focused.png");
-		d.put(compName + "[Focused+MouseOver].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_MOUSEOVER_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+MouseOver].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_MOUSEOVER_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Pressed].icon", iconBasePath + "18x18_ico_radiobutton_pressed.png");
-		d.put(compName + "[Pressed].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_PRESSED, ctx, path));
+		d.put(compName + "[Pressed].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_PRESSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed].icon", iconBasePath + "18x18_ico_radiobutton_pressed-focused.png");
-		d.put(compName + "[Focused+Pressed].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_PRESSED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Pressed].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_PRESSED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Enabled+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected.png");
-		d.put(compName + "[Enabled+Selected].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_SELECTED, ctx, path));
+		d.put(compName + "[Enabled+Selected].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected-focused.png");
-		d.put(compName + "[Focused+Selected].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Selected].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Pressed+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected-pressed.png");
-		d.put(compName + "[Pressed+Selected].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_PRESSED_SELECTED, ctx, path));
+		d.put(compName + "[Pressed+Selected].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_PRESSED_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected-pressed-focused.png");
-		d.put(compName + "[Focused+Pressed+Selected].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Pressed+Selected].checkIconPainter",
+				this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[MouseOver+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected-mouseover.png");
-		d.put(compName + "[MouseOver+Selected].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_MOUSEOVER_SELECTED, ctx, path));
+		d.put(compName + "[MouseOver+Selected].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_MOUSEOVER_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+MouseOver+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected-mouseover-focused.png");
-		d.put(compName + "[Focused+MouseOver+Selected].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_MOUSEOVER_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+MouseOver+Selected].checkIconPainter",
+				this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_MOUSEOVER_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Disabled+Selected].icon", iconBasePath + "18x18_ico_radiobutton_disabled-selected.png");
-		d.put(compName + "[Disabled+Selected].checkIconPainter", new LazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_DISABLED_SELECTED, ctx, path));
+		d.put(compName + "[Disabled+Selected].checkIconPainter", this.createLazyPainter(pClass, ORadioButtonMenuItemPainter.CHECKICON_ICON_DISABLED_SELECTED, ctx, path));
 
 	}
 
@@ -2558,55 +2609,56 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 10 2 10"), new Dimension(100, 3),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_SELECTED, ctx));
-		d.put(compName + "[MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_SELECTED, ctx));
+		d.put(compName + "[MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
 
 		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 10 1 10"), new Dimension(18, 18), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 		String path = StyleUtil.getIconPath(compName, "[Disabled].icon", iconBasePath + "18x18_ico_checkbox_disabled.png");
-		d.put(compName + "[Disabled].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_DISABLED, ctx, path));
+		d.put(compName + "[Disabled].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_DISABLED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Enabled].icon", iconBasePath + "18x18_ico_checkbox_enabled.png");
-		d.put(compName + "[Enabled].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_ENABLED, ctx, path));
+		d.put(compName + "[Enabled].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_ENABLED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused].icon", iconBasePath + "18x18_ico_checkbox_focused.png");
-		d.put(compName + "[Focused].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_FOCUSED, ctx, path));
+		d.put(compName + "[Focused].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[MouseOver].icon", iconBasePath + "18x18_ico_checkbox_mouseover.png");
-		d.put(compName + "[MouseOver].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_MOUSEOVER, ctx, path));
+		d.put(compName + "[MouseOver].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_MOUSEOVER, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+MouseOver].icon", iconBasePath + "18x18_ico_checkbox_mouseover-focused.png");
-		d.put(compName + "[Focused+MouseOver].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_MOUSEOVER_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+MouseOver].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_MOUSEOVER_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Pressed].icon", iconBasePath + "18x18_ico_checkbox_pressed.png");
-		d.put(compName + "[Pressed].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_PRESSED, ctx, path));
+		d.put(compName + "[Pressed].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_PRESSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed].icon", iconBasePath + "18x18_ico_checkbox_pressed-focused.png");
-		d.put(compName + "[Focused+Pressed].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_PRESSED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Pressed].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_PRESSED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Enabled+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected.png");
-		d.put(compName + "[Enabled+Selected].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_SELECTED, ctx, path));
+		d.put(compName + "[Enabled+Selected].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-focused.png");
-		d.put(compName + "[Focused+Selected].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Selected].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Pressed+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-pressed.png");
-		d.put(compName + "[Pressed+Selected].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_PRESSED_SELECTED, ctx, path));
+		d.put(compName + "[Pressed+Selected].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_PRESSED_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-pressed-focused.png");
-		d.put(compName + "[Focused+Pressed+Selected].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Pressed+Selected].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[MouseOver+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-mouseover.png");
-		d.put(compName + "[MouseOver+Selected].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_MOUSEOVER_SELECTED, ctx, path));
+		d.put(compName + "[MouseOver+Selected].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_MOUSEOVER_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+MouseOver+Selected].icon", iconBasePath + "18x18_ico_checkbox_selected-mouseover-focussed.png");
-		d.put(compName + "[Focused+MouseOver+Selected].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_MOUSEOVER_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+MouseOver+Selected].checkIconPainter",
+				this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_MOUSEOVER_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Disabled+Selected].icon", iconBasePath + "18x18_ico_checkbox_disabled-selected.png");
-		d.put(compName + "[Disabled+Selected].checkIconPainter", new LazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_DISABLED_SELECTED, ctx, path));
+		d.put(compName + "[Disabled+Selected].checkIconPainter", this.createLazyPainter(pClass, OCheckBoxMenuItemPainter.CHECKICON_ICON_DISABLED_SELECTED, ctx, path));
 
 	}
 
@@ -2709,8 +2761,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OPopupMenuPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "18 9 16 9"), new Dimension(220, 313),
 				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OPopupMenuPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OPopupMenuPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OPopupMenuPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OPopupMenuPainter.BACKGROUND_ENABLED, ctx));
 
 	}
 
@@ -2738,7 +2790,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OPopupMenuSeparatorPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 0 5 0"), new Dimension(100, 2),
 				true, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OPopupMenuSeparatorPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OPopupMenuSeparatorPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineSeparator(UIDefaults d) {
@@ -2759,7 +2811,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OSeparatorPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(100, 2),
 				true, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put("Separator[Enabled].backgroundPainter", new LazyPainter(pClass, OSeparatorPainter.BACKGROUND_ENABLED, ctx));
+		d.put("Separator[Enabled].backgroundPainter", this.createLazyPainter(pClass, OSeparatorPainter.BACKGROUND_ENABLED, ctx));
 
 	}
 
@@ -2850,15 +2902,15 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		Insets in = StyleUtil.getInsets(compName, "contentMargins", "3 0 3 0");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(in, new Dimension(68, 10), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OSplitPaneDividerPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, OSplitPaneDividerPainter.BACKGROUND_FOCUSED, ctx));
 
 		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 1, 0, 1), new Dimension(92, 12), true,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
-		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.FOREGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled].foregroundPainter", this.createLazyPainter(pClass, OSplitPaneDividerPainter.FOREGROUND_ENABLED, ctx));
 		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 0, 1, 0), new Dimension(12, 90), true,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, 2.0);
-		d.put(compName + "[Enabled+Vertical].foregroundPainter", new LazyPainter(pClass, OSplitPaneDividerPainter.FOREGROUND_ENABLED_VERTICAL, ctx));
+		d.put(compName + "[Enabled+Vertical].foregroundPainter", this.createLazyPainter(pClass, OSplitPaneDividerPainter.FOREGROUND_ENABLED_VERTICAL, ctx));
 
 	}
 
@@ -2923,7 +2975,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTreeCellRendererPainter");
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 2 0 30"), new Dimension(100, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTreeCellRendererPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OTreeCellRendererPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineTreeCellEditor(UIDefaults d) {
@@ -2949,18 +3001,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTreeCellEditorPainter");
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "2 5 2 5"), new Dimension(100, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTreeCellEditorPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Enabled+Focused].backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTreeCellEditorPainter.BACKGROUND_ENABLED_FOCUSED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OTreeCellEditorPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled+Focused].backgroundPainter", this.createLazyPainter(pClass, OTreeCellEditorPainter.BACKGROUND_ENABLED_FOCUSED, ctx));
 	}
 
 	protected void defineDiagramToolBar(UIDefaults d) {
 		String compName = "\"DiagramToolBar\"";
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 1, 1, 1), new Dimension(30, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 3.0, 3.0);
-		d.put(compName + "[East].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.EastOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[North].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.NorthODiagramToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[South].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.SouthOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[West].backgroundPainter", new LazyPainter("com.ontimize.plaf.painter.WestOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[East].backgroundPainter", this.createLazyPainter("com.ontimize.plaf.painter.EastOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[North].backgroundPainter",
+				this.createLazyPainter("com.ontimize.plaf.painter.NorthODiagramToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[South].backgroundPainter", this.createLazyPainter("com.ontimize.plaf.painter.SouthOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[West].backgroundPainter", this.createLazyPainter("com.ontimize.plaf.painter.WestOToolBarPainter", AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineToolBar(UIDefaults d) {
@@ -3011,10 +3064,10 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(30, 30),
 				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolBarPainter");
-		d.put(compName + "[East].borderPainter", new LazyPainter(pClass, OToolBarPainter.BORDER_EAST, ctx));
-		d.put(compName + "[North].borderPainter", new LazyPainter(pClass, OToolBarPainter.BORDER_NORTH, ctx));
-		d.put(compName + "[South].borderPainter", new LazyPainter(pClass, OToolBarPainter.BORDER_SOUTH, ctx));
-		d.put(compName + "[West].borderPainter", new LazyPainter(pClass, OToolBarPainter.BORDER_WEST, ctx));
+		d.put(compName + "[East].borderPainter", this.createLazyPainter(pClass, OToolBarPainter.BORDER_EAST, ctx));
+		d.put(compName + "[North].borderPainter", this.createLazyPainter(pClass, OToolBarPainter.BORDER_NORTH, ctx));
+		d.put(compName + "[South].borderPainter", this.createLazyPainter(pClass, OToolBarPainter.BORDER_SOUTH, ctx));
+		d.put(compName + "[West].borderPainter", this.createLazyPainter(pClass, OToolBarPainter.BORDER_WEST, ctx));
 
 		// WARNING: Here, there is also other BUG in class NimbusDefaults in
 		// Nimbus. Only the values for keys that contains backgroundPainter,
@@ -3029,13 +3082,13 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(1, 1, 1, 1), new Dimension(30, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 3.0, 3.0);
 		pClass = StyleUtil.getProperty(compName, "[East].painterClass", "com.ontimize.plaf.painter.EastOToolBarPainter");
-		d.put(compName + "[East].backgroundPainter", new LazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[East].backgroundPainter", this.createLazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
 		pClass = StyleUtil.getProperty(compName, "[North].painterClass", "com.ontimize.plaf.painter.NorthOToolBarPainter");
-		d.put(compName + "[North].backgroundPainter", new LazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[North].backgroundPainter", this.createLazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
 		pClass = StyleUtil.getProperty(compName, "[South].painterClass", "com.ontimize.plaf.painter.SouthOToolBarPainter");
-		d.put(compName + "[South].backgroundPainter", new LazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[South].backgroundPainter", this.createLazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
 		pClass = StyleUtil.getProperty(compName, "[West].painterClass", "com.ontimize.plaf.painter.WestOToolBarPainter");
-		d.put(compName + "[West].backgroundPainter", new LazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[West].backgroundPainter", this.createLazyPainter(pClass, AbstractOToolBarPainter.BACKGROUND_ENABLED, ctx));
 
 		Integer height = StyleUtil.getInteger(compName, "height", "50");
 		ApplicationToolBar.DEFAULT_TOOLBAR_HEIGHT = height;
@@ -3079,13 +3132,13 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolBarButtonPainter");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 8 0 8"), new Dimension(32, 32),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
 
 		Integer size = StyleUtil.getInteger(compName, "size", "32");
 		ApplicationToolBar.DEFAULT_BUTTON_SIZE = size;
@@ -3129,21 +3182,21 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 2.0, Double.POSITIVE_INFINITY);
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolBarToggleButtonPainter");
 
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_SELECTED, ctx));
-		d.put(compName + "[Focused+Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
-		d.put(compName + "[Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_PRESSED_SELECTED, ctx));
-		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_PRESSED_SELECTED_FOCUSED, ctx));
-		d.put(compName + "[MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED, ctx));
-		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED_FOCUSED, ctx));
-		d.put(compName + "[Disabled+Selected].backgroundPainter", new LazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_DISABLED_SELECTED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_SELECTED, ctx));
+		d.put(compName + "[Focused+Selected].backgroundPainter", this.createLazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[Pressed+Selected].backgroundPainter", this.createLazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_PRESSED_SELECTED, ctx));
+		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", this.createLazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_PRESSED_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED, ctx));
+		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[Disabled+Selected].backgroundPainter", this.createLazyPainter(pClass, OToolBarToggleButtonPainter.BACKGROUND_DISABLED_SELECTED, ctx));
 
 	}
 
@@ -3165,7 +3218,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		Insets insets = StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(38, 7), true,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OToolBarSeparatorPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OToolBarSeparatorPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineToolTip(UIDefaults d) {
@@ -3193,7 +3246,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 9 6 9"), new Dimension(10, 10),
 				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OToolTipPainter");
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OToolTipPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OToolTipPainter.BACKGROUND_ENABLED, ctx));
 
 	}
 
@@ -3228,46 +3281,46 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + ".contentMargins", StyleUtil.getInsetsUI(compName, "contentMargins", "0 0 0 0"));
 
 		String path = StyleUtil.getIconPath(compName, "[Disabled].icon", iconBasePath + "18x18_ico_radiobutton_disabled.png");
-		d.put(compName + "[Disabled].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_DISABLED, ctx, path));
+		d.put(compName + "[Disabled].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_DISABLED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Enabled].icon", iconBasePath + "18x18_ico_radiobutton_enabled.png");
-		d.put(compName + "[Enabled].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_ENABLED, ctx, path));
+		d.put(compName + "[Enabled].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_ENABLED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused].icon", iconBasePath + "18x18_ico_radiobutton_focused.png");
-		d.put(compName + "[Focused].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_FOCUSED, ctx, path));
+		d.put(compName + "[Focused].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[MouseOver].icon", iconBasePath + "18x18_ico_radiobutton_mouseover.png");
-		d.put(compName + "[MouseOver].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_MOUSEOVER, ctx, path));
+		d.put(compName + "[MouseOver].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_MOUSEOVER, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+MouseOver].icon", iconBasePath + "18x18_ico_radiobutton_mouseover-focused.png");
-		d.put(compName + "[Focused+MouseOver].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_MOUSEOVER_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+MouseOver].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_MOUSEOVER_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Pressed].icon", iconBasePath + "18x18_ico_radiobutton_pressed.png");
-		d.put(compName + "[Pressed].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_PRESSED, ctx, path));
+		d.put(compName + "[Pressed].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_PRESSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed].icon", iconBasePath + "18x18_ico_radiobutton_pressed-focused.png");
-		d.put(compName + "[Focused+Pressed].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_PRESSED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Pressed].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_PRESSED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected.png");
-		d.put(compName + "[Selected].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_SELECTED, ctx, path));
+		d.put(compName + "[Selected].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected-focused.png");
-		d.put(compName + "[Focused+Selected].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Selected].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Pressed+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected-pressed.png");
-		d.put(compName + "[Pressed+Selected].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_PRESSED_SELECTED, ctx, path));
+		d.put(compName + "[Pressed+Selected].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_PRESSED_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+Pressed+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected-pressed-focused.png");
-		d.put(compName + "[Focused+Pressed+Selected].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+Pressed+Selected].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_PRESSED_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[MouseOver+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected-mouseover.png");
-		d.put(compName + "[MouseOver+Selected].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_MOUSEOVER_SELECTED, ctx, path));
+		d.put(compName + "[MouseOver+Selected].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_MOUSEOVER_SELECTED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Focused+MouseOver+Selected].icon", iconBasePath + "18x18_ico_radiobutton_selected-mouseover-focused.png");
-		d.put(compName + "[Focused+MouseOver+Selected].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_MOUSEOVER_SELECTED_FOCUSED, ctx, path));
+		d.put(compName + "[Focused+MouseOver+Selected].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_MOUSEOVER_SELECTED_FOCUSED, ctx, path));
 
 		path = StyleUtil.getIconPath(compName, "[Disabled+Selected].icon", iconBasePath + "18x18_ico_radiobutton_disabled-selected.png");
-		d.put(compName + "[Disabled+Selected].iconPainter", new LazyPainter(pClass, ORadioButtonPainter.ICON_DISABLED_SELECTED, ctx, path));
+		d.put(compName + "[Disabled+Selected].iconPainter", this.createLazyPainter(pClass, ORadioButtonPainter.ICON_DISABLED_SELECTED, ctx, path));
 	}
 
 	protected void defineRow(UIDefaults d) {
@@ -3290,7 +3343,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, ORowPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, ORowPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineColumn(UIDefaults d) {
@@ -3313,7 +3366,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OColumnPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OColumnPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineCardPanel(UIDefaults d) {
@@ -3335,7 +3388,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
 
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OCardPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OCardPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineGrid(UIDefaults d) {
@@ -3359,7 +3412,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(insets, new Dimension(100, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
 
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OGridPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OGridPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineTitleBorder(UIDefaults d) {
@@ -3415,19 +3468,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(33, 33),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
-		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Default].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
 
 	protected void defineTableButtonPanel(UIDefaults d) {
@@ -3446,7 +3499,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 0, 0, 0), new Dimension(100, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTableButtonPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OTableButtonPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineTableButtonFooterPanel(UIDefaults d) {
@@ -3465,7 +3518,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(0, 0, 0, 0), new Dimension(100, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTableButtonFooterPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OTableButtonFooterPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineFormButtonPanel(UIDefaults d) {
@@ -3485,7 +3538,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(5, 5, 5, 5), new Dimension(100, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OFormButtonPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OFormButtonPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineFormBodyPanel(UIDefaults d) {
@@ -3505,7 +3558,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 5 5 5"), new Dimension(100, 30),
 				false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OFormBodyPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OFormBodyPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineFieldButton(UIDefaults d) {
@@ -3542,19 +3595,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "3 3 3 3"), new Dimension(33, 33),
 				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Default].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
 
 	protected void defineFormButton(UIDefaults d) {
@@ -3588,19 +3641,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(33, 33),
 				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Default].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
 
 	protected void defineFormHeader(UIDefaults d) {
@@ -3658,19 +3711,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(33, 33),
 				false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
-		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Default].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
 
 	protected void defineFormHeaderPopupButton(UIDefaults d) {
@@ -3720,21 +3773,21 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OFormHeaderPopupButtonPainter");
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 7 7"), new Dimension(104, 33), false, PaintContext.CacheMode.NO_CACHING,
 				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED, ctx));
-		d.put(compName + "[Disabled+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_DISABLED_SELECTED, ctx));
-		d.put(compName + "[Focused+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
-		d.put(compName + "[MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED, ctx));
-		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED_FOCUSED, ctx));
-		d.put(compName + "[Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED, ctx));
-		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED, ctx));
+		d.put(compName + "[Disabled+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_DISABLED_SELECTED, ctx));
+		d.put(compName + "[Focused+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED, ctx));
+		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_MOUSEOVER_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[Pressed+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED, ctx));
+		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", this.createLazyPainter(pClass, OToggleButtonPainter.BACKGROUND_PRESSED_SELECTED_FOCUSED, ctx));
 
 	}
 
@@ -3770,19 +3823,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(33, 33), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
-		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Default].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
 
 	protected void defineMenuButtonSelection(UIDefaults d) {
@@ -3827,19 +3880,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "10 0 10 0"), new Dimension(33, 33), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
-		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Default].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
 
 	protected void defineToolbarNavigatorMenuButtonSelection(UIDefaults d) {
@@ -3884,19 +3937,19 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "8 8 8 0"), new Dimension(33, 33), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
-		d.put(compName + "[Default].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Default+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
-		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Focused].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
-		d.put(compName + "[MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
-		d.put(compName + "[Focused+MouseOver].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
-		d.put(compName + "[Focused+Pressed].backgroundPainter", new LazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Default].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Default+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT, ctx));
+		d.put(compName + "[Default+Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_DEFAULT_FOCUSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Focused].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_FOCUSED, ctx));
+		d.put(compName + "[MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Focused+MouseOver].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED, ctx));
+		d.put(compName + "[Focused+Pressed].backgroundPainter", this.createLazyPainter(pClass, AbstractOButtonPainter.BACKGROUND_PRESSED_FOCUSED, ctx));
 	}
 
 	protected void defineCollapsibleButtonPanel(UIDefaults d) {
@@ -3923,7 +3976,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		Insets in = StyleUtil.getInsets(compName, "contentMargins", "2 3 1 4");
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(in, new Dimension(20, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OCollapsibleButtonPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OCollapsibleButtonPanelPainter.BACKGROUND_ENABLED, ctx));
 
 	}
 
@@ -3971,7 +4024,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(new Insets(5, 5, 5, 5), new Dimension(100, 30), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, 1.0, 1.0);
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTableButtonPanelPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OTableButtonPanelPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineFormTitle(UIDefaults d) {
@@ -3998,8 +4051,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "shadow", "#00000033");
 
 		PaintContext ctx = new PaintContext(new Insets(5, 60, 5, 60), new Dimension(100, 30), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put(compName + ".backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OFormTitlePainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + ".borderPainter", new OntimizeDefaults.LazyPainter(pClass, OFormTitlePainter.BORDER_ENABLED, ctx));
+		d.put(compName + ".backgroundPainter", this.createLazyPainter(pClass, OFormTitlePainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + ".borderPainter", this.createLazyPainter(pClass, OFormTitlePainter.BORDER_ENABLED, ctx));
 
 	}
 
@@ -4042,8 +4095,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.OTabbedPanePainter");
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "8 12 12 12"), new Dimension(68, 10), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].borderPainter", new LazyPainter(pClass, OTabbedPanePainter.BORDER_ENABLED, ctx));
-		d.put(compName + "[Disabled].borderPainter", new LazyPainter(pClass, OTabbedPanePainter.BORDER_DISABLED, ctx));
+		d.put(compName + "[Enabled].borderPainter", this.createLazyPainter(pClass, OTabbedPanePainter.BORDER_ENABLED, ctx));
+		d.put(compName + "[Disabled].borderPainter", this.createLazyPainter(pClass, OTabbedPanePainter.BORDER_DISABLED, ctx));
 
 	}
 
@@ -4084,17 +4137,17 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 1 1 1"), new Dimension(44, 21), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Enabled+MouseOver].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_ENABLED_MOUSEOVER, ctx));
-		d.put(compName + "[Enabled+Pressed].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_ENABLED_PRESSED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Disabled+Selected].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_DISABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED, ctx));
-		d.put(compName + "[MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
-		d.put(compName + "[Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED, ctx));
-		d.put(compName + "[Focused+Selected].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
-		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED_FOCUSED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled+MouseOver].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_ENABLED_MOUSEOVER, ctx));
+		d.put(compName + "[Enabled+Pressed].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_ENABLED_PRESSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Selected].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_DISABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED, ctx));
+		d.put(compName + "[MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
+		d.put(compName + "[Pressed+Selected].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED, ctx));
+		d.put(compName + "[Focused+Selected].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED_FOCUSED, ctx));
 	}
 
 	protected void defineTabbedPaneTabArea(UIDefaults d) {
@@ -4113,10 +4166,10 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(5, 24), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled+MouseOver].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_ENABLED_MOUSEOVER, ctx));
-		d.put(compName + "[Enabled+Pressed].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_ENABLED_PRESSED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled+MouseOver].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_ENABLED_MOUSEOVER, ctx));
+		d.put(compName + "[Enabled+Pressed].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_ENABLED_PRESSED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneTabAreaPainter.BACKGROUND_ENABLED, ctx));
 	}
 
 	protected void defineTabbedPaneContent(UIDefaults d) {
@@ -4139,8 +4192,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "5 2 5 2"), new Dimension(68, 10), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneContentPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OTabbedPaneContentPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneContentPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OTabbedPaneContentPainter.BACKGROUND_DISABLED, ctx));
 	}
 
 	protected void defineTabbedPaneTabAreaButton(UIDefaults d) {
@@ -4164,10 +4217,10 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 1 1 1"), new Dimension(68, 10), false,
 				AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_ENABLED, ctx));
-		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_PRESSED, ctx));
-		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Disabled].foregroundPainter", this.createLazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].foregroundPainter", this.createLazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_ENABLED, ctx));
+		d.put(compName + "[Pressed].foregroundPainter", this.createLazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_PRESSED, ctx));
+		d.put(compName + "[MouseOver].foregroundPainter", this.createLazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
 
 	}
 
@@ -4231,17 +4284,17 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		PaintContext ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "7 7 1 7"), new Dimension(44, 20), false,
 				AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Enabled+MouseOver].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_ENABLED_MOUSEOVER, ctx));
-		d.put(compName + "[Enabled+Pressed].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_ENABLED_PRESSED, ctx));
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Disabled+Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_DISABLED, ctx));
-		d.put(compName + "[Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED, ctx));
-		d.put(compName + "[MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
-		d.put(compName + "[Pressed+Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED, ctx));
-		d.put(compName + "[Focused+Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
-		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER_FOCUSED, ctx));
-		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", new OntimizeDefaults.LazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED_FOCUSED,
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled+MouseOver].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_ENABLED_MOUSEOVER, ctx));
+		d.put(compName + "[Enabled+Pressed].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_ENABLED_PRESSED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Disabled+Selected].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_DISABLED, ctx));
+		d.put(compName + "[Selected].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED, ctx));
+		d.put(compName + "[MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER, ctx));
+		d.put(compName + "[Pressed+Selected].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED, ctx));
+		d.put(compName + "[Focused+Selected].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_FOCUSED, ctx));
+		d.put(compName + "[Focused+MouseOver+Selected].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_MOUSEOVER_FOCUSED, ctx));
+		d.put(compName + "[Focused+Pressed+Selected].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabPainter.BACKGROUND_SELECTED_PRESSED_FOCUSED,
 				ctx));
 
 		// Tab Label
@@ -4265,8 +4318,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0"), new Dimension(5, 24), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING,
 				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabAreaPainter.BACKGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, OFormTabbedPaneTabAreaPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Disabled].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabAreaPainter.BACKGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, OFormTabbedPaneTabAreaPainter.BACKGROUND_ENABLED, ctx));
 
 		// *********************************************************************
 		// Content...
@@ -4286,10 +4339,10 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		ctx = new PaintContext(StyleUtil.getInsets(compName, "contentMargins", "1 1 1 1"), new Dimension(68, 10), false, AbstractRegionPainter.PaintContext.CacheMode.FIXED_SIZES,
 				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		d.put(compName + "[Disabled].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_DISABLED, ctx));
-		d.put(compName + "[Enabled].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_ENABLED, ctx));
-		d.put(compName + "[Pressed].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_PRESSED, ctx));
-		d.put(compName + "[MouseOver].foregroundPainter", new LazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
+		d.put(compName + "[Disabled].foregroundPainter", this.createLazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_DISABLED, ctx));
+		d.put(compName + "[Enabled].foregroundPainter", this.createLazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_ENABLED, ctx));
+		d.put(compName + "[Pressed].foregroundPainter", this.createLazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_PRESSED, ctx));
+		d.put(compName + "[MouseOver].foregroundPainter", this.createLazyPainter(pClass, OTabbedPaneArrowButtonPainter.FOREGROUND_MOUSEOVER, ctx));
 	}
 
 	protected void defineOntimizeComponents(UIDefaults d) {
@@ -4800,9 +4853,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		d.put(compName + ".WindowFocused", new ORootPaneWindowFocusedState());
 
 		PaintContext ctx = new PaintContext(new Insets(0, 0, 0, 0), new Dimension(100, 25), false, AbstractRegionPainter.PaintContext.CacheMode.NO_CACHING, 1.0, 1.0);
-		d.put(compName + "[Enabled+NoFrame].backgroundPainter", new LazyPainter(pClass, ORootPainter.BACKGROUND_ENABLED_NOFRAME, ctx));
-		d.put(compName + "[Enabled].backgroundPainter", new LazyPainter(pClass, ORootPainter.BACKGROUND_ENABLED, ctx));
-		d.put(compName + "[Enabled+WindowFocused].backgroundPainter", new LazyPainter(pClass, ORootPainter.BACKGROUND_ENABLED_WINDOWFOCUSED, ctx));
+		d.put(compName + "[Enabled+NoFrame].backgroundPainter", this.createLazyPainter(pClass, ORootPainter.BACKGROUND_ENABLED_NOFRAME, ctx));
+		d.put(compName + "[Enabled].backgroundPainter", this.createLazyPainter(pClass, ORootPainter.BACKGROUND_ENABLED, ctx));
+		d.put(compName + "[Enabled+WindowFocused].backgroundPainter", this.createLazyPainter(pClass, ORootPainter.BACKGROUND_ENABLED_WINDOWFOCUSED, ctx));
 
 		// ***********************
 		// FROM ONTIMIZE OntimizeRootPaneUI
@@ -5043,8 +5096,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 			this.defineWeekPlanningComponent(uidefaults);
 			this.defineMonthPlanningComponent(uidefaults);
 
-			uidefaults.put("\"FrameButton\".backgroundPainter", new OntimizeDefaults.LazyPainter("com.ontimize.plaf.painter.ButtonPainter", ButtonPainter.BACKGROUND_DEFAULT,
-					"com/ontimize/plaf/images/closeIcon.png"));
+			uidefaults.put("\"FrameButton\".backgroundPainter",
+					this.createLazyPainter("com.ontimize.plaf.painter.ButtonPainter", ButtonPainter.BACKGROUND_DEFAULT,
+							"com/ontimize/plaf/images/closeIcon.png"));
 
 			uidefaults.put("InternalFrame.maximizeIcon", this.createFrameMaximizeIcon());
 			uidefaults.put("InternalFrame.minimizeIcon", this.createFrameIconifyIcon());

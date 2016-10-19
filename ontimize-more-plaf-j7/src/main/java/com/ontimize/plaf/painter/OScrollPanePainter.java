@@ -27,6 +27,9 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 	public static final int BORDER_ENABLED_FOCUSED = 2;
 	public static final int BORDER_ENABLED = 3;
 	public static final int BORDER_DISABLED = 4;
+	public static final int BORDER_REQUIRED = 666;
+	public static final int BORDER_FOCUSED_REQUIRED = 667;
+	public static final int BORDER_DISABLED_REQUIRED = 668;
 
 	public static final int CORNER_ENABLED = 5;
 
@@ -42,7 +45,10 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 	// arrays to round the component (several rounded borders with degradation):
 	protected Paint[] degradatedBorderColorEnabled;
 	protected Paint[] degradatedBorderColorDisabled;
+	protected Paint[] degradatedBorderColorDisabledRequired;
 	protected Paint[] degradatedBorderColorFocused;
+	protected Paint[] degradatedBorderColorFocusedRequired;
+	protected Paint[] degradatedBorderColorRequired;
 	protected Color scrollBarCornerColor;
 
 	// All Colors used for painting are stored here. Ideally, only those colors
@@ -82,6 +88,15 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 			break;
 		case BORDER_DISABLED:
 			this.paintBorderDisabled(g, c, x, y, width, height);
+			break;
+		case BORDER_DISABLED_REQUIRED:
+			this.paintBorderDisabledRequired(g, c, x, y, width, height);
+			break;
+		case BORDER_REQUIRED:
+			this.paintBorderRequired(g, c, x, y, width, height);
+			break;
+		case BORDER_FOCUSED_REQUIRED:
+			this.paintBorderFocuseddRequired(g, c, x, y, width, height);
 			break;
 		case BACKGROUND_ENABLED:
 			break;
@@ -126,6 +141,16 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 			this.degradatedBorderColorDisabled = new Color[] { this.color3, this.decodeColor(this.color3, this.color4, 0.5f), this.color4 };
 		}
 
+		// disable + required
+		obj = UIManager.getLookAndFeelDefaults().get("TextArea[Disabled+Required].border");
+		if (obj instanceof Paint) {
+			this.degradatedBorderColorDisabledRequired = new Paint[] { (Paint) obj };
+		} else if (obj instanceof Paint[]) {
+			this.degradatedBorderColorDisabledRequired = (Paint[]) obj;
+		} else {
+			this.degradatedBorderColorDisabledRequired = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
+		}
+
 		// Focused:
 		obj = UIManager.getLookAndFeelDefaults().get("TextArea[Focused].border");
 		if (obj instanceof Paint) {
@@ -134,6 +159,26 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 			this.degradatedBorderColorFocused = (Paint[]) obj;
 		} else {
 			this.degradatedBorderColorFocused = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
+		}
+
+		// Focused + required
+		obj = UIManager.getLookAndFeelDefaults().get("TextArea[Focused+Required].border");
+		if (obj instanceof Paint) {
+			this.degradatedBorderColorFocusedRequired = new Paint[] { (Paint) obj };
+		} else if (obj instanceof Paint[]) {
+			this.degradatedBorderColorFocusedRequired = (Paint[]) obj;
+		} else {
+			this.degradatedBorderColorFocusedRequired = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
+		}
+
+		// required:
+		obj = UIManager.getLookAndFeelDefaults().get("TextArea[Required].border");
+		if (obj instanceof Paint) {
+			this.degradatedBorderColorRequired = new Paint[] { (Paint) obj };
+		} else if (obj instanceof Paint[]) {
+			this.degradatedBorderColorRequired = (Paint[]) obj;
+		} else {
+			this.degradatedBorderColorRequired = new Color[] { this.color7, this.decodeColor(this.color7, this.color8, 0.5f), this.color8 };
 		}
 
 		this.scrollBarCornerColor = (Color) UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + "[Enabled].border");
@@ -185,6 +230,24 @@ public class OScrollPanePainter extends AbstractRegionPainter {
 	protected void paintBorderDisabled(Graphics2D g, JComponent c, int x, int y, int width, int height) {
 		if ((this.degradatedBorderColorDisabled != null) && (this.degradatedBorderColorDisabled.length > 0)) {
 			this.drawDegradatedBorders(g, c, x, y, width, height, this.degradatedBorderColorDisabled);
+		}
+	}
+
+	protected void paintBorderDisabledRequired(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+		if ((this.degradatedBorderColorDisabledRequired != null) && (this.degradatedBorderColorDisabledRequired.length > 0)) {
+			this.drawDegradatedBorders(g, c, x, y, width, height, this.degradatedBorderColorDisabledRequired);
+		}
+	}
+
+	protected void paintBorderRequired(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+		if ((this.degradatedBorderColorRequired != null) && (this.degradatedBorderColorRequired.length > 0)) {
+			this.drawDegradatedBorders(g, c, x, y, width, height, this.degradatedBorderColorRequired);
+		}
+	}
+
+	protected void paintBorderFocuseddRequired(Graphics2D g, JComponent c, int x, int y, int width, int height) {
+		if ((this.degradatedBorderColorFocusedRequired != null) && (this.degradatedBorderColorFocusedRequired.length > 0)) {
+			this.drawDegradatedBorders(g, c, x, y, width, height, this.degradatedBorderColorFocusedRequired);
 		}
 	}
 
