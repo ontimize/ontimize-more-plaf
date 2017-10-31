@@ -2409,7 +2409,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#86ADBF");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].border", "#C6DFE3");
 
-		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+		OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.getDefaultFont()));
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "3 15 0 15");
 
 		PaintContext ctx = new com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext(StyleUtil.getInsets(compName, "contentMargins", "3 15 0 15"), new Dimension(100, 30),
