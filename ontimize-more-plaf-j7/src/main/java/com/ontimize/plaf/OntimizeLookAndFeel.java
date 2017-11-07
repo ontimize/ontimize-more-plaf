@@ -54,9 +54,6 @@ import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthStyleFactory;
 import javax.swing.plaf.synth.SynthUI;
 
-import sun.awt.AppContext;
-import sun.swing.plaf.synth.DefaultSynthStyle;
-
 import com.ontimize.gui.ApToolBarNavigator;
 import com.ontimize.gui.ApToolBarPopupButton;
 import com.ontimize.gui.ApplicationManager;
@@ -174,6 +171,9 @@ import com.ontimize.plaf.utils.StyleUtil;
 import com.ontimize.util.swing.ButtonSelection;
 import com.ontimize.util.swing.CollapsibleButtonPanel;
 
+import sun.awt.AppContext;
+import sun.swing.plaf.synth.DefaultSynthStyle;
+
 /**
  * Ontimize Look And Feel development.
  *
@@ -216,9 +216,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 	protected Font defaultFont;
 
 	public static final String[] NIMBUS_COLORS_KEYS = new String[] { "nimbusSelectionBackground", "text", "nimbusSelectedText", "nimbusDisabledText", "nimbusLightBackground",
-		"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
-		"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
-		"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
+			"control", "info", "nimbusInfoBlue", "nimbusAlertYellow", "nimbusBase", "nimbusFocus", "nimbusGreen", "nimbusRed", "nimbusOrange", "activeCaption", "background",
+			"controlDkShadow", "controlHighlight", "controlLHighlight", "controlShadow", "controlText", "desktop", "inactiveCaption", "infoText", "menu", "menuText",
+			"nimbusBlueGrey", "nimbusBorder", "nimbusSelection", "scrollbar", "textBackground", "textForeground", "textHighlight", "textHighlightText", "textInactiveText" };
 
 	/**
 	 * Constructor method. Here it is indicated: - initialize the map of styles
@@ -3382,6 +3382,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#FFFFFF14");
 		OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
+		OntimizeLookAndFeel.setPaint(d, compName, "bgpaint", null);
 		OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
 
 		Insets insets = StyleUtil.getInsets(compName, "contentMargins", "0 0 0 0");
