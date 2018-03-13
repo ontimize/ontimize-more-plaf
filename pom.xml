@@ -25,7 +25,7 @@
          <dependency>
 			<groupId>com.ontimize</groupId>
 			<artifactId>ontimize-core</artifactId>
-			<version>[${ontimize-core.version},)</version>
+			<version>${ontimize-core.version}</version>
 		 </dependency>
           <dependency>
 			<groupId>com.ontimize</groupId>
