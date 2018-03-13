@@ -28,25 +28,31 @@ import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JarUtil {
+	private static final Logger logger = LoggerFactory.getLogger(JarUtil.class);
+
 	public static final String TITLE_PROPERTY="Implementation-Title";
 	public static final String TITLE_VALUE="OntimizePLAF";
 
 	public static String getManifest(Component d) throws Exception {
-		Manifest manifest = retrieveManifest();
+		Manifest manifest = JarUtil.retrieveManifest();
 		if (manifest != null) {
 			try {
-				String version = getAttribute("Version-number", manifest).toString();
-				String date = getAttribute("Version-date", manifest).toString();
-				String ontimize_version = (String)getAttribute("Ontimize-version-number", manifest);
+				String version = JarUtil.getAttribute("Version-number", manifest).toString();
+				String date = JarUtil.getAttribute("Version-date", manifest).toString();
+				String ontimize_version = JarUtil.getAttribute("Ontimize-version-number", manifest);
 				URL urlHtml = JarUtil.class.getClassLoader().getResource("com/ontimize/plaf/utils/jar/template.html");
 				if (urlHtml != null) {
 					InputStream iS = urlHtml.openStream();
@@ -58,7 +64,7 @@ public class JarUtil {
 							html.append(str);
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
+						JarUtil.logger.error("", e);
 					}
 					bR.close();
 					String sOutput = html.toString();
@@ -72,21 +78,25 @@ public class JarUtil {
 					return sOutput;
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				JarUtil.logger.error("", e);
 			}
 		}
 		return null;
 	}
 
 	public static String ontimizeVersion() throws Exception {
-		Manifest manifest = retrieveManifest();
+		Manifest manifest = JarUtil.retrieveManifest();
 		try {
-			if (manifest == null) return null;
-			String attr = getAttribute("Version-number-ontimize", manifest);
-			if (attr == null) return null;
+			if (manifest == null) {
+				return null;
+			}
+			String attr = JarUtil.getAttribute("Version-number-ontimize", manifest);
+			if (attr == null) {
+				return null;
+			}
 			return attr.toString().trim();
 		} catch (Exception e) {
-			e.printStackTrace();
+			JarUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -112,20 +122,20 @@ public class JarUtil {
 			}
 		} catch (Exception e) {
 		}
-		
+
 		try{
 			Enumeration enumeration = JarUtil.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
 			while(enumeration.hasMoreElements()){
 				URL url = (URL)enumeration.nextElement();
 				Manifest manifest = new Manifest(url.openStream());
-				String title = getAttribute(TITLE_PROPERTY,manifest);
-				if (TITLE_VALUE.equalsIgnoreCase(title)){
+				String title = JarUtil.getAttribute(JarUtil.TITLE_PROPERTY,manifest);
+				if (JarUtil.TITLE_VALUE.equalsIgnoreCase(title)){
 					return manifest;
 				}
 			}
 		} catch (Exception e) {
 		}
-		System.out.println("WARNING: -> Ontimize Manifest can't be retrieved");
+		JarUtil.logger.warn(" Ontimize Manifest can't be retrieved");
 		return null;
 	}
 
@@ -141,65 +151,66 @@ public class JarUtil {
 		protected boolean hideFrame = false;
 
 		class EAction extends AbstractAction {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (SwingUtilities.getWindowAncestor((Component) e.getSource()) instanceof InformationDialog) {
 					((InformationDialog) SwingUtilities.getWindowAncestor((Component) e.getSource())).processWindowEvent(new WindowEvent(
-							((InformationDialog) SwingUtilities.getWindowAncestor((Component) e.getSource())), WindowEvent.WINDOW_CLOSING));
+							(SwingUtilities.getWindowAncestor((Component) e.getSource())), WindowEvent.WINDOW_CLOSING));
 				}
 			}
 		}
 
 		public InformationDialog(boolean hideFrame) {
 			this.hideFrame = hideFrame;
-			ActionMap aM = ((JComponent) getContentPane()).getActionMap();
+			ActionMap aM = ((JComponent) this.getContentPane()).getActionMap();
 			InputMap inMap = ((JComponent) this.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 
 			aM.put("close", new EAction());
 			inMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
 
-			setTitle("Imatia");
+			this.setTitle("Imatia");
 			URL url = JarUtil.class.getClassLoader().getResource("com/ontimize/plaf/utils/jar/iconimatia.gif");
 			ImageIcon iconImatia =  new ImageIcon(url);
 			if (iconImatia != null) {
-				setIconImage(iconImatia.getImage());
+				this.setIconImage(iconImatia.getImage());
 			}
 
 			((JComponent) this.getContentPane()).setInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW, inMap);
-			((JComponent) getContentPane()).setActionMap(aM);
+			((JComponent) this.getContentPane()).setActionMap(aM);
 
-			setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-			addWindowListener(new WindowAdapter() {
+			this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+			this.addWindowListener(new WindowAdapter() {
+				@Override
 				public void windowClosing(WindowEvent e) {
 					if (InformationDialog.this.hideFrame) {
 						InformationDialog.this.setVisible(false);
-					} else
-						System.exit(0);
+					}
 				}
 			});
 
-			setResizable(true);
-			getContentPane().setBackground(Color.white);
+			this.setResizable(true);
+			this.getContentPane().setBackground(Color.white);
 			url = JarUtil.class.getClassLoader().getResource("com/ontimize/plaf/utils/jar/logoontimize.jpg");
 			ImageIcon icon =  new ImageIcon(url);
 			if (icon != null) {
-				iOntimize = new JLabel(icon);
+				this.iOntimize = new JLabel(icon);
 			}
 			String version = null;
 			try {
-				version = getManifest(this);
+				version = JarUtil.getManifest(this);
 			} catch (Exception ex) {
 				version = "";
 			}
-			lHtml = new JLabel("", JLabel.CENTER);
-			lHtml.setText(version);
-			getContentPane().setLayout(new GridBagLayout());
-			getContentPane().add(iOntimize,
+			this.lHtml = new JLabel("", SwingConstants.CENTER);
+			this.lHtml.setText(version);
+			this.getContentPane().setLayout(new GridBagLayout());
+			this.getContentPane().add(this.iOntimize,
 					new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(2, 2, 2, 2), 0, 0));
-			getContentPane().add(lHtml,
+			this.getContentPane().add(this.lHtml,
 					new GridBagConstraints(0, 1, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
-			getContentPane().setFocusable(true);
-			getContentPane().requestFocus();
-			pack();
+			this.getContentPane().setFocusable(true);
+			this.getContentPane().requestFocus();
+			this.pack();
 
 		}
 
@@ -209,21 +220,21 @@ public class JarUtil {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			JarUtil.logger.error("", e);
 		} catch (InstantiationException e) {
-			e.printStackTrace();
+			JarUtil.logger.error("", e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			JarUtil.logger.error("", e);
 		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
+			JarUtil.logger.error("", e);
 		}
 
 		InformationDialog id = new InformationDialog(false);
-		center(id);
+		JarUtil.center(id);
 		id.setVisible(true);
 
 	}
-	
+
 	public static void center(Window window) {
 		int x = 0;
 		int y = 0;
@@ -232,14 +243,22 @@ public class JarUtil {
 
 		bounds = GraphicsEnvironment.getLocalGraphicsEnvironment()
 				.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
-		
-		x = bounds.width / 2 - window.getWidth() / 2;
-		y = bounds.height / 2 - window.getHeight() / 2;
 
-		if (x < 0) x = 0;
-		if (y < 0) y = 0;
-		if (x > bounds.width) x = 0;
-		if (y > bounds.height) y = 0;
+		x = (bounds.width / 2) - (window.getWidth() / 2);
+		y = (bounds.height / 2) - (window.getHeight() / 2);
+
+		if (x < 0) {
+			x = 0;
+		}
+		if (y < 0) {
+			y = 0;
+		}
+		if (x > bounds.width) {
+			x = 0;
+		}
+		if (y > bounds.height) {
+			y = 0;
+		}
 		window.setLocation(bounds.x+x, bounds.y+y);
 	}
 

@@ -34,12 +34,17 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicRootPaneUI;
 import javax.swing.plaf.synth.Region;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.component.OntimizeTitlePane;
 import com.ontimize.plaf.painter.OntimizePainter;
 import com.ontimize.util.AWTUtilities;
 
 public class OntimizeRootPaneUI extends BasicRootPaneUI {
+
+	private static final Logger logger = LoggerFactory.getLogger(OntimizeRootPaneUI.class);
 
 	protected JRootPane rootPane;
 
@@ -111,13 +116,13 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 		Rectangle start_dimension = null;
 
 		protected MouseInputHandler() {
-			ontimizeRootPaneUI = OntimizeRootPaneUI.this;
-			frame = null;
-			dialog = null;
-			if (window instanceof Frame) {
-				frame = (Frame) window;
-			} else if (window instanceof Dialog) {
-				dialog = (Dialog) window;
+			this.ontimizeRootPaneUI = OntimizeRootPaneUI.this;
+			this.frame = null;
+			this.dialog = null;
+			if (OntimizeRootPaneUI.this.window instanceof Frame) {
+				this.frame = (Frame) OntimizeRootPaneUI.this.window;
+			} else if (OntimizeRootPaneUI.this.window instanceof Dialog) {
+				this.dialog = (Dialog) OntimizeRootPaneUI.this.window;
 			}
 		}
 
@@ -125,132 +130,149 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 			this();
 		}
 
+		@Override
 		public void mousePressed(MouseEvent mouseevent) {
-			if (rootPane.getWindowDecorationStyle() == JRootPane.NONE) return;
-			window.toFront();
-			minimumYPos = window.getGraphicsConfiguration().getBounds().y;
+			if (OntimizeRootPaneUI.this.rootPane.getWindowDecorationStyle() == JRootPane.NONE) {
+				return;
+			}
+			OntimizeRootPaneUI.this.window.toFront();
+			this.minimumYPos = OntimizeRootPaneUI.this.window.getGraphicsConfiguration().getBounds().y;
 			Point point = mouseevent.getPoint();
-			Point point1 = SwingUtilities.convertPoint(window, point, titlePane);
-			int i = position2Cursor(window, mouseevent.getX(), mouseevent.getY());
-			if (i == 0 && titlePane != null && titlePane.contains(point1) && (dialog != null || frame != null && frame.getExtendedState() != 6)) {
-				windowAction = WINDOW_MOVE;
+			Point point1 = SwingUtilities.convertPoint(OntimizeRootPaneUI.this.window, point, OntimizeRootPaneUI.this.titlePane);
+			int i = this.position2Cursor(OntimizeRootPaneUI.this.window, mouseevent.getX(), mouseevent.getY());
+			if ((i == 0) && (OntimizeRootPaneUI.this.titlePane != null) && OntimizeRootPaneUI.this.titlePane.contains(point1) && ((this.dialog != null) || ((this.frame != null) && (this.frame.getExtendedState() != 6)))) {
+				this.windowAction = MouseInputHandler.WINDOW_MOVE;
 
 				Point point3 = mouseevent.getPoint();
-				SwingUtilities.convertPointToScreen(point3, (Component) window);
+				SwingUtilities.convertPointToScreen(point3, OntimizeRootPaneUI.this.window);
 				this.start_drag = point3;
-				this.start_loc = window.getLocation();
+				this.start_loc = OntimizeRootPaneUI.this.window.getLocation();
 
-				dragXOffset = point.x;
-				dragYOffset = point.y;
-			} else if (isWindowResizable()) {
-				windowAction = WINDOW_RESIZE;
-				dragXOffset = point.x;
-				dragYOffset = point.y;
+				this.dragXOffset = point.x;
+				this.dragYOffset = point.y;
+			} else if (this.isWindowResizable()) {
+				this.windowAction = MouseInputHandler.WINDOW_RESIZE;
+				this.dragXOffset = point.x;
+				this.dragYOffset = point.y;
 
-				this.start_dimension = window.getBounds();
+				this.start_dimension = OntimizeRootPaneUI.this.window.getBounds();
 				this.start_drag = mouseevent.getPoint();
-				SwingUtilities.convertPointToScreen(this.start_drag, (Component) window);
+				SwingUtilities.convertPointToScreen(this.start_drag, OntimizeRootPaneUI.this.window);
 
-				dragDimension = new Dimension(window.getWidth(), window.getHeight());
-				resizeType = position2Cursor(window, point.x, point.y);
+				this.dragDimension = new Dimension(OntimizeRootPaneUI.this.window.getWidth(), OntimizeRootPaneUI.this.window.getHeight());
+				this.resizeType = this.position2Cursor(OntimizeRootPaneUI.this.window, point.x, point.y);
 			}
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent mouseevent) {
-			if (windowAction == WINDOW_RESIZE && !window.isValid()) {
-				window.validate();
-				rootPane.repaint();
+			if ((this.windowAction == MouseInputHandler.WINDOW_RESIZE) && !OntimizeRootPaneUI.this.window.isValid()) {
+				OntimizeRootPaneUI.this.window.validate();
+				OntimizeRootPaneUI.this.rootPane.repaint();
 			}
-			windowAction = -1;
-			window.setCursor(Cursor.getDefaultCursor());
+			this.windowAction = -1;
+			OntimizeRootPaneUI.this.window.setCursor(Cursor.getDefaultCursor());
 		}
 
+		@Override
 		public void mouseMoved(MouseEvent mouseevent) {
-			if (rootPane.getWindowDecorationStyle() == JRootPane.NONE) return;
+			if (OntimizeRootPaneUI.this.rootPane.getWindowDecorationStyle() == JRootPane.NONE) {
+				return;
+			}
 
-			int i = position2Cursor(window, mouseevent.getX(), mouseevent.getY());
-			if (i != 0 && isWindowResizable()) window.setCursor(Cursor.getPredefinedCursor(i));
-			else
-				window.setCursor(Cursor.getDefaultCursor());
+			int i = this.position2Cursor(OntimizeRootPaneUI.this.window, mouseevent.getX(), mouseevent.getY());
+			if ((i != 0) && this.isWindowResizable()) {
+				OntimizeRootPaneUI.this.window.setCursor(Cursor.getPredefinedCursor(i));
+			} else {
+				OntimizeRootPaneUI.this.window.setCursor(Cursor.getDefaultCursor());
+			}
 		}
 
+		@Override
 		public void mouseEntered(MouseEvent mouseevent) {
-			mouseMoved(mouseevent);
+			this.mouseMoved(mouseevent);
 		}
 
+		@Override
 		public void mouseExited(MouseEvent mouseevent) {
-			window.setCursor(Cursor.getDefaultCursor());
+			OntimizeRootPaneUI.this.window.setCursor(Cursor.getDefaultCursor());
 		}
 
+		@Override
 		public void mouseDragged(MouseEvent mouseevent) {
-			GraphicsConfiguration graphicsconfiguration = window.getGraphicsConfiguration();
+			GraphicsConfiguration graphicsconfiguration = OntimizeRootPaneUI.this.window.getGraphicsConfiguration();
 			Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(graphicsconfiguration);
-			minimumYPos = graphicsconfiguration.getBounds().y + insets.top;
+			this.minimumYPos = graphicsconfiguration.getBounds().y + insets.top;
 
 			// boolean flag =
 			// SyntheticaLookAndFeel.isSystemPropertySet("synthetica.window.respectMinimumYPos");
 			boolean flag = false;
-			if (windowAction == WINDOW_MOVE) {
+			if (this.windowAction == MouseInputHandler.WINDOW_MOVE) {
 
 				Point current = mouseevent.getLocationOnScreen();
 
-				Point offset = new Point((int) current.getX() - (int) start_drag.getX(), (int) current.getY() - (int) start_drag.getY());
+				Point offset = new Point((int) current.getX() - (int) this.start_drag.getX(), (int) current.getY() - (int) this.start_drag.getY());
 
 				Point new_location = new Point((int) (this.start_loc.getX() + offset.getX()), (int) (this.start_loc.getY() + offset.getY()));
 
-				window.setLocation(new_location);
+				OntimizeRootPaneUI.this.window.setLocation(new_location);
 
-			} else if (windowAction == WINDOW_RESIZE) {
+			} else if (this.windowAction == MouseInputHandler.WINDOW_RESIZE) {
 				Point point1 = mouseevent.getPoint();
 				// Dimension dimension =
 				// (Dimension)SyntheticaLookAndFeel.get("Synthetica.rootPane.minimumWindowSize",
 				// window);
 				// if(dimension == null)
-				Dimension dimension = window.getMinimumSize();
-				Rectangle rectangle = window.getBounds();
+				Dimension dimension = OntimizeRootPaneUI.this.window.getMinimumSize();
+				Rectangle rectangle = OntimizeRootPaneUI.this.window.getBounds();
 
 				Point current = mouseevent.getLocationOnScreen();
-				Point offset = new Point((int) current.getX() - (int) start_drag.getX(), (int) current.getY() - (int) start_drag.getY());
+				Point offset = new Point((int) current.getX() - (int) this.start_drag.getX(), (int) current.getY() - (int) this.start_drag.getY());
 
 				Rectangle rectangle1 = new Rectangle(rectangle);
-				if (resizeType == RIGHT_RESIZE || resizeType == TOP_RIGHT_RESIZE || resizeType == DOWN_RIGHT_RESIZE) {
+				if ((this.resizeType == MouseInputHandler.RIGHT_RESIZE) || (this.resizeType == MouseInputHandler.TOP_RIGHT_RESIZE) || (this.resizeType == MouseInputHandler.DOWN_RIGHT_RESIZE)) {
 					// rectangle.width = Math.max(dimension.width,
 					// (dragDimension.width + point1.x)- dragXOffset);
 					rectangle.width = (int) (this.start_dimension.width + offset.getX());
 				}
 
-				if (resizeType == DOWN_RESIZE || resizeType == DOWN_LEFT_RESIZE || resizeType == DOWN_RIGHT_RESIZE) {
+				if ((this.resizeType == MouseInputHandler.DOWN_RESIZE) || (this.resizeType == MouseInputHandler.DOWN_LEFT_RESIZE) || (this.resizeType == MouseInputHandler.DOWN_RIGHT_RESIZE)) {
 					// rectangle.height =
 					// Math.max(dimension.height,(dragDimension.height + point1.y) -
 					// dragYOffset);
 					rectangle.height = (int) (this.start_dimension.height + offset.getY());
 				}
 
-				if (resizeType == TOP_RESIZE || resizeType == TOP_LEFT_RESIZE || resizeType == TOP_RIGHT_RESIZE) {
-					
-//					rectangle.height = Math.max(dimension.height, (rectangle.height - point1.y) + dragYOffset);
+				if ((this.resizeType == MouseInputHandler.TOP_RESIZE) || (this.resizeType == MouseInputHandler.TOP_LEFT_RESIZE) || (this.resizeType == MouseInputHandler.TOP_RIGHT_RESIZE)) {
+
+					//					rectangle.height = Math.max(dimension.height, (rectangle.height - point1.y) + dragYOffset);
 					rectangle.height = (int) (this.start_dimension.height - offset.getY());
-					
-//					if (rectangle.height != dimension.height) 
-						rectangle.y = (int)(this.start_dimension.y + offset.getY());
+
+					//					if (rectangle.height != dimension.height)
+					rectangle.y = (int)(this.start_dimension.y + offset.getY());
 				}
 
-				if (resizeType == LEFT_RESIZE || resizeType == TOP_LEFT_RESIZE || resizeType == DOWN_LEFT_RESIZE) {
-//					rectangle.width = Math.max(dimension.width, (rectangle.width - point1.x) + dragXOffset);
-					
+				if ((this.resizeType == MouseInputHandler.LEFT_RESIZE) || (this.resizeType == MouseInputHandler.TOP_LEFT_RESIZE) || (this.resizeType == MouseInputHandler.DOWN_LEFT_RESIZE)) {
+					//					rectangle.width = Math.max(dimension.width, (rectangle.width - point1.x) + dragXOffset);
+
 					rectangle.width = (int) (this.start_dimension.width - offset.getX());
-					
-//					if (rectangle.width != dimension.width) 
-						rectangle.x =(int)(this.start_dimension.x + offset.getX());
+
+					//					if (rectangle.width != dimension.width)
+					rectangle.x =(int)(this.start_dimension.x + offset.getX());
 				}
 
-				if (flag && rectangle.y < minimumYPos) rectangle.y = minimumYPos;
-				if (!rectangle.equals(rectangle1)) window.setBounds(rectangle);
+				if (flag && (rectangle.y < this.minimumYPos)) {
+					rectangle.y = this.minimumYPos;
+				}
+				if (!rectangle.equals(rectangle1)) {
+					OntimizeRootPaneUI.this.window.setBounds(rectangle);
+				}
 
-				System.out.println("WINDOW_RESIZE: W:" + rectangle.width + " H:" + rectangle.height);
+				OntimizeRootPaneUI.logger.debug("WINDOW_RESIZE: W:{} H: {}",rectangle.width, rectangle.height);
 			}
 		}
 
+		@Override
 		public void mouseClicked(MouseEvent mouseevent) {
 			// if(frame == null)
 			// return;
@@ -267,29 +289,43 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 		}
 
 		protected int position2Cursor(Window window, int x, int y) {
-			Insets insets = rootPane.getBorder().getBorderInsets(rootPane);
+			Insets insets = OntimizeRootPaneUI.this.rootPane.getBorder().getBorderInsets(OntimizeRootPaneUI.this.rootPane);
 			int width = window.getWidth();
 			int height = window.getHeight();
-			if (x < insets.left && y < insets.top) return TOP_LEFT_RESIZE;
-			if (x > width - insets.right && y < insets.top) return TOP_RIGHT_RESIZE;
-			if (x < insets.left && y > height - insets.bottom) return DOWN_LEFT_RESIZE;
-			if (x > width - insets.right && y > height - insets.bottom) return DOWN_RIGHT_RESIZE;
-			if (x < insets.left) return LEFT_RESIZE;
-			if (x > width - insets.right) return RIGHT_RESIZE;
-			if (y < insets.top) return TOP_RESIZE;
-			return y <= height - insets.bottom ? 0 : DOWN_RESIZE;
+			if ((x < insets.left) && (y < insets.top)) {
+				return MouseInputHandler.TOP_LEFT_RESIZE;
+			}
+			if ((x > (width - insets.right)) && (y < insets.top)) {
+				return MouseInputHandler.TOP_RIGHT_RESIZE;
+			}
+			if ((x < insets.left) && (y > (height - insets.bottom))) {
+				return MouseInputHandler.DOWN_LEFT_RESIZE;
+			}
+			if ((x > (width - insets.right)) && (y > (height - insets.bottom))) {
+				return MouseInputHandler.DOWN_RIGHT_RESIZE;
+			}
+			if (x < insets.left) {
+				return MouseInputHandler.LEFT_RESIZE;
+			}
+			if (x > (width - insets.right)) {
+				return MouseInputHandler.RIGHT_RESIZE;
+			}
+			if (y < insets.top) {
+				return MouseInputHandler.TOP_RESIZE;
+			}
+			return y <= (height - insets.bottom) ? 0 : MouseInputHandler.DOWN_RESIZE;
 		}
 
 		protected boolean isFrameResizable() {
-			return frame != null && frame.isResizable() && (frame.getExtendedState() & Frame.MAXIMIZED_BOTH) == 0;
+			return (this.frame != null) && this.frame.isResizable() && ((this.frame.getExtendedState() & Frame.MAXIMIZED_BOTH) == 0);
 		}
 
 		protected boolean isDialogResizable() {
-			return dialog != null && dialog.isResizable();
+			return (this.dialog != null) && this.dialog.isResizable();
 		}
 
 		protected boolean isWindowResizable() {
-			return isFrameResizable() || isDialogResizable();
+			return this.isFrameResizable() || this.isDialogResizable();
 		}
 	}
 
@@ -300,11 +336,11 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 	@Override
 	public void installUI(JComponent component) {
 		super.installUI(component);
-		rootPane = (JRootPane) component;
+		this.rootPane = (JRootPane) component;
 
-		int style = rootPane.getWindowDecorationStyle();
+		int style = this.rootPane.getWindowDecorationStyle();
 		if (style != JRootPane.NONE) {
-			installClientDecorations(rootPane);
+			this.installClientDecorations(this.rootPane);
 		}
 	}
 
@@ -324,14 +360,14 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 	 * decoration style other than <code>JRootPane.NONE</code>.
 	 */
 	protected void installClientDecorations(JRootPane root) {
-		installBorder(root);
+		this.installBorder(root);
 
-		titlePane = createTitlePane(root);
-		setTitlePane(root, titlePane);
+		this.titlePane = this.createTitlePane(root);
+		this.setTitlePane(root, this.titlePane);
 
-		installWindowListeners(root, root.getParent());
-		installLayout(root);
-		if (window != null) {
+		this.installWindowListeners(root, root.getParent());
+		this.installLayout(root);
+		if (this.window != null) {
 			root.revalidate();
 			root.repaint();
 		}
@@ -346,15 +382,15 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 
 	protected void setTitlePane(JRootPane jrootpane, JComponent jcomponent) {
 		JLayeredPane jlayeredpane = jrootpane.getLayeredPane();
-		if (titlePane != null) {
-			titlePane.setVisible(false);
-			jlayeredpane.remove(titlePane);
+		if (this.titlePane != null) {
+			this.titlePane.setVisible(false);
+			jlayeredpane.remove(this.titlePane);
 		}
 		if (jcomponent != null) {
 			jlayeredpane.add(jcomponent, JLayeredPane.FRAME_CONTENT_LAYER);
 			jcomponent.setVisible(true);
 		}
-		titlePane = jcomponent;
+		this.titlePane = jcomponent;
 	}
 
 	/**
@@ -379,10 +415,10 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 
 				@Override
 				public Insets getBorderInsets(Component c) {
-					if ((window instanceof Frame) && (((Frame) window).getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
+					if ((OntimizeRootPaneUI.this.window instanceof Frame) && ((((Frame) OntimizeRootPaneUI.this.window).getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH)) {
 						return new Insets(0, 0, 0, 0);
 					}
-					
+
 					Object insets = OntimizeLookAndFeel.lookup("RootPane.border.insets");
 					if (insets instanceof Insets){
 						return (Insets)insets;
@@ -406,11 +442,11 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 	 * render the window decorations.
 	 */
 	protected void installLayout(JRootPane root) {
-		if (layoutManager == null) {
-			layoutManager = createLayoutManager();
+		if (this.layoutManager == null) {
+			this.layoutManager = this.createLayoutManager();
 		}
-		savedOldLayout = root.getLayout();
-		root.setLayout(layoutManager);
+		this.savedOldLayout = root.getLayout();
+		root.setLayout(this.layoutManager);
 	}
 
 	// TODO uninstallWindowListeners
@@ -419,21 +455,24 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 	}
 
 	protected void installWindowListeners(JRootPane jrootpane, Component component) {
-		window = (component instanceof Window) ? (Window) component : SwingUtilities.getWindowAncestor(component);
-		if (window != null) {
-			if (mouseInputListener == null) mouseInputListener = new MouseInputHandler(null);
-			window.addMouseListener(mouseInputListener);
-			window.addMouseMotionListener(mouseInputListener);
+		this.window = (component instanceof Window) ? (Window) component : SwingUtilities.getWindowAncestor(component);
+		if (this.window != null) {
+			if (this.mouseInputListener == null) {
+				this.mouseInputListener = new MouseInputHandler(null);
+			}
+			this.window.addMouseListener(this.mouseInputListener);
+			this.window.addMouseMotionListener(this.mouseInputListener);
 
-			if (windowListener == null && !OntimizeLookAndFeel.isWindowOpacityEnabled(window)) {
+			if ((this.windowListener == null) && !OntimizeLookAndFeel.isWindowOpacityEnabled(this.window)) {
 				// if(OS.getCurrentOS() == OS.Mac)
 				// SyntheticaLookAndFeel.setWindowOpaque(window, false);
-				windowListener = new WindowAdapter() {
+				this.windowListener = new WindowAdapter() {
 					final OntimizeRootPaneUI ontimizeRootPaneUI;
 
+					@Override
 					public void windowOpened(WindowEvent windowevent) {
 						Window window1 = windowevent.getWindow();
-						if (!OntimizeLookAndFeel.isWindowOpacityEnabled(window)) {
+						if (!OntimizeLookAndFeel.isWindowOpacityEnabled(OntimizeRootPaneUI.this.window)) {
 							AWTUtilities.setWindowOpaque(window1, false);
 							// if(SyntheticaLookAndFeel.getBoolean("Synthetica.window.contentPane.opaque",
 							// window, true))
@@ -452,30 +491,32 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 					}
 
 					{
-						ontimizeRootPaneUI = OntimizeRootPaneUI.this;
+						this.ontimizeRootPaneUI = OntimizeRootPaneUI.this;
 
 					}
 				};
-				window.addWindowListener(windowListener);
+				this.window.addWindowListener(this.windowListener);
 			}
 
-			if (windowResizeListener == null && OntimizeLookAndFeel.isWindowShapeEnabled(window))
-			// if(OS.getCurrentOS() == OS.Mac){
-			// OntimizeLookAndFeel.updateWindowShape(window);
-			// } else{
-			windowResizeListener = new ComponentAdapter() {
-				OntimizeRootPaneUI ontimizeLookAndFeel;
+			if ((this.windowResizeListener == null) && OntimizeLookAndFeel.isWindowShapeEnabled(this.window)) {
+				// if(OS.getCurrentOS() == OS.Mac){
+				// OntimizeLookAndFeel.updateWindowShape(window);
+				// } else{
+				this.windowResizeListener = new ComponentAdapter() {
+					OntimizeRootPaneUI ontimizeLookAndFeel;
 
-				public void componentResized(ComponentEvent componentevent) {
-					Window window1 = (Window) componentevent.getComponent();
-					OntimizeLookAndFeel.updateWindowShape(window1);
-				}
+					@Override
+					public void componentResized(ComponentEvent componentevent) {
+						Window window1 = (Window) componentevent.getComponent();
+						OntimizeLookAndFeel.updateWindowShape(window1);
+					}
 
-				{
-					ontimizeLookAndFeel = OntimizeRootPaneUI.this;
-				}
-			};
-			window.addComponentListener(windowResizeListener);
+					{
+						this.ontimizeLookAndFeel = OntimizeRootPaneUI.this;
+					}
+				};
+			}
+			this.window.addComponentListener(this.windowResizeListener);
 		}
 		// }
 	}
@@ -483,12 +524,12 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 	/**
 	 * Returns the <code>JComponent</code> rendering the title pane. If this
 	 * returns null, it implies there is no need to render window decorations.
-	 * 
+	 *
 	 * @return the current window title pane, or null
 	 * @see #setTitlePane
 	 */
 	public JComponent getTitlePane() {
-		return titlePane;
+		return this.titlePane;
 	}
 
 	/**
@@ -500,11 +541,12 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 	protected static class OntimizeRootLayout implements LayoutManager2 {
 		/**
 		 * Returns the amount of space the layout would like to have.
-		 * 
+		 *
 		 * @param the
 		 *           Container for which this layout manager is being used
 		 * @return a Dimension object containing the layout's preferred size
 		 */
+		@Override
 		public Dimension preferredLayoutSize(Container container) {
 			Dimension cpd, mbd, tpd;
 			int cpWidth = 0;
@@ -535,7 +577,7 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 				}
 			}
 
-			if (root.getWindowDecorationStyle() != JRootPane.NONE && (root.getUI() instanceof OntimizeRootPaneUI)) {
+			if ((root.getWindowDecorationStyle() != JRootPane.NONE) && (root.getUI() instanceof OntimizeRootPaneUI)) {
 				JComponent titlePane = ((OntimizeRootPaneUI) root.getUI()).getTitlePane();
 				if (titlePane != null) {
 					tpd = titlePane.getPreferredSize();
@@ -552,11 +594,12 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 
 		/**
 		 * Returns the minimum amount of space the layout needs.
-		 * 
+		 *
 		 * @param the
 		 *           Container for which this layout manager is being used
 		 * @return a Dimension object containing the layout's minimum size
 		 */
+		@Override
 		public Dimension minimumLayoutSize(Container parent) {
 			Dimension cpd, mbd, tpd;
 			int cpWidth = 0;
@@ -585,7 +628,7 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 					mbHeight = mbd.height;
 				}
 			}
-			if (root.getWindowDecorationStyle() != JRootPane.NONE && (root.getUI() instanceof OntimizeRootPaneUI)) {
+			if ((root.getWindowDecorationStyle() != JRootPane.NONE) && (root.getUI() instanceof OntimizeRootPaneUI)) {
 				JComponent titlePane = ((OntimizeRootPaneUI) root.getUI()).getTitlePane();
 				if (titlePane != null) {
 					tpd = titlePane.getMinimumSize();
@@ -601,11 +644,12 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 
 		/**
 		 * Returns the maximum amount of space the layout can use.
-		 * 
+		 *
 		 * @param the
 		 *           Container for which this layout manager is being used
 		 * @return a Dimension object containing the layout's maximum size
 		 */
+		@Override
 		public Dimension maximumLayoutSize(Container target) {
 			Dimension cpd, mbd, tpd;
 			int cpWidth = Integer.MAX_VALUE;
@@ -633,7 +677,7 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 				}
 			}
 
-			if (root.getWindowDecorationStyle() != JRootPane.NONE && (root.getUI() instanceof OntimizeRootPaneUI)) {
+			if ((root.getWindowDecorationStyle() != JRootPane.NONE) && (root.getUI() instanceof OntimizeRootPaneUI)) {
 				JComponent titlePane = ((OntimizeRootPaneUI) root.getUI()).getTitlePane();
 				if (titlePane != null) {
 					tpd = titlePane.getMaximumSize();
@@ -663,10 +707,11 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 		/**
 		 * Instructs the layout manager to perform the layout for the specified
 		 * container.
-		 * 
+		 *
 		 * @param the
 		 *           Container for which this layout manager is being used
 		 */
+		@Override
 		public void layoutContainer(Container parent) {
 			JRootPane root = (JRootPane) parent;
 			Rectangle b = root.getBounds();
@@ -683,7 +728,7 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 			}
 			// Note: This is laying out the children in the layeredPane,
 			// technically, these are not our children.
-			if (root.getWindowDecorationStyle() != JRootPane.NONE && (root.getUI() instanceof OntimizeRootPaneUI)) {
+			if ((root.getWindowDecorationStyle() != JRootPane.NONE) && (root.getUI() instanceof OntimizeRootPaneUI)) {
 				JComponent titlePane = ((OntimizeRootPaneUI) root.getUI()).getTitlePane();
 				if (titlePane != null) {
 					Dimension tpd = titlePane.getPreferredSize();
@@ -705,40 +750,50 @@ public class OntimizeRootPaneUI extends BasicRootPaneUI {
 			}
 		}
 
+		@Override
 		public void addLayoutComponent(String name, Component comp) {
 		}
 
+		@Override
 		public void removeLayoutComponent(Component comp) {
 		}
 
+		@Override
 		public void addLayoutComponent(Component comp, Object constraints) {
 		}
 
+		@Override
 		public float getLayoutAlignmentX(Container target) {
 			return 0.0f;
 		}
 
+		@Override
 		public float getLayoutAlignmentY(Container target) {
 			return 0.0f;
 		}
 
+		@Override
 		public void invalidateLayout(Container target) {
 		}
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
 		super.propertyChange(propertyChangeEvent);
 		String s = propertyChangeEvent.getPropertyName();
-		if (s == null) return;
-		if (s.equals("menubar")) {
-			System.out.println("Ok");
+		if (s == null) {
+			return;
 		}
 		if (s.equals("windowDecorationStyle")) {
-			uninstallClientDecorations(rootPane);
-			if (rootPane.getWindowDecorationStyle() != JRootPane.NONE) installClientDecorations(rootPane);
+			this.uninstallClientDecorations(this.rootPane);
+			if (this.rootPane.getWindowDecorationStyle() != JRootPane.NONE) {
+				this.installClientDecorations(this.rootPane);
+			}
 		} else if (s.equals("ancestor")) {
-			uninstallWindowListeners(rootPane);
-			if (rootPane.getWindowDecorationStyle() != JRootPane.NONE) installWindowListeners(rootPane, rootPane.getParent());
+			this.uninstallWindowListeners(this.rootPane);
+			if (this.rootPane.getWindowDecorationStyle() != JRootPane.NONE) {
+				this.installWindowListeners(this.rootPane, this.rootPane.getParent());
+			}
 		}
 	}
 }

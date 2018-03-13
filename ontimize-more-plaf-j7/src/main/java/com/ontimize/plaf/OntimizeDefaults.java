@@ -5,9 +5,15 @@ import java.net.URL;
 
 import javax.swing.UIDefaults;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ontimize.plaf.painter.AbstractRegionPainter.PaintContext;
+import com.ontimize.plaf.utils.ReflectionUtils;
 
 public class OntimizeDefaults {
+
+	private static final Logger logger = LoggerFactory.getLogger(OntimizeDefaults.class);
 
 	public static class LazyPainter implements UIDefaults.LazyValue {
 
@@ -48,7 +54,7 @@ public class OntimizeDefaults {
 				Object cl;
 
 				// See if we should use a separate ClassLoader
-				if (table == null || !((cl = table.get("ClassLoader")) instanceof ClassLoader)) {
+				if ((table == null) || !((cl = table.get("ClassLoader")) instanceof ClassLoader)) {
 					cl = Thread.currentThread().getContextClassLoader();
 					if (cl == null) {
 						// Fallback to the system class loader.
@@ -61,48 +67,47 @@ public class OntimizeDefaults {
 
 				// to call methods, whose construction has two parameters: an
 				// int and an URL:
-				if (path != null && ctx != null) {
-					c = Class.forName(className, true, (ClassLoader) cl);
-					constructor = c.getConstructor(int.class, PaintContext.class, URL.class);
-					if (constructor == null) {
-						throw new NullPointerException("Failed to find the constructor for the class: " + className);
+				if ((this.path != null) && (this.ctx != null)) {
+					try {
+						return ReflectionUtils.newInstance(this.className, this.which, this.ctx, this.path);
+					} catch (Exception ex) {
+						OntimizeDefaults.logger.trace("Trying another constructor...", ex);
+						return ReflectionUtils.newInstance(this.className, this.which, this.ctx, this.getClass().getClassLoader().getResource(this.path));
 					}
-					return constructor.newInstance(which, ctx, getClass().getClassLoader().getResource(this.path));
-
-				} else if (path != null) {
-					c = Class.forName(className, true, (ClassLoader) cl);
+				} else if (this.path != null) {
+					c = Class.forName(this.className, true, (ClassLoader) cl);
 					constructor = c.getConstructor(int.class, URL.class);
 					if (constructor == null) {
-						throw new NullPointerException("Failed to find the constructor for the class: " + className);
+						throw new NullPointerException("Failed to find the constructor for the class: " + this.className);
 					}
-					return constructor.newInstance(which, getClass().getClassLoader().getResource(this.path));
+					return constructor.newInstance(this.which, this.getClass().getClassLoader().getResource(this.path));
 
 					// to call methods, whose construction has two parameters:
 					// an int and an PaintContext:
-				} else if (ctx != null) {
-					c = Class.forName(className, true, (ClassLoader) cl);
+				} else if (this.ctx != null) {
+					c = Class.forName(this.className, true, (ClassLoader) cl);
 					Class paintContextClass = Class.forName("com.ontimize.plaf.painter.AbstractRegionPainter$PaintContext", true, (ClassLoader) cl);
 					constructor = c.getConstructor(int.class, paintContextClass);
 					// PaintContext.class);
 					if (constructor == null) {
-						throw new NullPointerException("Failed to find the constructor for the class: " + className);
+						throw new NullPointerException("Failed to find the constructor for the class: " + this.className);
 					}
-					return constructor.newInstance(which, ctx);
+					return constructor.newInstance(this.which, this.ctx);
 
 					// to call methods, whose construction has two parameters:
 					// an int and an URL:
 				} else {
 
-					c = Class.forName(className, true, (ClassLoader) cl);
+					c = Class.forName(this.className, true, (ClassLoader) cl);
 					constructor = c.getConstructor(int.class);
 					if (constructor == null) {
-						throw new NullPointerException("Failed to find the constructor for the class: " + className);
+						throw new NullPointerException("Failed to find the constructor for the class: " + this.className);
 					}
-					return constructor.newInstance(which);
+					return constructor.newInstance(this.which);
 				}
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				OntimizeDefaults.logger.error("", e);
 				return null;
 			}
 		}

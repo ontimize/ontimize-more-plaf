@@ -10,11 +10,13 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import javax.swing.Painter;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.synth.SynthContext;
 import javax.swing.plaf.synth.SynthPainter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * OntimizeSynthPainterImpl.
@@ -29,6 +31,9 @@ import javax.swing.plaf.synth.SynthPainter;
  */
 @SuppressWarnings("unchecked")
 public class OntimizeSynthPainterImpl extends SynthPainter {
+
+	private static final Logger logger = LoggerFactory.getLogger(OntimizeSynthPainterImpl.class);
+
 	protected OntimizeStyle style;
 
 	/**
@@ -92,7 +97,7 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 						// this should never happen as we are in control of all
 						// calls into this method and only ever pass in simple
 						// transforms of rotate, flip and translates
-						e.printStackTrace();
+						OntimizeSynthPainterImpl.logger.error("", e);
 					}
 				}
 			} else {
@@ -143,11 +148,11 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 		Component c = ctx.getComponent();
 		Color bg = (c != null) ? c.getBackground() : null;
 
-		if (bg == null || bg.getAlpha() > 0) {
-			Painter backgroundPainter = style.getBackgroundPainter(ctx);
+		if ((bg == null) || (bg.getAlpha() > 0)) {
+			Painter backgroundPainter = this.style.getBackgroundPainter(ctx);
 
 			if (backgroundPainter != null) {
-				paint(backgroundPainter, ctx, g, x, y, w, h, transform);
+				this.paint(backgroundPainter, ctx, g, x, y, w, h, transform);
 			}
 		}
 	}
@@ -174,10 +179,10 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            be applied.
 	 */
 	protected void paintForeground(SynthContext ctx, Graphics g, int x, int y, int w, int h, AffineTransform transform) {
-		Painter foregroundPainter = style.getForegroundPainter(ctx);
+		Painter foregroundPainter = this.style.getForegroundPainter(ctx);
 
 		if (foregroundPainter != null) {
-			paint(foregroundPainter, ctx, g, x, y, w, h, transform);
+			this.paint(foregroundPainter, ctx, g, x, y, w, h, transform);
 		}
 	}
 
@@ -203,10 +208,10 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            be applied.
 	 */
 	protected void paintBorder(SynthContext ctx, Graphics g, int x, int y, int w, int h, AffineTransform transform) {
-		Painter borderPainter = style.getBorderPainter(ctx);
+		Painter borderPainter = this.style.getBorderPainter(ctx);
 
 		if (borderPainter != null) {
-			paint(borderPainter, ctx, g, x, y, w, h, transform);
+			this.paint(borderPainter, ctx, g, x, y, w, h, transform);
 		}
 	}
 
@@ -236,23 +241,24 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 		boolean ltr = c.getComponentOrientation().isLeftToRight();
 
 		// Don't RTL flip JSpliders as they handle it internaly
-		if (ctx.getComponent() instanceof JSlider)
+		if (ctx.getComponent() instanceof JSlider) {
 			ltr = true;
+		}
 
-		if (orientation == SwingConstants.VERTICAL && ltr) {
+		if ((orientation == SwingConstants.VERTICAL) && ltr) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.scale(-1, 1);
 			transform.rotate(Math.toRadians(90));
-			paintBackground(ctx, g, y, x, h, w, transform);
+			this.paintBackground(ctx, g, y, x, h, w, transform);
 		} else if (orientation == SwingConstants.VERTICAL) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.rotate(Math.toRadians(90));
 			transform.translate(0, -(x + w));
-			paintBackground(ctx, g, y, x, h, w, transform);
-		} else if (orientation == SwingConstants.HORIZONTAL && ltr) {
-			paintBackground(ctx, g, x, y, w, h, null);
+			this.paintBackground(ctx, g, y, x, h, w, transform);
+		} else if ((orientation == SwingConstants.HORIZONTAL) && ltr) {
+			this.paintBackground(ctx, g, x, y, w, h, null);
 		} else {
 
 			// horizontal and right-to-left orientation
@@ -261,7 +267,7 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 			transform.translate(x, y);
 			transform.scale(-1, 1);
 			transform.translate(-w, 0);
-			paintBackground(ctx, g, 0, 0, w, h, transform);
+			this.paintBackground(ctx, g, 0, 0, w, h, transform);
 		}
 	}
 
@@ -290,24 +296,24 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 		Component c = ctx.getComponent();
 		boolean ltr = c.getComponentOrientation().isLeftToRight();
 
-		if (orientation == SwingConstants.VERTICAL && ltr) {
+		if ((orientation == SwingConstants.VERTICAL) && ltr) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.scale(-1, 1);
 			transform.rotate(Math.toRadians(90));
-			paintBorder(ctx, g, y, x, h, w, transform);
+			this.paintBorder(ctx, g, y, x, h, w, transform);
 		} else if (orientation == SwingConstants.VERTICAL) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.rotate(Math.toRadians(90));
 			transform.translate(0, -(x + w));
-			paintBorder(ctx, g, y, 0, h, w, transform);
-		} else if (orientation == SwingConstants.HORIZONTAL && ltr) {
-			paintBorder(ctx, g, x, y, w, h, null);
+			this.paintBorder(ctx, g, y, 0, h, w, transform);
+		} else if ((orientation == SwingConstants.HORIZONTAL) && ltr) {
+			this.paintBorder(ctx, g, x, y, w, h, null);
 		} else {
 
 			// horizontal and right-to-left orientation
-			paintBorder(ctx, g, x, y, w, h, null);
+			this.paintBorder(ctx, g, x, y, w, h, null);
 		}
 	}
 
@@ -336,24 +342,24 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 		Component c = ctx.getComponent();
 		boolean ltr = c.getComponentOrientation().isLeftToRight();
 
-		if (orientation == SwingConstants.VERTICAL && ltr) {
+		if ((orientation == SwingConstants.VERTICAL) && ltr) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.scale(-1, 1);
 			transform.rotate(Math.toRadians(90));
-			paintForeground(ctx, g, y, x, h, w, transform);
+			this.paintForeground(ctx, g, y, x, h, w, transform);
 		} else if (orientation == SwingConstants.VERTICAL) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.rotate(Math.toRadians(90));
 			transform.translate(0, -(x + w));
-			paintForeground(ctx, g, y, 0, h, w, transform);
-		} else if (orientation == SwingConstants.HORIZONTAL && ltr) {
-			paintForeground(ctx, g, x, y, w, h, null);
+			this.paintForeground(ctx, g, y, 0, h, w, transform);
+		} else if ((orientation == SwingConstants.HORIZONTAL) && ltr) {
+			this.paintForeground(ctx, g, x, y, w, h, null);
 		} else {
 
 			// horizontal and right-to-left orientation
-			paintForeground(ctx, g, x, y, w, h, null);
+			this.paintForeground(ctx, g, x, y, w, h, null);
 		}
 	}
 
@@ -375,16 +381,17 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintArrowButtonBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
 		if (context.getComponent().getComponentOrientation().isLeftToRight()) {
-			paintBackground(context, g, x, y, w, h, null);
+			this.paintBackground(context, g, x, y, w, h, null);
 		} else {
 			AffineTransform transform = new AffineTransform();
 
 			transform.translate(x, y);
 			transform.scale(-1, 1);
 			transform.translate(-w, 0);
-			paintBackground(context, g, 0, 0, w, h, transform);
+			this.paintBackground(context, g, 0, 0, w, h, transform);
 		}
 	}
 
@@ -406,8 +413,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintArrowButtonBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -433,6 +441,7 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of SwingConstants.NORTH, SwingConstants.SOUTH
 	 *            SwingConstants.EAST or SwingConstants.WEST
 	 */
+	@Override
 	public void paintArrowButtonForeground(SynthContext context, Graphics g, int x, int y, int w, int h, int direction) {
 		// assume that the painter is arranged with the arrow pointing... LEFT?
 		String compName = context.getComponent().getName();
@@ -443,16 +452,16 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 		if ("Spinner.nextButton".equals(compName) || "Spinner.previousButton".equals(compName)) {
 
 			if (ltr) {
-				paintForeground(context, g, x, y, w, h, null);
+				this.paintForeground(context, g, x, y, w, h, null);
 			} else {
 				AffineTransform transform = new AffineTransform();
 
 				transform.translate(w, 0);
 				transform.scale(-1, 1);
-				paintForeground(context, g, x, y, w, h, transform);
+				this.paintForeground(context, g, x, y, w, h, transform);
 			}
 		} else if (direction == SwingConstants.WEST) {
-			paintForeground(context, g, x, y, w, h, null);
+			this.paintForeground(context, g, x, y, w, h, null);
 		} else if (direction == SwingConstants.NORTH) {
 
 			if (ltr) {
@@ -460,20 +469,20 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 
 				transform.scale(-1, 1);
 				transform.rotate(Math.toRadians(90));
-				paintForeground(context, g, y, 0, h, w, transform);
+				this.paintForeground(context, g, y, 0, h, w, transform);
 			} else {
 				AffineTransform transform = new AffineTransform();
 
 				transform.rotate(Math.toRadians(90));
 				transform.translate(0, -(x + w));
-				paintForeground(context, g, y, 0, h, w, transform);
+				this.paintForeground(context, g, y, 0, h, w, transform);
 			}
 		} else if (direction == SwingConstants.EAST) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.translate(w, 0);
 			transform.scale(-1, 1);
-			paintForeground(context, g, x, y, w, h, transform);
+			this.paintForeground(context, g, x, y, w, h, transform);
 		} else if (direction == SwingConstants.SOUTH) {
 
 			if (ltr) {
@@ -481,14 +490,14 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 
 				transform.rotate(Math.toRadians(-90));
 				transform.translate(-h, 0);
-				paintForeground(context, g, y, x, h, w, transform);
+				this.paintForeground(context, g, y, x, h, w, transform);
 			} else {
 				AffineTransform transform = new AffineTransform();
 
 				transform.scale(-1, 1);
 				transform.rotate(Math.toRadians(-90));
 				transform.translate(-(h + y), -(w + x));
-				paintForeground(context, g, y, x, h, w, transform);
+				this.paintForeground(context, g, y, x, h, w, transform);
 			}
 		}
 	}
@@ -513,7 +522,7 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            Height of the area to paint to
 	 */
 	public void paintSearchButtonForeground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintForeground(context, g, x, y, w, h, null);
+		this.paintForeground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -533,8 +542,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintButtonBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -554,8 +564,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintButtonBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -575,8 +586,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintCheckBoxMenuItemBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -596,8 +608,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintCheckBoxMenuItemBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -617,8 +630,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintCheckBoxBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -638,8 +652,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintCheckBoxBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -659,8 +674,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintColorChooserBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -680,8 +696,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintColorChooserBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -701,16 +718,17 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintComboBoxBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
 		if (context.getComponent().getComponentOrientation().isLeftToRight()) {
-			paintBackground(context, g, x, y, w, h, null);
+			this.paintBackground(context, g, x, y, w, h, null);
 		} else {
 			AffineTransform transform = new AffineTransform();
 
 			transform.translate(x, y);
 			transform.scale(-1, 1);
 			transform.translate(-w, 0);
-			paintBackground(context, g, 0, 0, w, h, transform);
+			this.paintBackground(context, g, 0, 0, w, h, transform);
 		}
 	}
 
@@ -731,8 +749,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintComboBoxBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -752,8 +771,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintDesktopIconBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -773,8 +793,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintDesktopIconBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -794,8 +815,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintDesktopPaneBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -815,8 +837,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintDesktopPaneBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -836,8 +859,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintEditorPaneBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -857,8 +881,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintEditorPaneBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -878,8 +903,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintFileChooserBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -899,8 +925,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintFileChooserBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -920,16 +947,17 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintFormattedTextFieldBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
 		if (context.getComponent().getComponentOrientation().isLeftToRight()) {
-			paintBackground(context, g, x, y, w, h, null);
+			this.paintBackground(context, g, x, y, w, h, null);
 		} else {
 			AffineTransform transform = new AffineTransform();
 
 			transform.translate(x, y);
 			transform.scale(-1, 1);
 			transform.translate(-w, 0);
-			paintBackground(context, g, 0, 0, w, h, transform);
+			this.paintBackground(context, g, 0, 0, w, h, transform);
 		}
 	}
 
@@ -950,16 +978,17 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintFormattedTextFieldBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
 		if (context.getComponent().getComponentOrientation().isLeftToRight()) {
-			paintBorder(context, g, x, y, w, h, null);
+			this.paintBorder(context, g, x, y, w, h, null);
 		} else {
 			AffineTransform transform = new AffineTransform();
 
 			transform.translate(x, y);
 			transform.scale(-1, 1);
 			transform.translate(-w, 0);
-			paintBorder(context, g, 0, 0, w, h, transform);
+			this.paintBorder(context, g, 0, 0, w, h, transform);
 		}
 	}
 
@@ -980,8 +1009,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintInternalFrameTitlePaneBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1001,8 +1031,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintInternalFrameTitlePaneBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1022,8 +1053,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintInternalFrameBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1043,8 +1075,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintInternalFrameBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1064,8 +1097,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintLabelBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1085,8 +1119,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintLabelBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1106,8 +1141,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintListBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1127,8 +1163,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintListBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1148,8 +1185,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintMenuBarBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1169,8 +1207,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintMenuBarBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1190,8 +1229,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintMenuItemBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1211,8 +1251,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintMenuItemBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1232,8 +1273,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintMenuBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1253,8 +1295,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintMenuBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1274,8 +1317,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintOptionPaneBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1295,8 +1339,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintOptionPaneBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1316,8 +1361,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintPanelBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1337,8 +1383,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintPanelBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1358,8 +1405,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintPasswordFieldBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1379,8 +1427,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintPasswordFieldBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1400,8 +1449,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintPopupMenuBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1421,8 +1471,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintPopupMenuBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1442,8 +1493,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintProgressBarBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1467,8 +1519,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            one of <code>JProgressBar.HORIZONTAL</code> or <code>
 	 *                    JProgressBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintProgressBarBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, orientation);
+		this.paintBackground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -1488,8 +1541,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintProgressBarBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1513,8 +1567,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            one of <code>JProgressBar.HORIZONTAL</code> or <code>
 	 *                    JProgressBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintProgressBarBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -1538,6 +1593,7 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            one of <code>JProgressBar.HORIZONTAL</code> or <code>
 	 *                    JProgressBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintProgressBarForeground(SynthContext ctx, Graphics g, int x, int y, int w, int h, int orientation) {
 		Component c = ctx.getComponent();
 		boolean ltr = c.getComponentOrientation().isLeftToRight();
@@ -1550,9 +1606,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 
 			transform.translate(x, y);
 			transform.rotate(Math.toRadians(-90));
-			paintForeground(ctx, g, 0, 0, h, w, transform);
-		} else if (orientation == SwingConstants.HORIZONTAL && ltr) {
-			paintForeground(ctx, g, x, y, w, h, null);
+			this.paintForeground(ctx, g, 0, 0, h, w, transform);
+		} else if ((orientation == SwingConstants.HORIZONTAL) && ltr) {
+			this.paintForeground(ctx, g, x, y, w, h, null);
 		} else {
 
 			// Horizontal and right-to-left orientation.
@@ -1562,7 +1618,7 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 
 			transform.translate(x + w, 0);
 			transform.scale(-1, 1);
-			paintForeground(ctx, g, 0, y, w, h, transform);
+			this.paintForeground(ctx, g, 0, y, w, h, transform);
 		}
 	}
 
@@ -1583,8 +1639,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintRadioButtonMenuItemBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1604,8 +1661,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintRadioButtonMenuItemBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1625,8 +1683,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintRadioButtonBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1646,8 +1705,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintRadioButtonBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1667,8 +1727,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintRootPaneBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1688,8 +1749,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintRootPaneBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1709,8 +1771,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintScrollBarBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1735,8 +1798,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *                    JScrollBar.HORIZONTAL</code> or <code>
 	 *                    JScrollBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintScrollBarBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, orientation);
+		this.paintBackground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -1756,8 +1820,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintScrollBarBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1782,8 +1847,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *                    JScrollBar.HORIZONTAL</code> or <code>
 	 *                    JScrollBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintScrollBarBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -1809,8 +1875,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *                    JScrollBar.HORIZONTAL</code> or <code>
 	 *                    JScrollBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintScrollBarThumbBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, orientation);
+		this.paintBackground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -1836,8 +1903,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *                    JScrollBar.HORIZONTAL</code> or <code>
 	 *                    JScrollBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintScrollBarThumbBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -1858,8 +1926,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintScrollBarTrackBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1885,8 +1954,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *                    JScrollBar.HORIZONTAL</code> or <code>
 	 *                    JScrollBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintScrollBarTrackBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, orientation);
+		this.paintBackground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -1907,8 +1977,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintScrollBarTrackBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1934,8 +2005,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *                    JScrollBar.HORIZONTAL</code> or <code>
 	 *                    JScrollBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintScrollBarTrackBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -1955,8 +2027,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintScrollPaneBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1976,8 +2049,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintScrollPaneBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -1997,8 +2071,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSeparatorBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2022,8 +2097,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSeparator.HORIZONTAL</code> or <code>
 	 *                    JSeparator.VERTICAL</code>
 	 */
+	@Override
 	public void paintSeparatorBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, orientation);
+		this.paintBackground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -2043,8 +2119,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSeparatorBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2068,8 +2145,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSeparator.HORIZONTAL</code> or <code>
 	 *                    JSeparator.VERTICAL</code>
 	 */
+	@Override
 	public void paintSeparatorBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -2092,8 +2170,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSeparator.HORIZONTAL</code> or <code>
 	 *                    JSeparator.VERTICAL</code>
 	 */
+	@Override
 	public void paintSeparatorForeground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintForeground(context, g, x, y, w, h, orientation);
+		this.paintForeground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -2113,8 +2192,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSliderBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2138,8 +2218,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSlider.HORIZONTAL</code> or <code>
 	 *                    JSlider.VERTICAL</code>
 	 */
+	@Override
 	public void paintSliderBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, orientation);
+		this.paintBackground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -2159,8 +2240,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSliderBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2184,8 +2266,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSlider.HORIZONTAL</code> or <code>
 	 *                    JSlider.VERTICAL</code>
 	 */
+	@Override
 	public void paintSliderBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -2208,18 +2291,19 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSlider.HORIZONTAL</code> or <code>
 	 *                    JSlider.VERTICAL</code>
 	 */
+	@Override
 	public void paintSliderThumbBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
 		if (context.getComponent().getClientProperty("Slider.paintThumbArrowShape") == Boolean.TRUE) {
 
-			if (orientation == JSlider.HORIZONTAL) {
-				orientation = JSlider.VERTICAL;
+			if (orientation == SwingConstants.HORIZONTAL) {
+				orientation = SwingConstants.VERTICAL;
 			} else {
-				orientation = JSlider.HORIZONTAL;
+				orientation = SwingConstants.HORIZONTAL;
 			}
 
-			paintBackground(context, g, x, y, w, h, orientation);
+			this.paintBackground(context, g, x, y, w, h, orientation);
 		} else {
-			paintBackground(context, g, x, y, w, h, orientation);
+			this.paintBackground(context, g, x, y, w, h, orientation);
 		}
 	}
 
@@ -2243,8 +2327,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSlider.HORIZONTAL</code> or <code>
 	 *                    JSlider.VERTICAL</code>
 	 */
+	@Override
 	public void paintSliderThumbBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -2264,8 +2349,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSliderTrackBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2289,8 +2375,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSlider.HORIZONTAL</code> or <code>
 	 *                    JSlider.VERTICAL</code>
 	 */
+	@Override
 	public void paintSliderTrackBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, orientation);
+		this.paintBackground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -2310,8 +2397,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSliderTrackBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2335,8 +2423,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSlider.HORIZONTAL</code> or <code>
 	 *                    JSlider.VERTICAL</code>
 	 */
+	@Override
 	public void paintSliderTrackBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -2356,8 +2445,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSpinnerBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2377,8 +2467,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSpinnerBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2398,8 +2489,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSplitPaneDividerBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2423,15 +2515,16 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSplitPane.HORIZONTAL_SPLIT</code> or
 	 *            <code>JSplitPane.VERTICAL_SPLIT</code>
 	 */
+	@Override
 	public void paintSplitPaneDividerBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
 		if (orientation == JSplitPane.HORIZONTAL_SPLIT) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.scale(-1, 1);
 			transform.rotate(Math.toRadians(90));
-			paintBackground(context, g, y, x, h, w, transform);
+			this.paintBackground(context, g, y, x, h, w, transform);
 		} else {
-			paintBackground(context, g, x, y, w, h, null);
+			this.paintBackground(context, g, x, y, w, h, null);
 		}
 	}
 
@@ -2455,8 +2548,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSplitPane.HORIZONTAL_SPLIT</code> or
 	 *            <code>JSplitPane.VERTICAL_SPLIT</code>
 	 */
+	@Override
 	public void paintSplitPaneDividerForeground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintForeground(context, g, x, y, w, h, null);
+		this.paintForeground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2480,8 +2574,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JSplitPane.HORIZONTAL_SPLIT</code> or
 	 *            <code>JSplitPane.VERTICAL_SPLIT</code>
 	 */
+	@Override
 	public void paintSplitPaneDragDivider(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2501,8 +2596,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSplitPaneBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2522,8 +2618,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintSplitPaneBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2543,8 +2640,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTabbedPaneBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2571,27 +2669,27 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 */
 	public void paintTabbedPaneBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
 
-		if (orientation == JTabbedPane.LEFT) {
+		if (orientation == SwingConstants.LEFT) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.scale(-1, 1);
 			transform.rotate(Math.toRadians(90));
-			paintBorder(context, g, x, y, w, h, transform);
-		} else if (orientation == JTabbedPane.RIGHT) {
+			this.paintBorder(context, g, x, y, w, h, transform);
+		} else if (orientation == SwingConstants.RIGHT) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.rotate(Math.toRadians(90));
 			transform.translate(0, -(x + w));
-			paintBorder(context, g, x, y, w, h, transform);
-		} else if (orientation == JTabbedPane.BOTTOM) {
+			this.paintBorder(context, g, x, y, w, h, transform);
+		} else if (orientation == SwingConstants.BOTTOM) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.translate(x, y);
 			transform.scale(1, -1);
 			transform.translate(0, -h);
-			paintBorder(context, g, x, y, w, h, transform);
+			this.paintBorder(context, g, x, y, w, h, transform);
 		} else {
-			paintBorder(context, g, x, y, w, h, null);
+			this.paintBorder(context, g, x, y, w, h, null);
 		}
 
 	}
@@ -2613,8 +2711,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTabbedPaneTabAreaBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2641,26 +2740,27 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *                    JTabbedPane.BOTTOM</code> , or <code>
 	 *                    JTabbedPane.RIGHT</code>
 	 */
+	@Override
 	public void paintTabbedPaneTabAreaBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		if (orientation == JTabbedPane.LEFT) {
+		if (orientation == SwingConstants.LEFT) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.scale(-1, 1);
 			transform.rotate(Math.toRadians(90));
-			paintBackground(context, g, y, x, h, w, transform);
-		} else if (orientation == JTabbedPane.RIGHT) {
+			this.paintBackground(context, g, y, x, h, w, transform);
+		} else if (orientation == SwingConstants.RIGHT) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.rotate(Math.toRadians(90));
 			transform.translate(0, -(x + w));
-			paintBackground(context, g, y, 0, h, w, transform);
-		} else if (orientation == JTabbedPane.BOTTOM) {
+			this.paintBackground(context, g, y, 0, h, w, transform);
+		} else if (orientation == SwingConstants.BOTTOM) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.translate(x, y);
-			paintBackground(context, g, 0, 0, w, h, transform);
+			this.paintBackground(context, g, 0, 0, w, h, transform);
 		} else {
-			paintBackground(context, g, x, y, w, h, null);
+			this.paintBackground(context, g, x, y, w, h, null);
 		}
 	}
 
@@ -2681,8 +2781,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTabbedPaneTabAreaBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2709,8 +2810,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *                    JTabbedPane.BOTTOM</code> , or <code>
 	 *                    JTabbedPane.RIGHT</code>
 	 */
+	@Override
 	public void paintTabbedPaneTabAreaBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2732,8 +2834,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param tabIndex
 	 *            Index of tab being painted.
 	 */
+	@Override
 	public void paintTabbedPaneTabBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int tabIndex) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2761,28 +2864,29 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *                    JTabbedPane.BOTTOM</code> , or <code>
 	 *                    JTabbedPane.RIGHT</code>
 	 */
+	@Override
 	public void paintTabbedPaneTabBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int tabIndex, int orientation) {
-		if (orientation == JTabbedPane.LEFT) {
+		if (orientation == SwingConstants.LEFT) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.scale(-1, 1);
 			transform.rotate(Math.toRadians(90));
-			paintBackground(context, g, y, x, h, w, transform);
-		} else if (orientation == JTabbedPane.RIGHT) {
+			this.paintBackground(context, g, y, x, h, w, transform);
+		} else if (orientation == SwingConstants.RIGHT) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.rotate(Math.toRadians(90));
 			transform.translate(0, -(x + w));
-			paintBackground(context, g, y, 0, h, w, transform);
-		} else if (orientation == JTabbedPane.BOTTOM) {
+			this.paintBackground(context, g, y, 0, h, w, transform);
+		} else if (orientation == SwingConstants.BOTTOM) {
 			AffineTransform transform = new AffineTransform();
 
 			transform.translate(x, y);
 			transform.scale(1, -1);
 			transform.translate(0, -h);
-			paintBackground(context, g, 0, 0, w, h, transform);
+			this.paintBackground(context, g, 0, 0, w, h, transform);
 		} else {
-			paintBackground(context, g, x, y, w, h, null);
+			this.paintBackground(context, g, x, y, w, h, null);
 		}
 	}
 
@@ -2805,8 +2909,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param tabIndex
 	 *            Index of tab being painted.
 	 */
+	@Override
 	public void paintTabbedPaneTabBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int tabIndex) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2834,6 +2939,7 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *                    JTabbedPane.BOTTOM</code> , or <code>
 	 *                    JTabbedPane.RIGHT</code>
 	 */
+	@Override
 	public void paintTabbedPaneTabBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int tabIndex, int orientation) {
 
 		// if (orientation == JTabbedPane.LEFT) {
@@ -2862,7 +2968,7 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 		// paintBorder(context, g, x, y, w, h, null);
 		// }
 
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2883,8 +2989,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTabbedPaneContentBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2905,8 +3012,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTabbedPaneContentBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2926,8 +3034,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTableHeaderBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2947,8 +3056,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTableHeaderBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2968,8 +3078,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTableBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -2989,8 +3100,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTableBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3010,8 +3122,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTextAreaBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3031,8 +3144,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTextAreaBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3052,8 +3166,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTextPaneBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3073,8 +3188,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTextPaneBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3094,16 +3210,17 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTextFieldBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
 		if (context.getComponent().getComponentOrientation().isLeftToRight()) {
-			paintBackground(context, g, x, y, w, h, null);
+			this.paintBackground(context, g, x, y, w, h, null);
 		} else {
 			AffineTransform transform = new AffineTransform();
 
 			transform.translate(x, y);
 			transform.scale(-1, 1);
 			transform.translate(-w, 0);
-			paintBackground(context, g, 0, 0, w, h, transform);
+			this.paintBackground(context, g, 0, 0, w, h, transform);
 		}
 	}
 
@@ -3124,16 +3241,17 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTextFieldBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
 		if (context.getComponent().getComponentOrientation().isLeftToRight()) {
-			paintBorder(context, g, x, y, w, h, null);
+			this.paintBorder(context, g, x, y, w, h, null);
 		} else {
 			AffineTransform transform = new AffineTransform();
 
 			transform.translate(x, y);
 			transform.scale(-1, 1);
 			transform.translate(-w, 0);
-			paintBorder(context, g, 0, 0, w, h, transform);
+			this.paintBorder(context, g, 0, 0, w, h, transform);
 		}
 	}
 
@@ -3154,8 +3272,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintToggleButtonBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3175,8 +3294,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintToggleButtonBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3196,8 +3316,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintToolBarBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3221,8 +3342,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JToolBar.HORIZONTAL</code> or <code>
 	 *                    JToolBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintToolBarBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, orientation);
+		this.paintBackground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -3242,8 +3364,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintToolBarBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3267,8 +3390,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JToolBar.HORIZONTAL</code> or <code>
 	 *                    JToolBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintToolBarBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -3288,8 +3412,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintToolBarContentBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3313,8 +3438,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JToolBar.HORIZONTAL</code> or <code>
 	 *                    JToolBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintToolBarContentBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, orientation);
+		this.paintBackground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -3334,8 +3460,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintToolBarContentBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3359,8 +3486,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JToolBar.HORIZONTAL</code> or <code>
 	 *                    JToolBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintToolBarContentBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -3381,8 +3509,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintToolBarDragWindowBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3407,8 +3536,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JToolBar.HORIZONTAL</code> or <code>
 	 *                    JToolBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintToolBarDragWindowBackground(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBackground(context, g, x, y, w, h, orientation);
+		this.paintBackground(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -3429,8 +3559,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintToolBarDragWindowBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3455,8 +3586,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 *            One of <code>JToolBar.HORIZONTAL</code> or <code>
 	 *                    JToolBar.VERTICAL</code>
 	 */
+	@Override
 	public void paintToolBarDragWindowBorder(SynthContext context, Graphics g, int x, int y, int w, int h, int orientation) {
-		paintBorder(context, g, x, y, w, h, orientation);
+		this.paintBorder(context, g, x, y, w, h, orientation);
 	}
 
 	/**
@@ -3476,8 +3608,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintToolTipBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3497,8 +3630,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintToolTipBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3518,8 +3652,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTreeBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3539,8 +3674,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTreeBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3560,8 +3696,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTreeCellBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3581,8 +3718,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTreeCellBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3602,6 +3740,7 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintTreeCellFocus(SynthContext context, Graphics g, int x, int y, int w, int h) {
 		// TODO Paint tree cell focus.
 	}
@@ -3623,8 +3762,9 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintViewportBackground(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBackground(context, g, x, y, w, h, null);
+		this.paintBackground(context, g, x, y, w, h, null);
 	}
 
 	/**
@@ -3644,7 +3784,8 @@ public class OntimizeSynthPainterImpl extends SynthPainter {
 	 * @param h
 	 *            Height of the area to paint to
 	 */
+	@Override
 	public void paintViewportBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		paintBorder(context, g, x, y, w, h, null);
+		this.paintBorder(context, g, x, y, w, h, null);
 	}
 }

@@ -15,10 +15,15 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.InsetsUIResource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ontimize.plaf.utils.CSSParser.CSSDocument;
 import com.ontimize.plaf.utils.CSSParser.CSSStyle;
 
 public class StyleUtil {
+
+	private static final Logger logger = LoggerFactory.getLogger(StyleUtil.class);
 
 	public static final String STYLE_PROPERTY = "com.ontimize.gui.lafstyle";
 
@@ -143,10 +148,10 @@ public class StyleUtil {
 		if (value != null) {
 			if (value.startsWith("linear-gradient")) {
 				return OntimizeLAFParseUtils.parseLinearGradient(value, null);// TODO
-																				// create
-																				// a
-																				// default
-																				// gradient
+				// create
+				// a
+				// default
+				// gradient
 			} else {
 				return StyleUtil.getColor(name, key, defaultValue);
 			}
@@ -201,7 +206,7 @@ public class StyleUtil {
 			}
 			return new FontUIResource(font);
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -215,7 +220,7 @@ public class StyleUtil {
 			}
 			return font;
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -226,7 +231,7 @@ public class StyleUtil {
 			Icon icon = OntimizeLAFParseUtils.parseIcon(iconPath, null);
 			return icon;
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -240,7 +245,7 @@ public class StyleUtil {
 			Insets insets = StyleUtil.getInsets(value);
 			return new InsetsUIResource(insets.top, insets.left, insets.bottom, insets.right);
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -250,7 +255,7 @@ public class StyleUtil {
 			String value = StyleUtil.getProperty(name, key, defaultValue);
 			return StyleUtil.getInsets(value);
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -260,7 +265,7 @@ public class StyleUtil {
 			String value = StyleUtil.getProperty(name, key, defaultValue);
 			return StyleUtil.getBoolean(value);
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -273,7 +278,7 @@ public class StyleUtil {
 			}
 			return Integer.parseInt(value);
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -286,7 +291,7 @@ public class StyleUtil {
 			}
 			return Float.parseFloat(value);
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -299,7 +304,7 @@ public class StyleUtil {
 			}
 			return Double.parseDouble(value);
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -343,7 +348,7 @@ public class StyleUtil {
 			}
 			return path;
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}
@@ -357,7 +362,7 @@ public class StyleUtil {
 			}
 			return StyleUtil.class.getClassLoader().getResource(path);
 		} catch (Exception e) {
-			e.printStackTrace();
+			StyleUtil.logger.error("", e);
 		}
 		return null;
 	}

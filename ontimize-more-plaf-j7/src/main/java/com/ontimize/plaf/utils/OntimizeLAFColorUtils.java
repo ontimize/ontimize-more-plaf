@@ -3,10 +3,10 @@ package com.ontimize.plaf.utils;
 import java.awt.Color;
 import java.awt.LinearGradientPaint;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import javax.swing.JComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class contains Color utils for the Ontimize Look And Feel.
@@ -16,6 +16,7 @@ import javax.swing.JComponent;
  */
 public class OntimizeLAFColorUtils {
 
+	private static final Logger logger = LoggerFactory.getLogger(OntimizeLAFColorUtils.class);
 
 
 	/**
@@ -28,7 +29,9 @@ public class OntimizeLAFColorUtils {
 	 */
 	public static String colorToString(Color color, String defaultValue) {
 
-		if ((color == null) || "".equals(color)) return defaultValue;
+		if ((color == null) || "".equals(color)) {
+			return defaultValue;
+		}
 
 		return color.getRed() + ";" + color.getGreen() + ";" + color.getBlue() + ";" + color.getAlpha();
 	}
@@ -46,10 +49,9 @@ public class OntimizeLAFColorUtils {
 	public static Color colorHexToColor(String hex) {
 
 		// when no alpha is indicated:
-		if (hex.length() == 7) return colorHexToColor(hex,255);
-
-		// when alpha is indicated:
-		else if ( hex.length()==9 && hex.startsWith("#")){
+		if (hex.length() == 7) {
+			return OntimizeLAFColorUtils.colorHexToColor(hex,255);
+		} else if ( (hex.length()==9) && hex.startsWith("#")){
 
 			String rH = hex.substring(1, 3);
 			String gH = hex.substring(3, 5);
@@ -62,12 +64,12 @@ public class OntimizeLAFColorUtils {
 			int alpha = Integer.parseInt(alphaH, 16);
 			return new Color(r, g, b, alpha);
 
-		// in other case, return null:
+			// in other case, return null:
 		} else {
 			try {
 				throw new Exception("Invalid values " + hex + " not hexadecimal color");
 			} catch (Exception e) {
-				e.printStackTrace();
+				OntimizeLAFColorUtils.logger.error("", e);
 				return null;
 			}
 		}
@@ -86,7 +88,7 @@ public class OntimizeLAFColorUtils {
 	 */
 	public static Color colorHexToColor(String hex,int alpha) {
 		try {
-			if (hex.length() != 7 || hex.startsWith("#") == false) {
+			if ((hex.length() != 7) || (hex.startsWith("#") == false)) {
 				throw new Exception("Invalid values " + hex + " not hexadecimal color");
 			}
 			String rH = hex.substring(1, 3);
@@ -98,7 +100,7 @@ public class OntimizeLAFColorUtils {
 			int b = Integer.parseInt(bH, 16);
 			return new Color(r, g, b, alpha);
 		} catch (Exception e) {
-			e.printStackTrace();
+			OntimizeLAFColorUtils.logger.error("", e);
 			return null;
 		}
 	}
@@ -116,16 +118,20 @@ public class OntimizeLAFColorUtils {
 	public static Color colorRGBToColor(String rgb) {
 		StringTokenizer st = new StringTokenizer(rgb, ";");
 		try {
-			if (st.countTokens() < 3 || st.countTokens() > 4) throw new Exception("Invalid values");
+			if ((st.countTokens() < 3) || (st.countTokens() > 4)) {
+				throw new Exception("Invalid values");
+			}
 			int r = Integer.parseInt(st.nextToken());
 			int g = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
 			if (st.hasMoreTokens()) {
 				int alpha = Integer.parseInt(st.nextToken());
 				return new Color(r, g, b, alpha);
-			} else return new Color(r, g, b);
+			} else {
+				return new Color(r, g, b);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			OntimizeLAFColorUtils.logger.error("", e);
 			return null;
 		}
 	}
@@ -144,65 +150,67 @@ public class OntimizeLAFColorUtils {
 	public static Color colorRGBToColor(String rgb, int alpha) {
 		StringTokenizer st = new StringTokenizer(rgb, ";");
 		try {
-			if (st.countTokens() != 3 ) throw new Exception("Invalid values");
+			if (st.countTokens() != 3 ) {
+				throw new Exception("Invalid values");
+			}
 			int r = Integer.parseInt(st.nextToken());
 			int g = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
 
 			return new Color(r, g, b);
 		} catch (Exception e) {
-			e.printStackTrace();
+			OntimizeLAFColorUtils.logger.error("", e);
 			return null;
 		}
 	}
 
 
 	/**
-     * Returns a new color equal to the old one, except alpha (transparency)
-     * channel is set to the new value.
-     * 
-     * @param color
-     *            the color to modify
-     * @param alpha
-     *            the new alpha (transparency) level. Must be an int between 0
-     *            and 255
-     * @return a new alpha-applied {@code Color}
-     * @throws IllegalArgumentException
-     *             if {@code alpha} is not between 0 and 255 inclusive
-     * @throws NullPointerException
-     *             if {@code color} is {@code null}
-     */
-    public static Color setAlpha(Color color, int alpha) {
-        if (alpha < 0 || alpha > 255) {
-            throw new IllegalArgumentException("invalid alpha value");
-        }
+	 * Returns a new color equal to the old one, except alpha (transparency)
+	 * channel is set to the new value.
+	 *
+	 * @param color
+	 *            the color to modify
+	 * @param alpha
+	 *            the new alpha (transparency) level. Must be an int between 0
+	 *            and 255
+	 * @return a new alpha-applied {@code Color}
+	 * @throws IllegalArgumentException
+	 *             if {@code alpha} is not between 0 and 255 inclusive
+	 * @throws NullPointerException
+	 *             if {@code color} is {@code null}
+	 */
+	public static Color setAlpha(Color color, int alpha) {
+		if ((alpha < 0) || (alpha > 255)) {
+			throw new IllegalArgumentException("invalid alpha value");
+		}
 
-        return new Color(
-                color.getRed(), color.getGreen(), color.getBlue(), alpha);
-    }
-    
-    public static Color setAlpha(Color color, double alpha){
-    	if (alpha < 0.0 || alpha > 1.0) {
-            throw new IllegalArgumentException("invalid alpha value");
-        }
-    	int i_alpha = (int)(alpha*255+0.5);
-    	return setAlpha(color, i_alpha);
-    }
+		return new Color(
+				color.getRed(), color.getGreen(), color.getBlue(), alpha);
+	}
 
-    public static LinearGradientPaint decodeGradient(Rectangle bounds, LinearGradient gradient){
-    	if(bounds!=null && gradient != null){
-    		GradientDirection gd = gradient.getgDirection();
-    		try {
-    			return new LinearGradientPaint(gd.getStartX(bounds), gd.getStartY(bounds), 
-						gd.getEndX(bounds), gd.getEndY(bounds), 
-						gradient.getStopsArray(), 
+	public static Color setAlpha(Color color, double alpha){
+		if ((alpha < 0.0) || (alpha > 1.0)) {
+			throw new IllegalArgumentException("invalid alpha value");
+		}
+		int i_alpha = (int)((alpha*255)+0.5);
+		return OntimizeLAFColorUtils.setAlpha(color, i_alpha);
+	}
+
+	public static LinearGradientPaint decodeGradient(Rectangle bounds, LinearGradient gradient){
+		if((bounds!=null) && (gradient != null)){
+			GradientDirection gd = gradient.getgDirection();
+			try {
+				return new LinearGradientPaint(gd.getStartX(bounds), gd.getStartY(bounds),
+						gd.getEndX(bounds), gd.getEndY(bounds),
+						gradient.getStopsArray(),
 						gradient.getColorsArray());
 			} catch (Exception e) {
-				e.printStackTrace();
+				OntimizeLAFColorUtils.logger.error("", e);
 			}
-    		
-    	}
-    	return null;
-    }
-    
+
+		}
+		return null;
+	}
+
 }

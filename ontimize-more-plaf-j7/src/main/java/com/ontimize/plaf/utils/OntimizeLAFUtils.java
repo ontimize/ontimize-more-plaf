@@ -5,6 +5,9 @@ import java.util.Properties;
 
 import javax.swing.UIManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ontimize.plaf.OntimizeLookAndFeel;
 
 
@@ -16,49 +19,53 @@ import com.ontimize.plaf.OntimizeLookAndFeel;
  */
 public class OntimizeLAFUtils {
 
+	private static final Logger logger = LoggerFactory.getLogger(OntimizeLAFUtils.class);
+
 	public static Properties customConfProp = null;
 	public static Properties defaultConfProp = null;
-	
-	public static boolean DEBUG = true;
 
-    /**
-     * This method load the configuration properties for the Ontimize Look And Feel, which are in the filed indicated by the String path.
-     * These L&F configuration properties are stored in the variable OntimizeLAFUtils.customConfProp
-     */
+
+	/**
+	 * This method load the configuration properties for the Ontimize Look And Feel, which are in the filed indicated by the String path.
+	 * These L&F configuration properties are stored in the variable OntimizeLAFUtils.customConfProp
+	 */
 	public static void loadcustomConfProp(String path){
 
-		if (path !=null && !"".equalsIgnoreCase(path)) customConfProp = readProperties(path);
-		else customConfProp = null;
+		if ((path !=null) && !"".equalsIgnoreCase(path)) {
+			OntimizeLAFUtils.customConfProp = OntimizeLAFUtils.readProperties(path);
+		} else {
+			OntimizeLAFUtils.customConfProp = null;
+		}
 	}
 
-    /**
-     * This method load the default configuration properties for the Ontimize Look And Feel, which are in the filed indicated by the String path.
-     * These L&F configuration properties are stored in the variable OntimizeLAFUtils.defaultConfProp
-     *
-     */
+	/**
+	 * This method load the default configuration properties for the Ontimize Look And Feel, which are in the filed indicated by the String path.
+	 * These L&F configuration properties are stored in the variable OntimizeLAFUtils.defaultConfProp
+	 *
+	 */
 	public static void loadDefaultConfProp(String path){
 
 		// TODO: blindar para que este método no pueda ser visible dentro de este proyecto (el de Ontimize Look And Feel). Para evitar que otra persona
 		// lo llame desde otro proyecto (al tener el jar de este) y nos cambie las props por defecto ¡¡ para eso ya estan las custom (loadcustomConfProp) !!!
 
-		defaultConfProp = readProperties(path);
+		OntimizeLAFUtils.defaultConfProp = OntimizeLAFUtils.readProperties(path);
 	}
 
 
-    /**
-     * This method reads and returns the configuration properties file indicated by the String path.
-     */
+	/**
+	 * This method reads and returns the configuration properties file indicated by the String path.
+	 */
 	public static Properties readProperties(String path){
 
-    	// read the configuration properties file called webservice.properties:
+		// read the configuration properties file called webservice.properties:
 		Properties p = new Properties();
 		try {
 			p.load( OntimizeLAFUtils.class.getClassLoader().getResourceAsStream(path));
 		} catch (IOException e) {
-			e.printStackTrace();
+			OntimizeLAFUtils.logger.error("", e);
 		}
 		return p;
-    }
+	}
 
 
 
@@ -74,11 +81,11 @@ public class OntimizeLAFUtils {
 	 */
 	public static void putProperty(String property){
 
-		Object value = getProperty(property);
-		if(DEBUG)
-			System.out.println("Propiedad a cambiar---->" + property);
-		if (value != null && !"".equalsIgnoreCase(value.toString()) ) {
-			
+		Object value = OntimizeLAFUtils.getProperty(property);
+		OntimizeLAFUtils.logger.debug("Property change: {}", property);
+
+		if ((value != null) && !"".equalsIgnoreCase(value.toString()) ) {
+
 			UIManager.getLookAndFeel().getDefaults().put(property, value);
 		}
 	}
@@ -98,16 +105,15 @@ public class OntimizeLAFUtils {
 	 * @param property
 	 * @param defaultValue
 	 * @return
-	 */
+	 */ 
 	public static void putProperty(String property, Object defaultValue){
 
-		Object value = getProperty(property);
-		if(DEBUG)
-			System.out.println("Propiedad a cambiar---->" + property);
-		if (value != null && !"".equalsIgnoreCase(value.toString()) ) {
+		Object value = OntimizeLAFUtils.getProperty(property);
+		OntimizeLAFUtils.logger.debug("Property change: {}", property);
+		if ((value != null) && !"".equalsIgnoreCase(value.toString()) ) {
 			UIManager.getLookAndFeel().getDefaults().put(property, value);
 		}
-		else if (defaultValue != null && !"".equalsIgnoreCase(defaultValue.toString()) ) {
+		else if ((defaultValue != null) && !"".equalsIgnoreCase(defaultValue.toString()) ) {
 			UIManager.getLookAndFeel().getDefaults().put(property, defaultValue);
 		}
 	}
@@ -127,12 +133,19 @@ public class OntimizeLAFUtils {
 	public static Object getProperty(String property){
 
 		Object value = null;
-		if (customConfProp!=null) value = OntimizeLAFUtils.getProperty(property, OntimizeLAFUtils.customConfProp);
-		if (value == null || "".equalsIgnoreCase(value.toString()) ){
-			if (defaultConfProp!=null) value = OntimizeLAFUtils.getProperty(property, OntimizeLAFUtils.defaultConfProp);
+		if (OntimizeLAFUtils.customConfProp!=null) {
+			value = OntimizeLAFUtils.getProperty(property, OntimizeLAFUtils.customConfProp);
+		}
+		if ((value == null) || "".equalsIgnoreCase(value.toString()) ){
+			if (OntimizeLAFUtils.defaultConfProp!=null) {
+				value = OntimizeLAFUtils.getProperty(property, OntimizeLAFUtils.defaultConfProp);
+			}
 		}
 
-		if (value != null && "".equalsIgnoreCase(value.toString()) ) return null; // to avoid return empty values
+		if ((value != null) && "".equalsIgnoreCase(value.toString()) )
+		{
+			return null; // to avoid return empty values
+		}
 
 		return value;
 	}
@@ -155,7 +168,7 @@ public class OntimizeLAFUtils {
 	public static Object getProperty(String key, Properties p ){
 		if (p!=null){
 			if ( p.containsKey(key) ) {
-				return validate (key, p.getProperty(key));
+				return OntimizeLAFUtils.validate (key, p.getProperty(key));
 			}
 		}
 
@@ -186,7 +199,7 @@ public class OntimizeLAFUtils {
 		// TODO: Cambiar este método por otro que llame a los parses de modo genérico en función de un segundo properties de conf, q diga el tipo de dato que es cada clave, o la clase a llamar para que la desparsee.
 		// Va a ser más ineficiente que esto, pero bueno.
 
-		if (key!=null && value!=null){
+		if ((key!=null) && (value!=null)){
 			String keyToLowerCase = key.toLowerCase();
 
 			// Special running for painters. Painters can not be created until the component points (x, y, w, h or x1, y1, x2, y2) are known.
@@ -198,11 +211,11 @@ public class OntimizeLAFUtils {
 			}
 
 			// Normal mode:
-			if (keyToLowerCase.indexOf("menuitem[disabled].textforeground")>=0 || keyToLowerCase.indexOf("menuitem[enabled].textforeground")>=0 || keyToLowerCase.indexOf("menuitem[mouseover].textforeground")>=0|| keyToLowerCase.indexOf("menuitem:menuitemaccelerator[enabled].textforeground")>=0 ){
+			if ((keyToLowerCase.indexOf("menuitem[disabled].textforeground")>=0) || (keyToLowerCase.indexOf("menuitem[enabled].textforeground")>=0) || (keyToLowerCase.indexOf("menuitem[mouseover].textforeground")>=0)|| (keyToLowerCase.indexOf("menuitem:menuitemaccelerator[enabled].textforeground")>=0) ){
 				return OntimizeLAFParseUtils.parseColorUIResource(value.toString(), null);
 			} else if (keyToLowerCase.indexOf("degradated")>=0){ // TODO: ahora que hay painters en el properties, ver de cambiar esto por un painter.
 				return OntimizeLAFParseUtils.parseColorArray(value.toString(), null);
-			} else if (keyToLowerCase.indexOf("rendererfillbackground")>=0 || keyToLowerCase.indexOf("opaque")>=0){
+			} else if ((keyToLowerCase.indexOf("rendererfillbackground")>=0) || (keyToLowerCase.indexOf("opaque")>=0)){
 				return OntimizeLAFParseUtils.parseBoolean(value.toString(), null);
 			} else if (keyToLowerCase.indexOf("color")>=0){
 				return OntimizeLAFParseUtils.parseColor(value.toString(), null);
@@ -212,32 +225,32 @@ public class OntimizeLAFUtils {
 				return OntimizeLAFParseUtils.parseColorUIResource(value.toString(), null);
 			} else if (keyToLowerCase.indexOf("font")>=0){
 				return OntimizeLAFParseUtils.parseFont(value.toString(), null);
-			} else if (keyToLowerCase.indexOf("margins")>=0 || keyToLowerCase.indexOf("cellnofocusborder")>=0 || keyToLowerCase.indexOf("focuscellhighlightborder")>=0){
+			} else if ((keyToLowerCase.indexOf("margins")>=0) || (keyToLowerCase.indexOf("cellnofocusborder")>=0) || (keyToLowerCase.indexOf("focuscellhighlightborder")>=0)){
 				return OntimizeLAFParseUtils.parseInsets(value.toString(), null);
 			} else if (keyToLowerCase.indexOf("icon")>=0){
 				return OntimizeLAFParseUtils.parseIcon(value.toString(), null);
-			}else if (keyToLowerCase.indexOf("extendtabstobase")>=0 || keyToLowerCase.indexOf("tabAreaStatesMatchSelectedTab")>=0 || keyToLowerCase.indexOf("nudgeSelectedLabel")>=0 || keyToLowerCase.indexOf("useBasicArrows")>=0  || keyToLowerCase.indexOf("rightalignsortarrow")>=0 || keyToLowerCase.indexOf("showgrid")>=0
-					|| keyToLowerCase.indexOf("rendererusetablecolors")>=0 || keyToLowerCase.indexOf("rendereruseuiborder")>=0 ){
+			}else if ((keyToLowerCase.indexOf("extendtabstobase")>=0) || (keyToLowerCase.indexOf("tabAreaStatesMatchSelectedTab")>=0) || (keyToLowerCase.indexOf("nudgeSelectedLabel")>=0) || (keyToLowerCase.indexOf("useBasicArrows")>=0)  || (keyToLowerCase.indexOf("rightalignsortarrow")>=0) || (keyToLowerCase.indexOf("showgrid")>=0)
+					|| (keyToLowerCase.indexOf("rendererusetablecolors")>=0) || (keyToLowerCase.indexOf("rendereruseuiborder")>=0) ){
 				return OntimizeLAFParseUtils.parseBoolean(value.toString(), null);
-			} else if (keyToLowerCase.indexOf("maximumthumbsize")>=0 || keyToLowerCase.indexOf("minimumthumbsize")>=0 || keyToLowerCase.indexOf("intercellspacing")>=0 ){
+			} else if ((keyToLowerCase.indexOf("maximumthumbsize")>=0) || (keyToLowerCase.indexOf("minimumthumbsize")>=0) || (keyToLowerCase.indexOf("intercellspacing")>=0) ){
 				return OntimizeLAFParseUtils.parseDimension(value.toString(), null);
-			} else if (keyToLowerCase.indexOf("disabled")>=0 || keyToLowerCase.indexOf("disabledtext")>=0){
+			} else if ((keyToLowerCase.indexOf("disabled")>=0) || (keyToLowerCase.indexOf("disabledtext")>=0)){
 				return OntimizeLAFParseUtils.parseColor(value.toString(), null);
 
 
-			// default integer returned value is -1 (for those keys):
-			} else if (keyToLowerCase.indexOf("arcwidth")>=0 || keyToLowerCase.indexOf("archeight")>=0  || keyToLowerCase.indexOf("thickness")>=0 || keyToLowerCase.indexOf("taboverlap")>=0 ) { // positive or negative values are valid (to be returned)
+				// default integer returned value is -1 (for those keys):
+			} else if ((keyToLowerCase.indexOf("arcwidth")>=0) || (keyToLowerCase.indexOf("archeight")>=0)  || (keyToLowerCase.indexOf("thickness")>=0) || (keyToLowerCase.indexOf("taboverlap")>=0) ) { // positive or negative values are valid (to be returned)
 				return OntimizeLAFParseUtils.getInteger(value.toString(), -1);
-			// Only positive values are valid to be returned for those keys. (If the result is not a positive value or zero, null is returned):
-			} else if (keyToLowerCase.indexOf("width")>=0 || keyToLowerCase.indexOf("height")>=0  || keyToLowerCase.indexOf("indent")>=0  || keyToLowerCase.indexOf("size")>=0){
+				// Only positive values are valid to be returned for those keys. (If the result is not a positive value or zero, null is returned):
+			} else if ((keyToLowerCase.indexOf("width")>=0) || (keyToLowerCase.indexOf("height")>=0)  || (keyToLowerCase.indexOf("indent")>=0)  || (keyToLowerCase.indexOf("size")>=0)){
 				int result = OntimizeLAFParseUtils.getInteger(value.toString(), -1);
 				return (result >= 0 ? result : null);
-			// null is returned when value is not a valid string (null values will not be inserted as a uidefault property)
+				// null is returned when value is not a valid string (null values will not be inserted as a uidefault property)
 			} else if (keyToLowerCase.indexOf("buttongap")>=0) {
 				return OntimizeLAFParseUtils.getInteger(value.toString(), null);
 			}
 
-			else if ( matched(OntimizeLookAndFeel.NIMBUS_COLORS_KEYS, key) ){
+			else if ( OntimizeLAFUtils.matched(OntimizeLookAndFeel.NIMBUS_COLORS_KEYS, key) ){
 				return OntimizeLAFParseUtils.parseColor(value.toString(), null);
 			}
 
@@ -250,47 +263,53 @@ public class OntimizeLAFUtils {
 
 
 
-		/**
-		 * The method returns true whether the String target is included in the String array, named set.
-		 * In other case, false is returned;
-		 *
-		 * @param set
-		 * @param target
-		 * @return
-		 */
-		protected static boolean matched(String [] set, String target) {
+	/**
+	 * The method returns true whether the String target is included in the String array, named set.
+	 * In other case, false is returned;
+	 *
+	 * @param set
+	 * @param target
+	 * @return
+	 */
+	protected static boolean matched(String [] set, String target) {
 
-			for (String key : set) {
-				if (key.equalsIgnoreCase(target)) {
-					return true;
-				}
+		for (String key : set) {
+			if (key.equalsIgnoreCase(target)) {
+				return true;
 			}
-			return false;
+		}
+		return false;
+	}
+
+
+
+
+	/**
+	 *
+	 * Returns true if the key indicated by property has value (and not-empty value) in the custom configuration properties (if it exists),
+	 * or in the default configuration properties of the Ontimize Look And Feel
+	 *
+	 * @param property
+	 * @return
+	 */
+	public static Boolean hasValue(String property){
+
+		Object value = null;
+		if ((OntimizeLAFUtils.customConfProp!=null) && OntimizeLAFUtils.customConfProp.containsKey(property)) {
+			value = OntimizeLAFUtils.customConfProp.get(property);
+		}
+		if ((value != null) && !"".equalsIgnoreCase(value.toString().trim()) ) {
+			return true;
+		} else if ((OntimizeLAFUtils.defaultConfProp!=null) && OntimizeLAFUtils.defaultConfProp.containsKey(property)) {
+			value = OntimizeLAFUtils.defaultConfProp.get(property);
+		}
+		if ((value != null) && !"".equalsIgnoreCase(value.toString().trim()) ) {
+			return true;
 		}
 
 
-
-
-		/**
-		 *
-		 * Returns true if the key indicated by property has value (and not-empty value) in the custom configuration properties (if it exists),
-		 * or in the default configuration properties of the Ontimize Look And Feel
-		 *
-		 * @param property
-		 * @return
-		 */
-		public static Boolean hasValue(String property){
-
-			Object value = null;
-			if (customConfProp!=null && customConfProp.containsKey(property)) value = customConfProp.get(property);
-			if (value != null && !"".equalsIgnoreCase(value.toString().trim()) ) return true;
-
-			else if (defaultConfProp!=null && defaultConfProp.containsKey(property)) value = defaultConfProp.get(property);
-			if (value != null && !"".equalsIgnoreCase(value.toString().trim()) ) return true;
-
-
-			return false;
-		}
+		return false;
+	}
 
 
 }

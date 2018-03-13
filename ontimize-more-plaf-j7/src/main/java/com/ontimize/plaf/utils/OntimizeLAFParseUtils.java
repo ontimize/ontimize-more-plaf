@@ -13,6 +13,9 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.plaf.ColorUIResource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class contains Parse utils for the Ontimize Look And Feel.
  *
@@ -20,7 +23,8 @@ import javax.swing.plaf.ColorUIResource;
  *
  */
 public class OntimizeLAFParseUtils {
-	
+
+	private static final Logger logger = LoggerFactory.getLogger(OntimizeLAFParseUtils.class);
 	/**
 	 * Cache that stores previous decoded variables like colors, fonts, etc.
 	 */
@@ -30,7 +34,9 @@ public class OntimizeLAFParseUtils {
 	public static Font parseFont(String font, Font defaultFont) {
 
 		// checking if the received font String has value:
-		if ((font == null) || "".equals(font)) return defaultFont;
+		if ((font == null) || "".equals(font)) {
+			return defaultFont;
+		}
 
 		// checking if the received font String is cached:
 		if (OntimizeLAFParseUtils.olafCache.containsKey(font)) {
@@ -44,13 +50,16 @@ public class OntimizeLAFParseUtils {
 		if (result!=null) {
 			OntimizeLAFParseUtils.olafCache.put(font, result);
 			return result;
-		} else return defaultFont;
+		} else {
+			return defaultFont;
+		}
 	}
-	
+
 	public static String fontToString(Font font) {
-		if (font == null)
+		if (font == null) {
 			return null;
-		
+		}
+
 		StringBuffer sb = new StringBuffer();
 		sb.append(font.getFamily()).append("-");
 		String strStyle;
@@ -109,7 +118,9 @@ public class OntimizeLAFParseUtils {
 	public static Color[] parseColorArray(String color, Color[] defaultColor) {
 
 		// checking if the received color String is valid:
-		if ((color == null) || "".equals(color)) return defaultColor;
+		if ((color == null) || "".equals(color)) {
+			return defaultColor;
+		}
 
 		// checking if the received color String is cached (we indicate "Color[]" before the key, to distinguish the array from a single color cached in method parseColor):
 		if (OntimizeLAFParseUtils.olafCache.containsKey("Color[]"+color)) {
@@ -121,7 +132,7 @@ public class OntimizeLAFParseUtils {
 		Color[] result = new Color[st.countTokens()];
 		int i = 0;
 		while (st.hasMoreTokens() ){
-			result[i] = parseColor(st.nextToken(), defaultColor!= null ? defaultColor[i] : null);
+			result[i] = OntimizeLAFParseUtils.parseColor(st.nextToken(), defaultColor!= null ? defaultColor[i] : null);
 			i++;
 		}
 		OntimizeLAFParseUtils.olafCache.put("Color[]"+color, result);
@@ -141,7 +152,9 @@ public class OntimizeLAFParseUtils {
 	public static Color parseColor(String color, Color defaultColor) {
 
 		// checking if the received color String is valid:
-		if ((color == null) || "".equals(color)) return defaultColor;
+		if ((color == null) || "".equals(color)) {
+			return defaultColor;
+		}
 
 		// checking if the received color String is cached:
 		if (OntimizeLAFParseUtils.olafCache.containsKey(color)) {
@@ -151,11 +164,15 @@ public class OntimizeLAFParseUtils {
 		// Parsing the received color String to get an Color Object and caching and returning it:
 		if (color.startsWith("#")) {
 			Color c = OntimizeLAFColorUtils.colorHexToColor(color);
-			if(c!=null) OntimizeLAFParseUtils.olafCache.put(color, c);
+			if(c!=null) {
+				OntimizeLAFParseUtils.olafCache.put(color, c);
+			}
 			return c;
 		} else if (color.indexOf(";") >= 0) {
 			Color c = OntimizeLAFColorUtils.colorRGBToColor(color);
-			if(c!=null) OntimizeLAFParseUtils.olafCache.put(color, c);
+			if(c!=null) {
+				OntimizeLAFParseUtils.olafCache.put(color, c);
+			}
 			return c;
 		}
 		return defaultColor;
@@ -174,10 +191,14 @@ public class OntimizeLAFParseUtils {
 	public static ColorUIResource parseColorUIResource(String color, ColorUIResource defaultColor) {
 
 		// checking if the received color String is valid:
-		if ((color == null) || "".equals(color)) return defaultColor;
+		if ((color == null) || "".equals(color)) {
+			return defaultColor;
+		}
 
-		Color oColor = parseColor(color, defaultColor);
-		if (color!=null) return new ColorUIResource(oColor);
+		Color oColor = OntimizeLAFParseUtils.parseColor(color, defaultColor);
+		if (color!=null) {
+			return new ColorUIResource(oColor);
+		}
 
 		return defaultColor;
 	}
@@ -186,7 +207,9 @@ public class OntimizeLAFParseUtils {
 	public static Insets parseInsets(String insets, Insets defaultValue) throws IllegalArgumentException {
 
 		// checking if the received font String has value:
-		if ((insets == null) || "".equals(insets)) return defaultValue;
+		if ((insets == null) || "".equals(insets)) {
+			return defaultValue;
+		}
 
 		// checking if the received font String is cached:
 		if (OntimizeLAFParseUtils.olafCache.containsKey(insets)) {
@@ -212,7 +235,9 @@ public class OntimizeLAFParseUtils {
 	public static ImageIcon parseIcon(String path, ImageIcon defaultValue) {
 
 		// checking if the received font String has value:
-		if ((path == null) || "".equals(path)) return defaultValue;
+		if ((path == null) || "".equals(path)) {
+			return defaultValue;
+		}
 
 		// checking if the received font String is cached:
 		if (OntimizeLAFParseUtils.olafCache.containsKey(path)) {
@@ -224,13 +249,17 @@ public class OntimizeLAFParseUtils {
 		try {
 			InputStream iS = OntimizeLAFParseUtils.class.getClassLoader().getResourceAsStream(path);
 			if (iS != null) {;
-				result = new ImageIcon(ImageIO.read(iS));
-			} else result = defaultValue;
+			result = new ImageIcon(ImageIO.read(iS));
+			} else {
+				result = defaultValue;
+			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			OntimizeLAFParseUtils.logger.error("", e);
 		}
 
-		if (result!=null) OntimizeLAFParseUtils.olafCache.put(path, result);
+		if (result!=null) {
+			OntimizeLAFParseUtils.olafCache.put(path, result);
+		}
 		return result;
 	}
 
@@ -248,7 +277,9 @@ public class OntimizeLAFParseUtils {
 	public static float[] parseFloatsArray(String floats, float[] defaultFloatArray) {
 
 		// checking if the received color String is valid:
-		if ((floats == null) || "".equals(floats)) return defaultFloatArray;
+		if ((floats == null) || "".equals(floats)) {
+			return defaultFloatArray;
+		}
 
 		// checking if the received color String is cached:
 		if (OntimizeLAFParseUtils.olafCache.containsKey(floats)) {
@@ -262,9 +293,11 @@ public class OntimizeLAFParseUtils {
 		while (st.hasMoreTokens() ){
 			try{
 				result[i] = Float.valueOf(st.nextToken().trim()).floatValue();
-		    } catch (NumberFormatException nfe) {
-		    	if (defaultFloatArray!= null) result[i] = defaultFloatArray[i];
-		    }
+			} catch (NumberFormatException nfe) {
+				if (defaultFloatArray!= null) {
+					result[i] = defaultFloatArray[i];
+				}
+			}
 			i++;
 		}
 		OntimizeLAFParseUtils.olafCache.put(floats, result);
@@ -286,7 +319,9 @@ public class OntimizeLAFParseUtils {
 	public static Dimension parseDimension(String dim, Dimension defaultValue) {
 
 		// checking if the received dimension String has value:
-		if ((dim == null) || "".equals(dim)) return defaultValue;
+		if ((dim == null) || "".equals(dim)) {
+			return defaultValue;
+		}
 
 		// checking if the received dimension String is cached:
 		if (OntimizeLAFParseUtils.olafCache.containsKey(dim)) {
@@ -306,32 +341,32 @@ public class OntimizeLAFParseUtils {
 		OntimizeLAFParseUtils.olafCache.put(dim, result);
 		return result;
 	}
-	
+
 	//linear-gradient(to right, #1e5799 0%,#2989d8 25%,#1fc124 76%,#b8f785 100%)
 	public static LinearGradient parseLinearGradient(String gradient, LinearGradient lgradient){
-		
-		if(gradient==null || "".equals(gradient) || !gradient.startsWith("linear-gradient(") || !gradient.endsWith(")")){
+
+		if((gradient==null) || "".equals(gradient) || !gradient.startsWith("linear-gradient(") || !gradient.endsWith(")")){
 			return lgradient;
 		}
-		
-		
+
+
 		int startIndex = gradient.indexOf("(");
 		int endIndex = gradient.indexOf(")");
-		if(startIndex>0 && endIndex>0 && startIndex<endIndex){
+		if((startIndex>0) && (endIndex>0) && (startIndex<endIndex)){
 			LinearGradient lg = new LinearGradient();
-			
+
 			String gradientValues = gradient.substring(startIndex+1, endIndex);
-			
+
 			StringTokenizer fragments = new StringTokenizer(gradientValues,",");
 			int tokenCount = fragments.countTokens();
 			if(tokenCount<3){
 				throw new IllegalArgumentException("  OntimizeLAFParseUtils -> Gradients must have 3 tokens (direction, color-stop, color-stop)");
 			}
-			
+
 			String direction = fragments.nextToken();
 			lg.setDirection(direction);
 			lg.setgDirection(new GradientDirection(direction));
-			
+
 			int length = fragments.countTokens();
 			if(length < 2){
 				throw new IllegalArgumentException("  OntimizeLAFParseUtils -> Color stops must have 2 tokens at least");
@@ -339,58 +374,66 @@ public class OntimizeLAFParseUtils {
 			while(fragments.hasMoreElements()){
 				String fragment = fragments.nextToken();
 				try{
-					parseColorStop(fragment, lg);
+					OntimizeLAFParseUtils.parseColorStop(fragment, lg);
 				}catch (Exception e) {
-					System.out.println("Error parsing color stop : "+ fragment);
-					e.printStackTrace();
+					OntimizeLAFParseUtils.logger.error("Error parsing color stop : {}", fragment, e);
 					return null;
 				}
 			}
 			return lg;
 		}
-    	return null;
+		return null;
 	}
-	
+
 	//	#1e5799 0%
 	protected static void parseColorStop(String colorStop, LinearGradient lg){
-		if(colorStop==null || "".equals(colorStop)) return;
-		
+		if((colorStop==null) || "".equals(colorStop)) {
+			return;
+		}
+
 		StringTokenizer st = new StringTokenizer(colorStop, " ");
 		if(st.countTokens()!=2){
 			throw new IllegalArgumentException("  OntimizeLAFParseUtils -> color-stop must have 2 tokens (color stop%)");
 		}
-		
+
 		String color = st.nextToken();
 		String stop = st.nextToken();
-		
-		Float fStop = parseStop(stop);
-		if(fStop==null) throw new IllegalArgumentException("  OntimizeLAFParseUtils -> impossible to parse color stop: " + stop);
+
+		Float fStop = OntimizeLAFParseUtils.parseStop(stop);
+		if(fStop==null) {
+			throw new IllegalArgumentException("  OntimizeLAFParseUtils -> impossible to parse color stop: " + stop);
+		}
 		lg.addStop(fStop.floatValue());
-		
-		Color cColor = parseColor(color, null);
-		if(cColor == null) throw new IllegalArgumentException("  OntimizeLAFParseUtils -> impossible to parse color: " + color);
+
+		Color cColor = OntimizeLAFParseUtils.parseColor(color, null);
+		if(cColor == null) {
+			throw new IllegalArgumentException("  OntimizeLAFParseUtils -> impossible to parse color: " + color);
+		}
 		lg.addColor(cColor);
-		
+
 	}
-	
+
 	// 0.15%
 	protected static Float parseStop(String stop){
-		if(stop==null || "".equals(stop)) return null;
-		
-		if(!stop.contains("%"))return null;
+		if((stop==null) || "".equals(stop)) {
+			return null;
+		}
+
+		if(!stop.contains("%")) {
+			return null;
+		}
 		String aux = stop.substring(0,stop.indexOf("%"));
 		try {
 			boolean rangeError = false;
 			Float f_ = Float.parseFloat(aux);
-			if(f_< 0.0f || f_ > 100.0) {
+			if((f_< 0.0f) || (f_ > 100.0)) {
 				throw new IllegalArgumentException("stop parameter outside of expected range: 0 - 100 %");
-				}
-			
+			}
+
 			return f_/100.0f;
-			
+
 		} catch (Exception e) {
-			System.out.println("Error parsing stop : "+ stop);
-			e.printStackTrace();
+			OntimizeLAFParseUtils.logger.error("Error parsing stop : {}", stop, e);
 		}
 		return null;
 	}
