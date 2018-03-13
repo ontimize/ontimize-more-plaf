@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.ontimize</groupId>
     <artifactId>ontimize-more-plaf</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.12-SNAPSHOT</version>
   </parent>
   <artifactId>ontimize-more-plaf-j7</artifactId>
   <name>ontimize-more-plaf-j7</name>
