@@ -6,7 +6,7 @@
     <version>1.0.12-SNAPSHOT</version>
   </parent>
   <artifactId>ontimize-more-plaf-j7</artifactId>
-  <name>ontimize-more-plaf-j7</name>
+  <name>ontimize-more-plaf-j7</name> 
   
   
   <properties>
@@ -28,7 +28,7 @@
 		          <target>1.7</target>
 		          <compilerArguments>
 		            <verbose />
-		            <bootclasspath>${JAVA_1_7_HOME}\jre\lib\rt.jar</bootclasspath>
+		            <bootclasspath>${JAVA_1_7_HOME}/jre/lib/rt.jar</bootclasspath>
 		          </compilerArguments>
 		        </configuration>
 		    </plugin>
