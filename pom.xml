@@ -61,6 +61,7 @@
   </dependencyManagement>
   <modules>
   	<module>ontimize-more-plaf-j7</module>
+  	<module>ontimize-more-plaf-j9</module>
   </modules>
   
   
