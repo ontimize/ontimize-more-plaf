@@ -171,7 +171,6 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 
 	protected int numBorders;
 
-	protected JComponent component;
 
 	public OComboBoxPainter(int state, PaintContext ctx) {
 		super(state, ctx);
@@ -183,65 +182,64 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 	}
 
 	@Override
-	protected void doPaint(Graphics2D g, JComponent c, int width, int height, Object[] extendedCacheKeys) {
+	protected void doPaint(Graphics2D g, JComponent component, int width, int height, Object[] extendedCacheKeys) {
 		// populate componentColors array with colors calculated in
 		// getExtendedCacheKeys call
 		this.componentColors = extendedCacheKeys;
-		this.setComponent(c);
 		// generate this entire method. Each state/bg/fg/border combo that has
 		// been painted gets its own KEY and paint method.
 
 		switch (this.state) {
 		case BACKGROUND_DISABLED:
-			this.paintBackgroundDisabled(g);
+			this.paintBackgroundDisabled(component,g);
 			break;
 		case BACKGROUND_DISABLED_PRESSED:
-			this.paintBackgroundDisabledAndPressed(g);
+			this.paintBackgroundDisabledAndPressed(component, g);
 			break;
 		case BACKGROUND_DISABLED_REQUIRED:
-			this.paintBackgroundDisabledAndRequired(g);
+			this.paintBackgroundDisabledAndRequired(component, g);
 			break;
 		case BACKGROUND_ENABLED:
-			this.paintBackgroundEnabled(g);
+			this.paintBackgroundEnabled(component,g);
 			break;
 		case BACKGROUND_FOCUSED:
-			this.paintBackgroundFocused(g);
+			this.paintBackgroundFocused(component,g);
 			break;
 		case BACKGROUND_REQUIRED:
-			this.paintBackgroundRequired(g);
+			this.paintBackgroundRequired(component,g);
 			break;
 		case BACKGROUND_MOUSEOVER_FOCUSED:
-			this.paintBackgroundMouseOverAndFocused(g);
+			this.paintBackgroundMouseOverAndFocused(component,g);
 			break;
 		case BACKGROUND_MOUSEOVER:
-			this.paintBackgroundMouseOver(g);
+			this.paintBackgroundMouseOver(component,g);
 			break;
 		case BACKGROUND_PRESSED_FOCUSED:
-			this.paintBackgroundPressedAndFocused(g);
+			this.paintBackgroundPressedAndFocused(component,g);
 			break;
 		case BACKGROUND_REQUIRED_FOCUSED:
-			this.paintBackgroundRequiredAndFocused(g);
+			this.paintBackgroundRequiredAndFocused(component, g);
 			break;
 		case BACKGROUND_PRESSED:
-			this.paintBackgroundPressed(g);
+			this.paintBackgroundPressed(component,g);
 			break;
 		case BACKGROUND_ENABLED_SELECTED:
-			this.paintBackgroundEnabledAndSelected(g);
+			this.paintBackgroundEnabledAndSelected(component,g);
 			break;
 		case BACKGROUND_DISABLED_EDITABLE:
-			this.paintBackgroundDisabledAndEditable(g);
+			this.paintBackgroundDisabledAndEditable(component,g);
 			break;
 		case BACKGROUND_ENABLED_EDITABLE:
-			this.paintBackgroundEnabledAndEditable(g);
+			this.paintBackgroundEnabledAndEditable(component,g);
 			break;
 		case BACKGROUND_FOCUSED_EDITABLE:
-			this.paintBackgroundFocusedAndEditable(g);
+			this.paintBackgroundFocusedAndEditable(component,g);
 			break;
 		case BACKGROUND_MOUSEOVER_EDITABLE:
-			this.paintBackgroundMouseOverAndEditable(g);
+			this.paintBackgroundMouseOverAndEditable(component,g);
 			break;
 		case BACKGROUND_PRESSED_EDITABLE:
-			this.paintBackgroundPressedAndEditable(g);
+			this.paintBackgroundPressedAndEditable(component,g);
 			break;
 		}
 	}
@@ -637,16 +635,8 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 
 	}
 
-	public JComponent getComponent() {
-		return this.component;
-	}
 
-	public void setComponent(JComponent component) {
-		this.component = component;
-	}
-
-	public boolean isTableEditor() {
-		JComponent c = this.getComponent();
+	public boolean isTableEditor(JComponent c) {
 		if (SwingUtilities.getAncestorOfClass(JTable.class, c) != null) {
 			return true;
 		}
@@ -658,158 +648,156 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		return this.ctx;
 	}
 
-	protected void paintBackgroundDisabled(Graphics2D g) {
+	protected void paintBackgroundDisabled(JComponent component,Graphics2D g) {
 
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorDisabled));
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component,g, this.getBackgroundColor(component, this.backgroundColorDisabled));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorDisabled));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorDisabled);
+			this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorDisabled));
+			this.drawDegradatedBorders(component,g, this.degradatedBorderColorDisabled);
 			g.drawImage(this.paddLock, 1, (int) (this.decodeY(2.0f) - 10), 10, 10, null);
 		}
 
 	}
 
-	protected void paintBackgroundDisabledAndPressed(Graphics2D g) {
+	protected void paintBackgroundDisabledAndPressed(JComponent component, Graphics2D g) {
 
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorDisabled));
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component, g, this.getBackgroundColor(component, this.backgroundColorDisabled));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorDisabled));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorDisabled);
+			this.drawBackground(component, g, this.getBackgroundColor(component, this.backgroundColorDisabled));
+			this.drawDegradatedBorders(component, g, this.degradatedBorderColorDisabled);
 			g.drawImage(this.paddLock, 1, (int) (this.decodeY(2.0f) - 10), 10, 10, null);
 		}
 	}
 
-	protected void paintBackgroundDisabledAndRequired(Graphics2D g) {
+	protected void paintBackgroundDisabledAndRequired(JComponent component, Graphics2D g) {
 
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorDisabledRequired));
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component, g, this.getBackgroundColor(component, this.backgroundColorDisabledRequired));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorDisabledRequired));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorDisabled);
+			this.drawBackground(component, g, this.getBackgroundColor(component, this.backgroundColorDisabledRequired));
+			this.drawDegradatedBorders(component, g, this.degradatedBorderColorDisabled);
 			g.drawImage(this.paddLock, 1, (int) (this.decodeY(2.0f) - 10), 10, 10, null);
 		}
 	}
 
-	protected void paintBackgroundEnabled(Graphics2D g) {
+	protected void paintBackgroundEnabled(JComponent component,Graphics2D g) {
 
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorEnabled));
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component,g, this.getBackgroundColor(component, this.backgroundColorEnabled));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorEnabled));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorEnabled);
+			this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorEnabled));
+			this.drawDegradatedBorders(component,g, this.degradatedBorderColorEnabled);
 		}
 	}
 
-	protected void paintBackgroundFocused(Graphics2D g) {
+	protected void paintBackgroundFocused(JComponent component,Graphics2D g) {
 
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorFocused));
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component,g, this.getBackgroundColor(component, this.backgroundColorFocused));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorFocused));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorFocused);
-		}
-
-	}
-
-	protected void paintBackgroundRequired(Graphics2D g) {
-
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorRequired));
-		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorRequired));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorRequired);
+			this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorFocused));
+			this.drawDegradatedBorders(component,g, this.degradatedBorderColorFocused);
 		}
 
 	}
 
-	protected void paintBackgroundMouseOverAndFocused(Graphics2D g) {
+	protected void paintBackgroundRequired(JComponent component,Graphics2D g) {
 
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorFocusedMouseOver));
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component,g, this.getBackgroundColor(component, this.backgroundColorRequired));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorFocusedMouseOver));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorFocused);
+			this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorRequired));
+			this.drawDegradatedBorders(component,g, this.degradatedBorderColorRequired);
 		}
 
 	}
 
-	protected void paintBackgroundMouseOver(Graphics2D g) {
+	protected void paintBackgroundMouseOverAndFocused(JComponent component,Graphics2D g) {
 
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorMouseOver));
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component,g, this.getBackgroundColor(component, this.backgroundColorFocusedMouseOver));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorMouseOver));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorEnabled);
+			this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorFocusedMouseOver));
+			this.drawDegradatedBorders(component,g, this.degradatedBorderColorFocused);
 		}
 
 	}
 
-	protected void paintBackgroundPressedAndFocused(Graphics2D g) {
+	protected void paintBackgroundMouseOver(JComponent component,Graphics2D g) {
 
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorFocusedPressed));
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component,g, this.getBackgroundColor(component, this.backgroundColorMouseOver));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorFocusedPressed));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorFocused);
+			this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorMouseOver));
+			this.drawDegradatedBorders(component,g, this.degradatedBorderColorEnabled);
 		}
 
 	}
 
-	protected void paintBackgroundRequiredAndFocused(Graphics2D g) {
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorFocusedMouseOver));
+	protected void paintBackgroundPressedAndFocused(JComponent component,Graphics2D g) {
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component,g, this.getBackgroundColor(component, this.backgroundColorFocusedPressed));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorFocusedRequired));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorFocused);
+			this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorFocusedPressed));
+			this.drawDegradatedBorders(component,g, this.degradatedBorderColorFocused);
 		}
 	}
 
-	protected void paintBackgroundPressed(Graphics2D g) {
-
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorPressed));
+	protected void paintBackgroundRequiredAndFocused(JComponent component,Graphics2D g) {
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component, g, this.getBackgroundColor(component, this.backgroundColorFocusedMouseOver));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorPressed));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorEnabled);
+			this.drawBackground(component, g, this.getBackgroundColor(component, this.backgroundColorFocusedRequired));
+			this.drawDegradatedBorders(component, g, this.degradatedBorderColorFocused);
 		}
-
 	}
 
-	protected void paintBackgroundEnabledAndSelected(Graphics2D g) {
+	protected void paintBackgroundPressed(JComponent component,Graphics2D g) {
 
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorEnabled));
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component,g, this.getBackgroundColor(component, this.backgroundColorPressed));
 		} else {
-			this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorEnabled));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorEnabled);
+			this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorPressed));
+			this.drawDegradatedBorders(component,g, this.degradatedBorderColorEnabled);
 		}
 
 	}
 
-	protected void paintBackgroundDisabledAndEditable(Graphics2D g) {
+	protected void paintBackgroundEnabledAndSelected(JComponent component,Graphics2D g) {
 
-		this.drawBackgroundEditable(g, this.getBackgroundColor(this.getComponent(), this.backgroundEditorColorDisabled));
-		this.drawDegradatedBorders(g, this.degradatedBorderColorDisabled);
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component,g, this.getBackgroundColor(component, this.backgroundColorEnabled));
+		} else {
+			this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorEnabled));
+			this.drawDegradatedBorders(component,g, this.degradatedBorderColorEnabled);
+		}
+
+	}
+
+	protected void paintBackgroundDisabledAndEditable(JComponent component, Graphics2D g) {
+
+		this.drawBackgroundEditable(component,g, this.getBackgroundColor(component, this.backgroundEditorColorDisabled));
+		this.drawDegradatedBorders(component,g, this.degradatedBorderColorDisabled);
 		g.drawImage(this.paddLock, 1, (int) (this.decodeY(2.0f) - 10), 10, 10, null);
 
 	}
 
-	protected void paintBackgroundEnabledAndEditable(Graphics2D g) {
+	protected void paintBackgroundEnabledAndEditable(JComponent component,Graphics2D g) {
 
-		this.drawBackgroundEditable(g, this.getBackgroundColor(this.getComponent(), this.backgroundEditorColorEnabled));
-		this.drawDegradatedBorders(g, this.degradatedBorderColorEnabled);
+		this.drawBackgroundEditable(component,g, this.getBackgroundColor(component, this.backgroundEditorColorEnabled));
+		this.drawDegradatedBorders(component,g, this.degradatedBorderColorEnabled);
 
 	}
 
-	protected void paintBackgroundFocusedAndEditable(Graphics2D g) {
+	protected void paintBackgroundFocusedAndEditable(JComponent component,Graphics2D g) {
 
-		if (this.isTableEditor()) {
-			this.drawBackgroundTableEditor(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorEnabled));
+		if (this.isTableEditor(component)) {
+			this.drawBackgroundTableEditor(component,g, this.getBackgroundColor(component, this.backgroundColorEnabled));
 		} else {
-			this.drawBackgroundEditable(g, this.getBackgroundColor(this.getComponent(), this.backgroundEditorColorEnabled));
-			this.drawDegradatedBorders(g, this.degradatedBorderColorFocused);
+			this.drawBackgroundEditable(component,g, this.getBackgroundColor(component, this.backgroundEditorColorEnabled));
+			this.drawDegradatedBorders(component,g, this.degradatedBorderColorFocused);
 		}
 		// TODO At the moment editor textfield does not change to background
 		// selected state. When it changes, it is
@@ -817,17 +805,17 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 
 	}
 
-	protected void paintBackgroundMouseOverAndEditable(Graphics2D g) {
+	protected void paintBackgroundMouseOverAndEditable(JComponent component,Graphics2D g) {
 
-		this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorMouseOver));
-		this.drawDegradatedBorders(g, this.degradatedBorderColorEnabled);
+		this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorMouseOver));
+		this.drawDegradatedBorders(component,g, this.degradatedBorderColorEnabled);
 
 	}
 
-	protected void paintBackgroundPressedAndEditable(Graphics2D g) {
+	protected void paintBackgroundPressedAndEditable(JComponent component,Graphics2D g) {
 
-		this.drawBackground(g, this.getBackgroundColor(this.getComponent(), this.backgroundColorPressed));
-		this.drawDegradatedBorders(g, this.degradatedBorderColorEnabled);
+		this.drawBackground(component,g, this.getBackgroundColor(component, this.backgroundColorPressed));
+		this.drawDegradatedBorders(component,g, this.degradatedBorderColorEnabled);
 
 	}
 
@@ -857,7 +845,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		return this.decodeGradient(x, y, x, y + h, new float[] { 0.0f, 0.495f, 0.505f, 1.0f }, new Color[] { bgBaseColor, derived, derived, bgBaseColor });
 	}
 
-	protected void drawBackground(Graphics2D g, Paint color) {
+	protected void drawBackground(JComponent component,Graphics2D g, Paint color) {
 		Paint previousPaint = g.getPaint();
 		RenderingHints rh = g.getRenderingHints();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -870,7 +858,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		int w = this.intValue(this.decodeX(2.0f) - this.decodeX(1.0f));
 		int h = this.intValue(this.decodeY(3.0f) - (2 * this.numBorders));
 
-		JButton button = this.getArrowButton();
+		JButton button = this.getArrowButton(component);
 		if (button != null) {
 			Rectangle bounds = button.getBounds();
 			w = bounds.x - x_arc;
@@ -886,7 +874,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		g.fill(s);
 
 		// The button, just the background...
-		this.drawButton(g);
+		this.drawButton(component,g);
 
 		g.setPaint(previousPaint);
 		g.setRenderingHints(rh);
@@ -915,7 +903,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		return this.path;
 	}
 
-	protected void drawBackgroundTableEditor(Graphics2D g, Paint color) {
+	protected void drawBackgroundTableEditor(JComponent component,Graphics2D g, Paint color) {
 		Paint previousPaint = g.getPaint();
 		RenderingHints rh = g.getRenderingHints();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -925,7 +913,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		int w = this.intValue(this.decodeX(2.0f) - this.decodeX(1.0f));
 		int h = this.intValue(this.decodeY(3.0f) - 1);
 
-		JButton button = this.getArrowButton();
+		JButton button = this.getArrowButton(component);
 		if (button != null) {
 			Rectangle bounds = button.getBounds();
 			w = bounds.x;
@@ -935,13 +923,13 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		g.setPaint(color);
 		g.fill(s);
 
-		this.drawButtonTableEditor(g);
+		this.drawButtonTableEditor(component, g);
 
 		g.setPaint(previousPaint);
 		g.setRenderingHints(rh);
 	}
 
-	protected void drawBackgroundEditable(Graphics2D g, Paint color) {
+	protected void drawBackgroundEditable(JComponent component,Graphics2D g, Paint color) {
 		Paint previousPaint = g.getPaint();
 		RenderingHints rh = g.getRenderingHints();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -957,15 +945,15 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		g.setPaint(color);
 		g.fill(s);
 
-		this.drawButton(g);
+		this.drawButton(component, g);
 
 		g.setPaint(previousPaint);
 		g.setRenderingHints(rh);
 	}
 
-	protected void drawButton(Graphics2D g) {
+	protected void drawButton(JComponent component,Graphics2D g) {
 
-		JButton button = this.getArrowButton();
+		JButton button = this.getArrowButton(component);
 		if (button != null) {
 			Rectangle bounds = button.getBounds();
 			int xBut = bounds.x;
@@ -1008,9 +996,9 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		return this.path;
 	}
 
-	protected void drawButtonTableEditor(Graphics2D g) {
+	protected void drawButtonTableEditor(JComponent component,Graphics2D g) {
 
-		JButton button = this.getArrowButton();
+		JButton button = this.getArrowButton(component);
 		if (button != null) {
 			Rectangle bounds = button.getBounds();
 			int xBut = bounds.x;
@@ -1025,8 +1013,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 
 	}
 
-	protected JButton getArrowButton() {
-		JComponent c = this.getComponent();
+	protected JButton getArrowButton(JComponent c) {
 		for (int i = 0; i < c.getComponentCount(); i++) {
 			if (c.getComponent(i) instanceof JButton) {
 				return (JButton) c.getComponent(i);
@@ -1095,7 +1082,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		return c;
 	}
 
-	protected void drawDegradatedBorders(Graphics2D g, Paint[] colors) {
+	protected void drawDegradatedBorders(JComponent component,Graphics2D g, Paint[] colors) {
 		Paint previousPaint = g.getPaint();
 		RenderingHints rh = g.getRenderingHints();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -1108,7 +1095,7 @@ public class OComboBoxPainter extends AbstractRegionPainter {
 		int w = this.intValue(this.decodeX(3.0f) - xx - 1);
 		int h = this.intValue(this.decodeY(3.0f) - (2 * this.numBorders));
 
-		JButton button = this.getArrowButton();
+		JButton button = this.getArrowButton(component);
 		if (button != null) {
 			Rectangle bounds = button.getBounds();
 			w = (bounds.x + bounds.width) - this.intValue(bounds.width * 0.4) - 1;
