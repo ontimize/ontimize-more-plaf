@@ -339,12 +339,13 @@ public class OScrollPaneUI extends BasicScrollPaneUI implements PropertyChangeLi
 	}
 
 	protected boolean containsTableComponent(JComponent c) {
-		if (c instanceof JScrollPane) {
-			Component cView = ((JScrollPane) c).getViewport().getView();
-			if (cView instanceof EJTable) {
-				return true;
-			}
-		}
+		//Remove from ontimize 5.11.0 by blocked table
+//		if (c instanceof JScrollPane) {
+//			Component cView = ((JScrollPane) c).getViewport().getView();
+//			if (cView instanceof EJTable) {
+//				return true;
+//			}
+//		}
 
 		return false;
 	}
