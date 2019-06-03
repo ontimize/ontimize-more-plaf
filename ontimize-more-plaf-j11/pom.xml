@@ -20,7 +20,6 @@
 		        <configuration>
 		          <verbose>true</verbose>
 		          <fork>true</fork>
-		          <executable>${JAVA_11_HOME}/bin/javac</executable>
 		          <source>11</source>
 		          <target>11</target>
 		          <compilerArgs>
