@@ -1608,8 +1608,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 		SortTableCellRenderer.defaultForegroundFilterColor = StyleUtil.getColor(compName, "foregroundFilter", "#2E8ECb");
 		SortTableCellRenderer.paintSortIcon = true;
 
-		d.put("Table.ascendingSortIcon", new OntimizeSynthIcon("TableHeader", "ascendingSortIconPainter", 31, 17));
-		d.put("Table.descendingSortIcon", new OntimizeSynthIcon("TableHeader", "descendingSortIconPainter", 31, 17));
+		d.put("Table.ascendingSortIcon", OntimizeSynthIcon.newOntimizeIcon("TableHeader", "ascendingSortIconPainter", 31, 17));
+		d.put("Table.descendingSortIcon", OntimizeSynthIcon.newOntimizeIcon("TableHeader", "descendingSortIconPainter", 31, 17));
 
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "ascendingSortIconBackground", "#80b721");
 		OntimizeLookAndFeel.setColorUIResource(d, compName, "descendingSortIconBackground", "#e64718");

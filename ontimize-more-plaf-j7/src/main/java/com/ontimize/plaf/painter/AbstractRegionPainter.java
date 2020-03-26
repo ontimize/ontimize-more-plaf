@@ -22,10 +22,10 @@ import javax.swing.Painter;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.UIResource;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import com.ontimize.plaf.utils.ImageCache;
 import com.ontimize.plaf.utils.ImageScalingHelper;
-import com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public abstract class AbstractRegionPainter implements Painter<JComponent> {
 

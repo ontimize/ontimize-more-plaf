@@ -39,11 +39,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.UIResource;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import sun.awt.SunToolkit;
-import sun.swing.SwingUtilities2;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.ui.OntimizeRootPaneUI;
+import sun.awt.SunToolkit;
+import sun.swing.SwingUtilities2;
 
 public class OntimizeTitlePane extends JComponent {
 

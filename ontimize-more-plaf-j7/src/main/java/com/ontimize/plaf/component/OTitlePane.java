@@ -38,10 +38,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.UIResource;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import sun.awt.SunToolkit;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.ui.ORootPaneUI;
+import sun.awt.SunToolkit;
 
 public class OTitlePane extends JComponent {
 
