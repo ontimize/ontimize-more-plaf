@@ -19,9 +19,6 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.image.codec.jpeg.ImageFormatException;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageDecoder;
 
 /**
  * This class contains Painter utils for the Ontimize Look And Feel.
@@ -812,8 +809,7 @@ public class OntimizeLAFPainterUtils {
 			InputStream in = OntimizeLAFPainterUtils.class.getClassLoader().getResourceAsStream(prop);
 			BufferedImage mImage = null;
 			if (prop.endsWith(".jpeg") || prop.endsWith(".jpg") || prop.endsWith(".JPEG") || prop.endsWith("JPG")) {
-				JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(in);
-				mImage = decoder.decodeAsBufferedImage();
+				mImage =  ImageIO.read(in);
 			} else if (prop.endsWith(".png") || prop.endsWith(".PNG")) {
 				mImage = ImageIO.read(in);
 			}
@@ -832,8 +828,6 @@ public class OntimizeLAFPainterUtils {
 			OntimizeLAFParseUtils.olafCache.put(prop, tp);
 			return tp;
 
-		} catch (ImageFormatException e) {
-			OntimizeLAFPainterUtils.logger.error("", e);
 		} catch (IOException e) {
 			OntimizeLAFPainterUtils.logger.error("", e);
 		}

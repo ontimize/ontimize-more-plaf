@@ -27,13 +27,13 @@ import javax.swing.plaf.synth.SynthUI;
 import javax.swing.text.Caret;
 import javax.swing.text.JTextComponent;
 
-import sun.swing.SwingUtilities2;
 
 import com.ontimize.gui.Form.StatusBar;
 import com.ontimize.gui.field.DataField;
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.utils.ContextUtils;
 import com.ontimize.plaf.utils.ReflectionUtils;
+import sun.swing.SwingUtilities2;
 
 public class OTextFieldUI extends BasicTextFieldUI implements SynthUI, FocusListener {
 	

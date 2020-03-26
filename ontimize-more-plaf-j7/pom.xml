@@ -18,7 +18,7 @@
 			<plugin>
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-compiler-plugin</artifactId>
-		        <version>3.1</version>
+		        <version>3.8.0</version>
 		        <configuration>
 		          <verbose>true</verbose>
 		          <fork>true</fork>
@@ -36,6 +36,11 @@
 	</build>
 
 	<dependencies>
+         <dependency>
+            <groupId>com.ontimize</groupId>
+            <artifactId>ontimize-more-plaf-j7j9dummy</artifactId>
+            <scope>provided</scope>
+         </dependency>
 		<dependency>
 			<groupId>com.ontimize</groupId>
 			<artifactId>ontimize-core</artifactId>

@@ -18,11 +18,11 @@ import javax.swing.plaf.synth.SynthContext;
 import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
-import sun.swing.plaf.synth.DefaultSynthStyle;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.component.OntimizeArrowButton;
 import com.ontimize.plaf.utils.ContextUtils;
+import sun.swing.plaf.synth.DefaultSynthStyle;
 
 public class OScrollBarUI extends BasicScrollBarUI implements PropertyChangeListener, SynthUI{
 

@@ -38,14 +38,15 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicToolBarUI;
 import javax.swing.plaf.synth.Region;
 import javax.swing.plaf.synth.SynthContext;
+import javax.swing.plaf.synth.SynthGraphicsUtils;
 import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
-import sun.swing.plaf.synth.DefaultSynthStyle;
-import sun.swing.plaf.synth.SynthIcon;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
+import com.ontimize.plaf.component.OntimizeSynthIcon;
 import com.ontimize.plaf.utils.ContextUtils;
+import sun.swing.plaf.synth.DefaultSynthStyle;
 
 /**
  * OntimizeToolBarUI implementation.
@@ -246,8 +247,8 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
     protected void paint(SynthContext context, Graphics g) {
         if (handleIcon != null && toolBar.isFloatable()) {
             int startX = toolBar.getComponentOrientation().isLeftToRight() ? 0 : toolBar.getWidth()
-                    - SynthIcon.getIconWidth(handleIcon, context);
-            SynthIcon.paintIcon(handleIcon, context, g, startX, 0, SynthIcon.getIconWidth(handleIcon, context), SynthIcon.getIconHeight(
+                    - OntimizeSynthIcon.getIconWidth(handleIcon, context);
+            OntimizeSynthIcon.paintIcon(handleIcon, context, g, startX, 0, OntimizeSynthIcon.getIconWidth(handleIcon, context), OntimizeSynthIcon.getIconHeight(
                 handleIcon, context));
         }
 
@@ -298,7 +299,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
             SynthContext context = getContext(tb);
 
             if (tb.getOrientation() == JToolBar.HORIZONTAL) {
-                dim.width = tb.isFloatable() ? SynthIcon.getIconWidth(handleIcon, context) : 0;
+                dim.width = tb.isFloatable() ? OntimizeSynthIcon.getIconWidth(handleIcon, context) : 0;
                 Dimension compDim;
                 for (int i = 0; i < tb.getComponentCount(); i++) {
                     Component component = tb.getComponent(i);
@@ -309,7 +310,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
                     }
                 }
             } else {
-                dim.height = tb.isFloatable() ? SynthIcon.getIconHeight(handleIcon, context) : 0;
+                dim.height = tb.isFloatable() ? OntimizeSynthIcon.getIconHeight(handleIcon, context) : 0;
                 Dimension compDim;
                 for (int i = 0; i < tb.getComponentCount(); i++) {
                     Component component = tb.getComponent(i);
@@ -334,7 +335,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
             SynthContext context = getContext(tb);
 
             if (tb.getOrientation() == JToolBar.HORIZONTAL) {
-                dim.width = tb.isFloatable() ? SynthIcon.getIconWidth(handleIcon, context) : 0;
+                dim.width = tb.isFloatable() ? OntimizeSynthIcon.getIconWidth(handleIcon, context) : 0;
                 Dimension compDim;
                 for (int i = 0; i < tb.getComponentCount(); i++) {
                     Component component = tb.getComponent(i);
@@ -345,7 +346,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
                     }
                 }
             } else {
-                dim.height = tb.isFloatable() ? SynthIcon.getIconHeight(handleIcon, context) : 0;
+                dim.height = tb.isFloatable() ? OntimizeSynthIcon.getIconHeight(handleIcon, context) : 0;
                 Dimension compDim;
                 for (int i = 0; i < tb.getComponentCount(); i++) {
                     Component component = tb.getComponent(i);
@@ -385,7 +386,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
             }
 
             if (tb.getOrientation() == JToolBar.HORIZONTAL) {
-                int handleWidth = tb.isFloatable() ? SynthIcon.getIconWidth(handleIcon, context) : 0;
+                int handleWidth = tb.isFloatable() ? OntimizeSynthIcon.getIconWidth(handleIcon, context) : 0;
 
                 // Note: contentRect does not take insets into account
                 // since it is used for determining the bounds that are
@@ -435,7 +436,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
                     }
                 }
             } else {
-                int handleHeight = tb.isFloatable() ? SynthIcon.getIconHeight(handleIcon, context) : 0;
+                int handleHeight = tb.isFloatable() ? OntimizeSynthIcon.getIconHeight(handleIcon, context) : 0;
 
                 // See notes above regarding the use of insets
                 contentRect.x = 0;

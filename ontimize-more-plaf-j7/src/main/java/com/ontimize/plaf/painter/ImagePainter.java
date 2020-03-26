@@ -9,10 +9,10 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
+import com.ontimize.plaf.utils.OntimizeLAFParseUtils;
+
 import sun.awt.AppContext;
 import sun.swing.plaf.synth.Paint9Painter;
-
-import com.ontimize.plaf.utils.OntimizeLAFParseUtils;
 
 public abstract class ImagePainter extends AbstractPainter {
 
@@ -44,13 +44,13 @@ public abstract class ImagePainter extends AbstractPainter {
 		// don't want it to persist between look and feels. For that reason
 		// we use a AppContext specific Paint9Painter. It's backed via
 		// a WeakRef so that it can go away if the look and feel changes.
-		synchronized (CACHE_KEY) {
-			WeakReference<Paint9Painter> cacheRef = (WeakReference<Paint9Painter>) AppContext.getAppContext().get(CACHE_KEY);
+		synchronized (ImagePainter.CACHE_KEY) {
+			WeakReference<Paint9Painter> cacheRef = (WeakReference<Paint9Painter>) AppContext.getAppContext().get(ImagePainter.CACHE_KEY);
 			Paint9Painter painter;
-			if (cacheRef == null || (painter = cacheRef.get()) == null) {
+			if ((cacheRef == null) || ((painter = cacheRef.get()) == null)) {
 				painter = new Paint9Painter(30);
 				cacheRef = new WeakReference(painter);
-				AppContext.getAppContext().put(CACHE_KEY, cacheRef);
+				AppContext.getAppContext().put(ImagePainter.CACHE_KEY, cacheRef);
 			}
 			return painter;
 		}
@@ -61,13 +61,13 @@ public abstract class ImagePainter extends AbstractPainter {
 			this.sInsets = (Insets) sourceInsets.clone();
 		}
 		if (destinationInsets == null) {
-			dInsets = sInsets;
+			this.dInsets = this.sInsets;
 		} else {
 			this.dInsets = (Insets) destinationInsets.clone();
 		}
 		this.tiles = tiles;
 		this.paintCenter = paintCenter;
-		this.imageCache = getPaint9Painter();
+		this.imageCache = ImagePainter.getPaint9Painter();
 		this.path = path;
 		this.center = center;
 
@@ -75,15 +75,15 @@ public abstract class ImagePainter extends AbstractPainter {
 	}
 
 	public boolean getTiles() {
-		return tiles;
+		return this.tiles;
 	}
 
 	public boolean getPaintsCenter() {
-		return paintCenter;
+		return this.paintCenter;
 	}
 
 	public boolean getCenter() {
-		return center;
+		return this.center;
 	}
 
 	public Insets getInsets(Insets insets) {
@@ -98,10 +98,10 @@ public abstract class ImagePainter extends AbstractPainter {
 	}
 
 	public Image getImage() {
-		if (image == null) {
-			image = new ImageIcon(path, null).getImage();
+		if (this.image == null) {
+			this.image = new ImageIcon(this.path, null).getImage();
 		}
-		return image;
+		return this.image;
 	}
 
 
@@ -113,23 +113,23 @@ public abstract class ImagePainter extends AbstractPainter {
 	 */
 	public Image getImage(JComponent component) {
 
-		Image i = new ImageIcon(path, null).getImage();
+		Image i = new ImageIcon(this.path, null).getImage();
 
 		double w = component.getSize().getWidth();
 		double h = component.getSize().getHeight();
-		if (w<25&&h<25){
+		if ((w<25)&&(h<25)){
 			// Parsing the received path String to get an ImageIcon Object and caching and returning it:
 			URL url = OntimizeLAFParseUtils.class.getClassLoader().getResource("com/ontimize/plaf/images/20x20_button.png"); // -> not valid for tomcat deployments. It must be getResourceAsStream
 			if (url != null) {
 				i = new ImageIcon(url, null).getImage();
 			}
-		} else if (w>100&&h>40){
+		} else if ((w>100)&&(h>40)){
 			// Parsing the received path String to get an ImageIcon Object and caching and returning it:
 			URL url = OntimizeLAFParseUtils.class.getClassLoader().getResource("com/ontimize/plaf/images/135x48_button.png"); // -> not valid for tomcat deployments. It must be getResourceAsStream
 			if (url != null) {
 				i = new ImageIcon(url, null).getImage();
 			}
-		} else if (2*w<h){
+		} else if ((2*w)<h){
 			// Parsing the received path String to get an ImageIcon Object and caching and returning it:
 			URL url = OntimizeLAFParseUtils.class.getClassLoader().getResource("com/ontimize/plaf/images/34x20_button.png"); // -> not valid for tomcat deployments. It must be getResourceAsStream
 			if (url != null) {
@@ -151,22 +151,22 @@ public abstract class ImagePainter extends AbstractPainter {
 
 
 	protected void paint(JComponent component, Graphics g, int x, int y, int w, int h) {
-		Image image = getImage();
+		Image image = this.getImage();
 //		Image image = getImage(component);
 		if (Paint9Painter.validImage(image)) {
 			Paint9Painter.PaintType type;
-			if (getCenter()) {
+			if (this.getCenter()) {
 				type = Paint9Painter.PaintType.CENTER;
-			} else if (!getTiles()) {
+			} else if (!this.getTiles()) {
 				type = Paint9Painter.PaintType.PAINT9_STRETCH;
 			} else {
 				type = Paint9Painter.PaintType.PAINT9_TILE;
 			}
 			int mask = Paint9Painter.PAINT_ALL;
-			if (!getCenter() && !getPaintsCenter()) {
+			if (!this.getCenter() && !this.getPaintsCenter()) {
 				mask |= Paint9Painter.PAINT_CENTER;
 			}
-			imageCache.paint(component, g, x, y, w, h, image, sInsets, dInsets, type, mask);
+			this.imageCache.paint(component, g, x, y, w, h, image, this.sInsets, this.dInsets, type, mask);
 		}
 	}
 
