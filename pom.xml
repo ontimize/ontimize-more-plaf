@@ -21,6 +21,20 @@
 		<ontimize-more-permission.version>3.0.8</ontimize-more-permission.version>
 		<ontimize-more-planning.version>2.1.0</ontimize-more-planning.version>
 	</properties>
+	
+	<distributionManagement>
+	    <repository>
+			<id>public-artifactory</id>
+			<name>public-artifactory-releases</name>
+			<url>https://public-artifactory.imatia.com/artifactory/ontimize-release-opensource</url>
+	    </repository>
+		<snapshotRepository>
+			<id>imatia-artifactory</id>
+			<name>libs-snapshot-local</name>
+			<url>https://artifactory.imatia.com/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
