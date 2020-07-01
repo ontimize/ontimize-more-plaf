@@ -19,10 +19,6 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.image.codec.jpeg.ImageFormatException;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageDecoder;
-
 /**
  * This class contains Painter utils for the Ontimize Look And Feel.
  *
@@ -41,8 +37,8 @@ public class OntimizeLAFPainterUtils {
 	/**
 	 * evaluates when the property is an image (that is, a texture) or when a
 	 * gradientPainter or a single color in rgb or hexadecimal with or without
-	 * alpha, returning a paint according to that. (TexturePainter,
-	 * gradientPainter or Color)
+	 * alpha, returning a paint according to that. (TexturePainter, gradientPainter
+	 * or Color)
 	 *
 	 * @param s
 	 * @param prop
@@ -78,13 +74,13 @@ public class OntimizeLAFPainterUtils {
 
 	/**
 	 * This method converts the values of these painters in the Ontimize Default
-	 * Configuration syntax for painters (that is, in the way that the Ontimize
-	 * L&F objects are both cached and configured in the
+	 * Configuration syntax for painters (that is, in the way that the Ontimize L&F
+	 * objects are both cached and configured in the
 	 * OLAFDefaultConfiguration.properties)
 	 *
-	 * That is, float[] fractions (splitted by ~) ¬ Color[] Color (splitted by ~
-	 * and valid with alpha) ¬ CycleMethod NO_CYCLE, REFLECT o REPEAT +
-	 * Direction for the degradate ¬ Points
+	 * That is, float[] fractions (splitted by ~) ¬ Color[] Color (splitted by ~ and
+	 * valid with alpha) ¬ CycleMethod NO_CYCLE, REFLECT o REPEAT + Direction for
+	 * the degradate ¬ Points
 	 *
 	 * See manual or configuration file for more information
 	 *
@@ -99,13 +95,13 @@ public class OntimizeLAFPainterUtils {
 
 	/**
 	 * This method converts the values of these painters in the Ontimize Default
-	 * Configuration syntax for painters (that is, in the way that the Ontimize
-	 * L&F objects are both cached and configured in the
+	 * Configuration syntax for painters (that is, in the way that the Ontimize L&F
+	 * objects are both cached and configured in the
 	 * OLAFDefaultConfiguration.properties)
 	 *
-	 * That is, float[] fractions (splitted by ~) ¬ Color[] Color (splitted by ~
-	 * and valid with alpha) ¬ CycleMethod NO_CYCLE, REFLECT o REPEAT +
-	 * Direction for the degradate ¬ Points
+	 * That is, float[] fractions (splitted by ~) ¬ Color[] Color (splitted by ~ and
+	 * valid with alpha) ¬ CycleMethod NO_CYCLE, REFLECT o REPEAT + Direction for
+	 * the degradate ¬ Points
 	 *
 	 * See manual or configuration file for more information
 	 *
@@ -120,13 +116,13 @@ public class OntimizeLAFPainterUtils {
 
 	/**
 	 * This method converts the values of these painters in the Ontimize Default
-	 * Configuration syntax for painters (that is, in the way that the Ontimize
-	 * L&F objects are both cached and configured in the
+	 * Configuration syntax for painters (that is, in the way that the Ontimize L&F
+	 * objects are both cached and configured in the
 	 * OLAFDefaultConfiguration.properties)
 	 *
-	 * That is, float[] fractions (splitted by ~) ¬ Color[] Color (splitted by ~
-	 * and valid with alpha) ¬ CycleMethod NO_CYCLE, REFLECT o REPEAT +
-	 * Direction for the degradate ¬ Points
+	 * That is, float[] fractions (splitted by ~) ¬ Color[] Color (splitted by ~ and
+	 * valid with alpha) ¬ CycleMethod NO_CYCLE, REFLECT o REPEAT + Direction for
+	 * the degradate ¬ Points
 	 *
 	 * See manual or configuration file for more information
 	 *
@@ -193,9 +189,8 @@ public class OntimizeLAFPainterUtils {
 
 	/**
 	 * This method converts the received float values in the Ontimize Default
-	 * Configuration syntax (that is, in the way that the Ontimize L&F objects
-	 * are both cached and configured in the
-	 * OLAFDefaultConfiguration.properties)
+	 * Configuration syntax (that is, in the way that the Ontimize L&F objects are
+	 * both cached and configured in the OLAFDefaultConfiguration.properties)
 	 *
 	 * That is, x~y~w~h
 	 *
@@ -243,29 +238,28 @@ public class OntimizeLAFPainterUtils {
 	/**
 	 * Parse the encoded string named painter in order to create a new painter.
 	 *
-	 * The syntax of that string is based on several string parameters splitted
-	 * by ¬. Those parameters are: fractions¬colors¬CycleMethod¬Direction¬Points
+	 * The syntax of that string is based on several string parameters splitted by
+	 * ¬. Those parameters are: fractions¬colors¬CycleMethod¬Direction¬Points
 	 * (optionally)
 	 *
-	 * FRACTIONS: They indicates the percentage of the area which is filled by
-	 * each color. Float numbers (in the range 0 to 1) splitted by ~ are
-	 * required. For instance: 0.0f~0.5f~1.0f COLOURS: They indicate the colors
-	 * to fill the areas between fractions. Colors in hexadecimal or R;G;B (with
-	 * our without alpha) splitted by ~ are required. For instance:
-	 * 158;191;230;50~111;161;217;50~99;132;169;50 CycleMethod: Has one of the
-	 * next values: By default, CycleMethod.NO_CYCLE. NO_CYCLE: Use the terminal
-	 * colors to fill the remaining area. REFLECT: Cycle the gradient colors
-	 * start-to-end, end-to-start to fill the remaining area. REPEAT: Cycle the
-	 * gradient colors start-to-end, start-to-end to fill the remaining area.
-	 * DIRECTION: Indicates the direction in which run the parallel bands of
-	 * color that determines the gradient: By default, HORIZONTAL_DEGRADATED.
-	 * HORIZONTAL_DEGRADATED: For horizontal parallel bands (0 degrees).
-	 * VERTICAL_DEGRADATED: For vertical parallel bands (90 degrees).
-	 * ASCENT_TRANSVERSAL_DEGRADATED: For transversal parallel bands in ascent
-	 * way (45 degrees). DESCENT_TRANSVERSAL_DEGRADATED: For transversal
-	 * parallel bands in descent way (135 degrees). POINTS: They indicate the
-	 * start point, end point, width and heigt. Float numbers splitted by ~.
-	 * Optional. If they are not indicated the L&F fill them.
+	 * FRACTIONS: They indicates the percentage of the area which is filled by each
+	 * color. Float numbers (in the range 0 to 1) splitted by ~ are required. For
+	 * instance: 0.0f~0.5f~1.0f COLOURS: They indicate the colors to fill the areas
+	 * between fractions. Colors in hexadecimal or R;G;B (with our without alpha)
+	 * splitted by ~ are required. For instance:
+	 * 158;191;230;50~111;161;217;50~99;132;169;50 CycleMethod: Has one of the next
+	 * values: By default, CycleMethod.NO_CYCLE. NO_CYCLE: Use the terminal colors
+	 * to fill the remaining area. REFLECT: Cycle the gradient colors start-to-end,
+	 * end-to-start to fill the remaining area. REPEAT: Cycle the gradient colors
+	 * start-to-end, start-to-end to fill the remaining area. DIRECTION: Indicates
+	 * the direction in which run the parallel bands of color that determines the
+	 * gradient: By default, HORIZONTAL_DEGRADATED. HORIZONTAL_DEGRADATED: For
+	 * horizontal parallel bands (0 degrees). VERTICAL_DEGRADATED: For vertical
+	 * parallel bands (90 degrees). ASCENT_TRANSVERSAL_DEGRADATED: For transversal
+	 * parallel bands in ascent way (45 degrees). DESCENT_TRANSVERSAL_DEGRADATED:
+	 * For transversal parallel bands in descent way (135 degrees). POINTS: They
+	 * indicate the start point, end point, width and heigt. Float numbers splitted
+	 * by ~. Optional. If they are not indicated the L&F fill them.
 	 *
 	 *
 	 * @param painter
@@ -466,50 +460,40 @@ public class OntimizeLAFPainterUtils {
 
 	/**
 	 * Create a LinearGradientPaint, indicating diferent "gradient lines" (line
-	 * between x1,y1 and x2,y2). The gradient smoothly shifts from one color to
-	 * the other as you move along the line that connects those two points (the
-	 * gradient line). The GradientPaint creates parallel bands of color,
-	 * perpendicular to the gradient line.
+	 * between x1,y1 and x2,y2). The gradient smoothly shifts from one color to the
+	 * other as you move along the line that connects those two points (the gradient
+	 * line). The GradientPaint creates parallel bands of color, perpendicular to
+	 * the gradient line.
 	 *
 	 * Several directions are allowed: HORIZONTAL_DEGRADATED: For horizontal
-	 * parallel bands (0 degrees). VERTICAL_DEGRADATED: For vertical parallel
-	 * bands (90 degrees). ASCENT_TRANSVERSAL_DEGRADATED: For transversal
-	 * parallel bands in ascent way (45 degrees).
-	 * DESCENT_TRANSVERSAL_DEGRADATED: For transversal parallel bands in descent
-	 * way (135 degrees). Custom directions: Custom gradient direction can be
-	 * specified by four functions or constants splitted by , and without whites
-	 * (spaces). Each function must indicate the coordinate x1, y1, x2 and
-	 * y2(start and end points) as a float constant value or a function
-	 * depending on the start point and the width and height (coded as x, y, w,
-	 * and h). For example:
-	 * (0.925f*w)+x,(0.9285714f*h)+y,(0.925f*w)+x,(0.004201681f*h)+y By default,
-	 * the HORIZONTAL_DEGRADATED gradient line is selected, that is, parallel
-	 * horizontal bands of colors.
+	 * parallel bands (0 degrees). VERTICAL_DEGRADATED: For vertical parallel bands
+	 * (90 degrees). ASCENT_TRANSVERSAL_DEGRADATED: For transversal parallel bands
+	 * in ascent way (45 degrees). DESCENT_TRANSVERSAL_DEGRADATED: For transversal
+	 * parallel bands in descent way (135 degrees). Custom directions: Custom
+	 * gradient direction can be specified by four functions or constants splitted
+	 * by , and without whites (spaces). Each function must indicate the coordinate
+	 * x1, y1, x2 and y2(start and end points) as a float constant value or a
+	 * function depending on the start point and the width and height (coded as x,
+	 * y, w, and h). For example:
+	 * (0.925f*w)+x,(0.9285714f*h)+y,(0.925f*w)+x,(0.004201681f*h)+y By default, the
+	 * HORIZONTAL_DEGRADATED gradient line is selected, that is, parallel horizontal
+	 * bands of colors.
 	 *
-	 * Several cycles method to paint are also permited: NO_CYCLE: Use the
-	 * terminal colors to fill the remaining area. REFLECT: Cycle the gradient
-	 * colors start-to-end, end-to-start to fill the remaining area. REPEAT:
-	 * Cycle the gradient colors start-to-end, start-to-end to fill the
-	 * remaining area.
+	 * Several cycles method to paint are also permited: NO_CYCLE: Use the terminal
+	 * colors to fill the remaining area. REFLECT: Cycle the gradient colors
+	 * start-to-end, end-to-start to fill the remaining area. REPEAT: Cycle the
+	 * gradient colors start-to-end, start-to-end to fill the remaining area.
 	 *
-	 * @param x
-	 *            : start horizontal point
-	 * @param y
-	 *            : start vertical point
-	 * @param w
-	 *            : width (horizontal)
-	 * @param h
-	 *            : height (vertical)
-	 * @param fractions
-	 *            : float array that indicates the percentage in which filling
-	 *            using each color
-	 * @param colors
-	 *            : color array that indicates the color used to fill the area
-	 *            between two consecutive fractions
-	 * @param direction
-	 *            : see above
-	 * @param cycleMethod
-	 *            : see above
+	 * @param x           : start horizontal point
+	 * @param y           : start vertical point
+	 * @param w           : width (horizontal)
+	 * @param h           : height (vertical)
+	 * @param fractions   : float array that indicates the percentage in which
+	 *                    filling using each color
+	 * @param colors      : color array that indicates the color used to fill the
+	 *                    area between two consecutive fractions
+	 * @param direction   : see above
+	 * @param cycleMethod : see above
 	 * @return
 	 */
 	public static LinearGradientPaint decodeGradient(float x, float y, float w, float h, float[] fractions,
@@ -526,17 +510,17 @@ public class OntimizeLAFPainterUtils {
 		}
 
 		if (OntimizeLAFPainterUtils.HORIZONTAL_DEGRADATED.equalsIgnoreCase(direction)) {
-			return OntimizeLAFPainterUtils.decodeGradient((0.5f * w) + x, (0.0f * h) + y, (0.5f * w) + x, (1.0f * h)
-					+ y, fractions, colors, cycleMethod);
+			return OntimizeLAFPainterUtils.decodeGradient((0.5f * w) + x, (0.0f * h) + y, (0.5f * w) + x,
+					(1.0f * h) + y, fractions, colors, cycleMethod);
 		} else if (OntimizeLAFPainterUtils.VERTICAL_DEGRADATED.equalsIgnoreCase(direction)) {
-			return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (0.5f * h) + y, (1.0f * w) + x, (0.5f * h)
-					+ y, fractions, colors, cycleMethod);
+			return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (0.5f * h) + y, (1.0f * w) + x,
+					(0.5f * h) + y, fractions, colors, cycleMethod);
 		} else if (OntimizeLAFPainterUtils.ASCENT_TRANSVERSAL_DEGRADATED.equalsIgnoreCase(direction)) {
-			return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (1.0f * h) + y, (1.0f * w) + x, (0.0f * h)
-					+ y, fractions, colors, cycleMethod);
+			return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (1.0f * h) + y, (1.0f * w) + x,
+					(0.0f * h) + y, fractions, colors, cycleMethod);
 		} else if (OntimizeLAFPainterUtils.DESCENT_TRANSVERSAL_DEGRADATED.equalsIgnoreCase(direction)) {
-			return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (0.0f * h) + y, (1.0f * w) + x, (1.0f * h)
-					+ y, fractions, colors, cycleMethod);
+			return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (0.0f * h) + y, (1.0f * w) + x,
+					(1.0f * h) + y, fractions, colors, cycleMethod);
 		} else {
 
 			// also custom directions are allowed. (seldom, rarely used):
@@ -578,10 +562,9 @@ public class OntimizeLAFPainterUtils {
 	 *
 	 * TODO: Improvements for more complex syntaxis. Now this methos is coded to
 	 * perform operations such as
-	 * (0.925f*w)+x,(0.9285714f*h)+y,(0.925f*w)+x,(0.004201681f*h)+y. PErform
-	 * more complex operations using mathematical libraries (such us, the mesp,
-	 * which are free) like in the getCalculatedColumns() in the
-	 * ExtendedTableMode.java
+	 * (0.925f*w)+x,(0.9285714f*h)+y,(0.925f*w)+x,(0.004201681f*h)+y. PErform more
+	 * complex operations using mathematical libraries (such us, the mesp, which are
+	 * free) like in the getCalculatedColumns() in the ExtendedTableMode.java
 	 *
 	 * @param operation
 	 * @param x
@@ -668,11 +651,11 @@ public class OntimizeLAFPainterUtils {
 	}
 
 	/**
-	 * Given parameters for creating a LinearGradientPaint, this method will
-	 * create and return a linear gradient paint. One primary purpose for this
-	 * method is to avoid creating a LinearGradientPaint where the start and end
-	 * points are equal. In such a case, the end y point is slightly increased
-	 * to avoid the overlap.
+	 * Given parameters for creating a LinearGradientPaint, this method will create
+	 * and return a linear gradient paint. One primary purpose for this method is to
+	 * avoid creating a LinearGradientPaint where the start and end points are
+	 * equal. In such a case, the end y point is slightly increased to avoid the
+	 * overlap.
 	 *
 	 * @param x1
 	 * @param y1
@@ -692,11 +675,10 @@ public class OntimizeLAFPainterUtils {
 	}
 
 	/**
-	 * Given parameters for creating a RadialGradientPaint, this method will
-	 * create and return a radial gradient paint. One primary purpose for this
-	 * method is to avoid creating a RadialGradientPaint where the radius is
-	 * non-positive. In such a case, the radius is just slightly increased to
-	 * avoid 0.
+	 * Given parameters for creating a RadialGradientPaint, this method will create
+	 * and return a radial gradient paint. One primary purpose for this method is to
+	 * avoid creating a RadialGradientPaint where the radius is non-positive. In
+	 * such a case, the radius is just slightly increased to avoid 0.
 	 *
 	 * @param x
 	 * @param y
@@ -737,10 +719,9 @@ public class OntimizeLAFPainterUtils {
 
 	/**
 	 * This method checks whether a painter indicated by a String contains the
-	 * points that configure the painter start, end, width and height points. If
-	 * it is exists, this method returns the same painter String without those
-	 * points (which are one of the last three token in the string and contains
-	 * ~)
+	 * points that configure the painter start, end, width and height points. If it
+	 * is exists, this method returns the same painter String without those points
+	 * (which are one of the last three token in the string and contains ~)
 	 *
 	 * @return
 	 */
@@ -779,8 +760,8 @@ public class OntimizeLAFPainterUtils {
 	}
 
 	/**
-	 * Return a painter which paints an image indicated in prop (file *.jpg,
-	 * *.JPEG, *.JPG, *.png, *.PNG)
+	 * Return a painter which paints an image indicated in prop (file *.jpg, *.JPEG,
+	 * *.JPG, *.png, *.PNG)
 	 *
 	 * @param s
 	 * @param prop
@@ -811,10 +792,7 @@ public class OntimizeLAFPainterUtils {
 		try {
 			InputStream in = OntimizeLAFPainterUtils.class.getClassLoader().getResourceAsStream(prop);
 			BufferedImage mImage = null;
-			if (prop.endsWith(".jpeg") || prop.endsWith(".jpg") || prop.endsWith(".JPEG") || prop.endsWith("JPG")) {
-				JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(in);
-				mImage = decoder.decodeAsBufferedImage();
-			} else if (prop.endsWith(".png") || prop.endsWith(".PNG")) {
+			if (prop.endsWith(".jpeg") || prop.endsWith(".jpg") || prop.endsWith(".JPEG") || prop.endsWith("JPG") || prop.endsWith(".png") || prop.endsWith(".PNG")) {
 				mImage = ImageIO.read(in);
 			}
 			in.close();
@@ -831,9 +809,6 @@ public class OntimizeLAFPainterUtils {
 			// caching the result for future uses:
 			OntimizeLAFParseUtils.olafCache.put(prop, tp);
 			return tp;
-
-		} catch (ImageFormatException e) {
-			OntimizeLAFPainterUtils.logger.error("", e);
 		} catch (IOException e) {
 			OntimizeLAFPainterUtils.logger.error("", e);
 		}

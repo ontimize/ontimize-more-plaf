@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.ontimize</groupId>
+    <artifactId>ontimize-more-plaf</artifactId>
+    <version>1.0.13</version>
+  </parent>
+  <artifactId>ontimize-more-plaf-j11</artifactId>
+  
+  <build>
+		<plugins>
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-compiler-plugin</artifactId>
+		        <version>3.8.0</version>
+		        <configuration>
+		          <verbose>true</verbose>
+		          <fork>true</fork>
+		          <source>11</source>
+		          <target>11</target>
+		          <compilerArgs>
+		          	<compilerArg>--add-exports</compilerArg>
+		          	<compilerArg>java.desktop/sun.swing=ALL-UNNAMED</compilerArg>
+	          		<compilerArg>--add-exports</compilerArg>
+		          	<compilerArg>java.desktop/sun.swing.plaf.synth=ALL-UNNAMED</compilerArg>
+		          	<compilerArg>--add-exports</compilerArg>
+		          	<compilerArg>java.desktop/sun.awt=ALL-UNNAMED</compilerArg>
+		          </compilerArgs>
+		          <compilerArguments>
+		            <verbose />
+		          </compilerArguments>
+		        </configuration>
+		    </plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ontimize</groupId>
+			<artifactId>ontimize-core</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ontimize</groupId>
+			<artifactId>ontimize-more-agenda</artifactId>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ontimize</groupId>
+			<artifactId>ontimize-more-diagram</artifactId>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.ontimize</groupId>
+			<artifactId>ontimize-more-gantt</artifactId>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			 <groupId>com.ontimize</groupId>
+		      <artifactId>ontimize-more-gis</artifactId>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>com.ontimize</groupId>
+		    <artifactId>ontimize-more-planning</artifactId>
+		    <scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+	</dependencies> 
+</project>
