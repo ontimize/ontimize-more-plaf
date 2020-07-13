@@ -12,14 +12,14 @@
 	</parent>
 	<properties>
 		<ontimize-core.version>6.0.2</ontimize-core.version>
-		<ontimize-more-workflow.version>2.6.0-SNAPSHOT</ontimize-more-workflow.version>
+		<ontimize-more-workflow.version>2.6.0</ontimize-more-workflow.version>
 		<ontimize-more-diagram.version>2.3.0</ontimize-more-diagram.version>
 		<ontimize-more-agenda.version>2.1.0</ontimize-more-agenda.version>
 		<ontimize-more-gantt.version>3.1.0</ontimize-more-gantt.version>
 		<ontimize-more-gis.version>1.1.0</ontimize-more-gis.version>
-		<ontimize-more-plaf-styles.version>1.4.0-SNAPSHOT</ontimize-more-plaf-styles.version>
+		<ontimize-more-plaf-styles.version>1.4.0</ontimize-more-plaf-styles.version>
 		<ontimize-more-permission.version>3.1.0</ontimize-more-permission.version>
-		<ontimize-more-planning.version>2.2.0-SNAPSHOT</ontimize-more-planning.version>
+		<ontimize-more-planning.version>2.2.0</ontimize-more-planning.version>
 	</properties>
 	
 	<distributionManagement>
