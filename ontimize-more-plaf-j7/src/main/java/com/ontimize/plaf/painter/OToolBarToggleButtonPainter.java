@@ -21,77 +21,114 @@ import com.ontimize.plaf.utils.OntimizeLAFColorUtils;
 public class OToolBarToggleButtonPainter extends AbstractOButtonPainter {
 
     public static final int BACKGROUND_SELECTED = 20;
+
     public static final int BACKGROUND_SELECTED_FOCUSED = 21;
+
     public static final int BACKGROUND_PRESSED_SELECTED = 22;
+
     public static final int BACKGROUND_PRESSED_SELECTED_FOCUSED = 23;
+
     public static final int BACKGROUND_MOUSEOVER_SELECTED = 24;
+
     public static final int BACKGROUND_MOUSEOVER_SELECTED_FOCUSED = 25;
+
     public static final int BACKGROUND_DISABLED_SELECTED = 26;
+
     /**
-     * NOTE: The buttons are painted with three layers: 1) The first layer
-     * contains a degraded background and a border. 2) Second layer contains an
-     * interior border. 3) Third layer paints a centered square to highlight the
-     * icon.
+     * NOTE: The buttons are painted with three layers: 1) The first layer contains a degraded
+     * background and a border. 2) Second layer contains an interior border. 3) Third layer paints a
+     * centered square to highlight the icon.
      */
 
     public static Color squareColor = OntimizeLAFColorUtils.setAlpha(Color.white, 0.1);
 
     // First layer colors...
     protected Color color100 = OntimizeLAFColorUtils.setAlpha(new Color(0x817F7F), 0.50);
+
     protected Color color101 = OntimizeLAFColorUtils.setAlpha(new Color(0x474746), 0.50);
+
     protected Color color102 = OntimizeLAFColorUtils.setAlpha(new Color(0xCCCCCC), 0.35);
+
     protected Color color103 = OntimizeLAFColorUtils.setAlpha(new Color(0xCCCCCC), 0.35);
+
     protected Color color104 = OntimizeLAFColorUtils.setAlpha(new Color(0x817F7F), 0.70);
+
     protected Color color105 = OntimizeLAFColorUtils.setAlpha(new Color(0x474746), 0.70);
+
     protected Color color106 = OntimizeLAFColorUtils.setAlpha(new Color(0x817F7F), 0.70);
+
     protected Color color107 = OntimizeLAFColorUtils.setAlpha(new Color(0x474746), 0.70);
+
     protected Color color108 = OntimizeLAFColorUtils.setAlpha(new Color(0x817F7F), 0.80);
+
     protected Color color109 = OntimizeLAFColorUtils.setAlpha(new Color(0x5A5A5A), 0.60);
 
     // Borders..
     protected Color color110 = OntimizeLAFColorUtils.setAlpha(new Color(0x8C8A8A), 0.5);
+
     protected Color color111 = OntimizeLAFColorUtils.setAlpha(new Color(0x5A5A5A), 0.6);
+
     protected Color color112 = OntimizeLAFColorUtils.setAlpha(new Color(0xCCCCCC), 0.35);
+
     protected Color color113 = OntimizeLAFColorUtils.setAlpha(new Color(0xCCCCCC), 0.35);
 
     // Second layer colors...
     protected Color color114 = OntimizeLAFColorUtils.setAlpha(Color.white, 0.2);
+
     protected Color color115 = OntimizeLAFColorUtils.setAlpha(Color.black, 0.2);
 
     // Selected State...
     // First layer...
     protected Color color200 = OntimizeLAFColorUtils.setAlpha(this.color108, 0.25);
+
     protected Color color201 = OntimizeLAFColorUtils.setAlpha(this.color108, 0.25);
 
     // Borders...
     protected Color color210 = new Color(0x252525);
+
     protected Color color211 = OntimizeLAFColorUtils.setAlpha(Color.white, 0.75);
 
     // Second layer colors...
     protected Color color214 = OntimizeLAFColorUtils.setAlpha(Color.white, 0.75);
+
     protected Color color215 = new Color(0x252525);
 
     protected Color bgBaseColor;
 
     protected float defaultAlphaSelectedPercent = 0.5f;
+
     protected float alphaSelectedPercent;
+
     protected float defaultAlphaFocusedSelectedPercent = 0.5f;
+
     protected float alphaFocusedSelectedPercent;
+
     protected float defaultAlphaPressedSelectedPercent = 0.5f;
+
     protected float alphaPressedSelectedPercent;
+
     protected float defaultAlphaPressedSelectedFocusedPercent = 0.5f;
+
     protected float alphaPressedSelectedFocusedPercent;
+
     protected float defaultAlphaMouseOverSelectedPercent = 0.5f;
+
     protected float alphaMouseOverSelectedPercent;
+
     protected float defaultAlphaMouseOverSelectedFocusedPercent = 0.5f;
+
     protected float alphaMouseOverSelectedFocusedPercent;
+
     protected float defaultAlphaDisabledSelectedPercent = 0.5f;
+
     protected float alphaDisabledSelectedPercent;
 
     protected Rectangle2D rect = new Rectangle2D.Float(0, 0, 0, 0);
+
     protected RoundRectangle2D roundRect = new RoundRectangle2D.Float(0, 0, 0, 0, 0, 0);
 
     protected float arcwidth = 10.0f;
+
     protected float archeight = 10.0f;
 
     protected JComponent component;
@@ -107,39 +144,39 @@ public class OToolBarToggleButtonPainter extends AbstractOButtonPainter {
         this.componentColors = extendedCacheKeys;
         if ("TableButton".equals(this.component.getName())) {
             switch (this.state) {
-            case BACKGROUND_DEFAULT_FOCUSED:
-                this.paintBackgroundDefaultAndFocused(g);
-                break;
-            case BACKGROUND_FOCUSED:
-                this.paintBackgroundFocused(g);
-                break;
+                case BACKGROUND_DEFAULT_FOCUSED:
+                    this.paintBackgroundDefaultAndFocused(g);
+                    break;
+                case BACKGROUND_FOCUSED:
+                    this.paintBackgroundFocused(g);
+                    break;
             }
         } else {
             super.doPaint(g, c, width, height, extendedCacheKeys);
         }
 
         switch (this.state) {
-        case BACKGROUND_SELECTED:
-            this.paintBackgroundSelected(g);
-            break;
-        case BACKGROUND_SELECTED_FOCUSED:
-            this.paintBackgroundPressedAndDefaultAndFocused(g);
-            break;
-        case BACKGROUND_PRESSED_SELECTED:
-            this.paintBackgroundPressedAndDefaultAndFocused(g);
-            break;
-        case BACKGROUND_PRESSED_SELECTED_FOCUSED:
-            this.paintBackgroundPressedAndDefaultAndFocused(g);
-            break;
-        case BACKGROUND_MOUSEOVER_SELECTED:
-            this.paintBackgroundMouseOverAndDefault(g);
-            break;
-        case BACKGROUND_MOUSEOVER_SELECTED_FOCUSED:
-            this.paintBackgroundMouseOverAndDefaultAndFocused(g);
-            break;
-        case BACKGROUND_DISABLED_SELECTED:
-            this.paintBackgroundDisabled(g);
-            break;
+            case BACKGROUND_SELECTED:
+                this.paintBackgroundSelected(g);
+                break;
+            case BACKGROUND_SELECTED_FOCUSED:
+                this.paintBackgroundPressedAndDefaultAndFocused(g);
+                break;
+            case BACKGROUND_PRESSED_SELECTED:
+                this.paintBackgroundPressedAndDefaultAndFocused(g);
+                break;
+            case BACKGROUND_PRESSED_SELECTED_FOCUSED:
+                this.paintBackgroundPressedAndDefaultAndFocused(g);
+                break;
+            case BACKGROUND_MOUSEOVER_SELECTED:
+                this.paintBackgroundMouseOverAndDefault(g);
+                break;
+            case BACKGROUND_MOUSEOVER_SELECTED_FOCUSED:
+                this.paintBackgroundMouseOverAndDefaultAndFocused(g);
+                break;
+            case BACKGROUND_DISABLED_SELECTED:
+                this.paintBackgroundDisabled(g);
+                break;
         }
 
     }
@@ -192,7 +229,7 @@ public class OToolBarToggleButtonPainter extends AbstractOButtonPainter {
         }
 
         obj = UIManager.getDefaults()
-                .get(this.getComponentKeyName() + "[Focused+MouseOver+Selected].alphaTransparency");
+            .get(this.getComponentKeyName() + "[Focused+MouseOver+Selected].alphaTransparency");
         if (obj instanceof Number) {
             this.alphaMouseOverSelectedFocusedPercent = ((Number) obj).floatValue();
         } else {
@@ -223,165 +260,144 @@ public class OToolBarToggleButtonPainter extends AbstractOButtonPainter {
             Color background = this.bgBaseColor != null ? this.bgBaseColor : c.getBackground();
             this.color100 = background; /* init enabled */
             this.color101 = this.getDerivedColor(background, 0.16666667f, -0.0014193691f, -0.227451f, 0); /*
-                                                                                                           * end
-                                                                                                           * enabled
+                                                                                                           * end enabled
                                                                                                            */
             this.color102 = this.getDerivedColor(background, 0.0f, -0.015503876f, 0.29411763f, -39); /*
-                                                                                                      * init
-                                                                                                      * disabled
+                                                                                                      * init disabled
                                                                                                       */
             this.color103 = this.getDerivedColor(background, 0.0f, -0.015503876f, 0.29411763f, -39); /*
-                                                                                                      * end
-                                                                                                      * disabled
+                                                                                                      * end disabled
                                                                                                       */
             this.color104 = this.getDerivedColor(background, 0.0f, 0.0f, 0.0f, 51); /*
-                                                                                     * init
-                                                                                     * focused
+                                                                                     * init focused
                                                                                      */
             this.color105 = this.getDerivedColor(background, 0.16666667f, -0.0014193691f, -0.227451f, 51); /*
                                                                                                             * end
                                                                                                             * focused
                                                                                                             */
             this.color106 = this.getDerivedColor(background, 0.0f, 0.0f, 0.0f, 51); /*
-                                                                                     * init
-                                                                                     * mouseover
+                                                                                     * init mouseover
                                                                                      */
             this.color107 = this.getDerivedColor(background, 0.16666667f, -0.0014193691f, -0.227451f, 51); /*
                                                                                                             * end
                                                                                                             * mouseover
                                                                                                             */
             this.color108 = this.getDerivedColor(background, 0.0f, 0.0f, 0.0f, 76); /*
-                                                                                     * init
-                                                                                     * pressed
+                                                                                     * init pressed
                                                                                      */
             this.color109 = this.getDerivedColor(background, 0.0f, -0.015503876f, -0.1529412f, 25); /*
-                                                                                                     * end
-                                                                                                     * pressed
+                                                                                                     * end pressed
                                                                                                      */
 
             this.color110 = this.getDerivedColor(background, 0.0f, -0.0012181615f, 0.043137252f, 0); /*
-                                                                                                      * init
-                                                                                                      * border
+                                                                                                      * init border
                                                                                                       */
             this.color111 = this.getDerivedColor(background, 0.0f, -0.015503876f, -0.1529412f, 25); /*
-                                                                                                     * end
-                                                                                                     * border
+                                                                                                     * end border
                                                                                                      */
             this.color112 = this.getDerivedColor(background, 0.0f, -0.015503876f, 0.29411763f, -39); /*
-                                                                                                      * init
-                                                                                                      * border
+                                                                                                      * init border
                                                                                                       * Disabled
                                                                                                       */
             this.color113 = this.getDerivedColor(background, 0.0f, -0.015503876f, 0.29411763f, -39); /*
-                                                                                                      * end
-                                                                                                      * border
+                                                                                                      * end border
                                                                                                       * Disabled
                                                                                                       */
 
             this.color114 = this.getDerivedColor(background, 0.0f, -0.015503876f, 0.49411762f, -51); /*
-                                                                                                      * init
-                                                                                                      * middle
+                                                                                                      * init middle
                                                                                                       */
             this.color115 = this.getDerivedColor(background, 0.0f, -0.015503876f, -0.5058824f, -77); /*
-                                                                                                      * end
-                                                                                                      * middle
+                                                                                                      * end middle
                                                                                                       */
 
             this.color200 = this.getDerivedColor(background, 0.0f, 0.0f, 0.0f, -64); /*
-                                                                                      * init
-                                                                                      * selected
-                                                                                      * enabled
+                                                                                      * init selected enabled
                                                                                       */
             this.color201 = this.getDerivedColor(background, 0.0f, 0.0f, 0.0f, -64); /*
-                                                                                      * end
-                                                                                      * selected
-                                                                                      * enabled
+                                                                                      * end selected enabled
                                                                                       */
 
             this.color210 = this.getDerivedColor(background, 0.0f, -0.015503876f, 0.1607843f, 127); /*
-                                                                                                     * init
-                                                                                                     * selected
+                                                                                                     * init selected
                                                                                                      * border
                                                                                                      */
             this.color211 = this.getDerivedColor(background, 0.0f, -0.015503876f, 0.1607843f, 127); /*
-                                                                                                     * end
-                                                                                                     * selected
+                                                                                                     * end selected
                                                                                                      * border
                                                                                                      */
 
             this.color214 = this.getDerivedColor(background, 0.0f, -0.015503876f, 0.22745097f, -13); /*
-                                                                                                      * init
-                                                                                                      * middle
+                                                                                                      * init middle
                                                                                                       * selected
                                                                                                       */
             this.color215 = this.getDerivedColor(background, 0.0f, -0.015503876f, -0.36078435f, 127); /*
-                                                                                                       * end
-                                                                                                       * middle
+                                                                                                       * end middle
                                                                                                        * selected
                                                                                                        */
         }
 
         Object[] extendedCacheKeys = null;
         switch (this.state) {
-        case BACKGROUND_ENABLED:
-            extendedCacheKeys = new Object[] { this.color100, this.color101, this.color110, this.color111,
-                    this.color114, this.color115 };
-            break;
-        case BACKGROUND_DISABLED:
-            extendedCacheKeys = new Object[] { this.color102, this.color103, this.color112, this.color113,
-                    this.color114, this.color115 };
-            break;
-        case BACKGROUND_FOCUSED:
-            extendedCacheKeys = new Object[] { this.color104, this.color105, this.color110, this.color111,
-                    this.color114, this.color115 };
-            break;
-        case BACKGROUND_MOUSEOVER:
-            extendedCacheKeys = new Object[] { this.color106, this.color107, this.color110, this.color111,
-                    this.color114, this.color115 };
-            break;
-        case BACKGROUND_MOUSEOVER_FOCUSED:
-            extendedCacheKeys = new Object[] { this.color106, this.color107, this.color110, this.color111,
-                    this.color114, this.color115 };
-            break;
-        case BACKGROUND_PRESSED:
-            extendedCacheKeys = new Object[] { this.color108, this.color109, this.color110, this.color111,
-                    this.color114, this.color115 };
-            break;
-        case BACKGROUND_PRESSED_FOCUSED:
-            extendedCacheKeys = new Object[] { this.color108, this.color109, this.color110, this.color111,
-                    this.color114, this.color115 };
-            break;
-        case BACKGROUND_SELECTED:
-            extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
-                    this.color214, this.color215 };
-            break;
-        case BACKGROUND_SELECTED_FOCUSED:
-            extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
-                    this.color214, this.color215 };
-            break;
-        case BACKGROUND_PRESSED_SELECTED:
-            extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
-                    this.color214, this.color215 };
-            break;
-        case BACKGROUND_PRESSED_SELECTED_FOCUSED:
-            extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
-                    this.color214, this.color215 };
-            break;
-        case BACKGROUND_MOUSEOVER_SELECTED:
-            extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
-                    this.color214, this.color215 };
-            break;
-        case BACKGROUND_MOUSEOVER_SELECTED_FOCUSED:
-            extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
-                    this.color214, this.color215 };
-            break;
-        case BACKGROUND_DISABLED_SELECTED:
-            extendedCacheKeys = new Object[] { this.color200, this.color201, this.color110, this.color111,
-                    this.color214, this.color215 };
-            break;
-        default:
-            super.getExtendedCacheKeys(c);
-            break;
+            case BACKGROUND_ENABLED:
+                extendedCacheKeys = new Object[] { this.color100, this.color101, this.color110, this.color111,
+                        this.color114, this.color115 };
+                break;
+            case BACKGROUND_DISABLED:
+                extendedCacheKeys = new Object[] { this.color102, this.color103, this.color112, this.color113,
+                        this.color114, this.color115 };
+                break;
+            case BACKGROUND_FOCUSED:
+                extendedCacheKeys = new Object[] { this.color104, this.color105, this.color110, this.color111,
+                        this.color114, this.color115 };
+                break;
+            case BACKGROUND_MOUSEOVER:
+                extendedCacheKeys = new Object[] { this.color106, this.color107, this.color110, this.color111,
+                        this.color114, this.color115 };
+                break;
+            case BACKGROUND_MOUSEOVER_FOCUSED:
+                extendedCacheKeys = new Object[] { this.color106, this.color107, this.color110, this.color111,
+                        this.color114, this.color115 };
+                break;
+            case BACKGROUND_PRESSED:
+                extendedCacheKeys = new Object[] { this.color108, this.color109, this.color110, this.color111,
+                        this.color114, this.color115 };
+                break;
+            case BACKGROUND_PRESSED_FOCUSED:
+                extendedCacheKeys = new Object[] { this.color108, this.color109, this.color110, this.color111,
+                        this.color114, this.color115 };
+                break;
+            case BACKGROUND_SELECTED:
+                extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
+                        this.color214, this.color215 };
+                break;
+            case BACKGROUND_SELECTED_FOCUSED:
+                extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
+                        this.color214, this.color215 };
+                break;
+            case BACKGROUND_PRESSED_SELECTED:
+                extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
+                        this.color214, this.color215 };
+                break;
+            case BACKGROUND_PRESSED_SELECTED_FOCUSED:
+                extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
+                        this.color214, this.color215 };
+                break;
+            case BACKGROUND_MOUSEOVER_SELECTED:
+                extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
+                        this.color214, this.color215 };
+                break;
+            case BACKGROUND_MOUSEOVER_SELECTED_FOCUSED:
+                extendedCacheKeys = new Object[] { this.color200, this.color201, this.color210, this.color211,
+                        this.color214, this.color215 };
+                break;
+            case BACKGROUND_DISABLED_SELECTED:
+                extendedCacheKeys = new Object[] { this.color200, this.color201, this.color110, this.color111,
+                        this.color214, this.color215 };
+                break;
+            default:
+                super.getExtendedCacheKeys(c);
+                break;
         }
 
         return extendedCacheKeys;
@@ -391,43 +407,51 @@ public class OToolBarToggleButtonPainter extends AbstractOButtonPainter {
     protected AlphaComposite getDerivedAlphaComposite() {
         AlphaComposite alpha = null;
         switch (this.state) {
-        case BACKGROUND_SELECTED:
-            alpha = AlphaComposite.SrcOver
-                    .derive((this.alphaSelectedPercent >= 0 && this.alphaSelectedPercent <= 1) ? this.alphaSelectedPercent
+            case BACKGROUND_SELECTED:
+                alpha = AlphaComposite.SrcOver
+                    .derive((this.alphaSelectedPercent >= 0 && this.alphaSelectedPercent <= 1)
+                            ? this.alphaSelectedPercent
                             : this.defaultAlphaSelectedPercent);
-            break;
-        case BACKGROUND_SELECTED_FOCUSED:
-            alpha = AlphaComposite.SrcOver
-                    .derive((this.alphaFocusedSelectedPercent >= 0 && this.alphaFocusedSelectedPercent <= 1) ? this.alphaFocusedSelectedPercent
+                break;
+            case BACKGROUND_SELECTED_FOCUSED:
+                alpha = AlphaComposite.SrcOver
+                    .derive((this.alphaFocusedSelectedPercent >= 0 && this.alphaFocusedSelectedPercent <= 1)
+                            ? this.alphaFocusedSelectedPercent
                             : this.defaultAlphaFocusedSelectedPercent);
-            break;
-        case BACKGROUND_PRESSED_SELECTED:
-            alpha = AlphaComposite.SrcOver
-                    .derive((this.alphaPressedSelectedPercent >= 0 && this.alphaPressedSelectedPercent <= 1) ? this.alphaPressedSelectedPercent
+                break;
+            case BACKGROUND_PRESSED_SELECTED:
+                alpha = AlphaComposite.SrcOver
+                    .derive((this.alphaPressedSelectedPercent >= 0 && this.alphaPressedSelectedPercent <= 1)
+                            ? this.alphaPressedSelectedPercent
                             : this.defaultAlphaPressedSelectedPercent);
-            break;
-        case BACKGROUND_PRESSED_SELECTED_FOCUSED:
-            alpha = AlphaComposite.SrcOver
-                    .derive((this.alphaPressedSelectedFocusedPercent >= 0 && this.alphaPressedSelectedFocusedPercent <= 1) ? this.alphaPressedSelectedFocusedPercent
-                            : this.defaultAlphaPressedSelectedFocusedPercent);
-            break;
-        case BACKGROUND_MOUSEOVER_SELECTED:
-            alpha = AlphaComposite.SrcOver
-                    .derive((this.alphaMouseOverSelectedPercent >= 0 && this.alphaMouseOverSelectedPercent <= 1) ? this.alphaMouseOverSelectedPercent
+                break;
+            case BACKGROUND_PRESSED_SELECTED_FOCUSED:
+                alpha = AlphaComposite.SrcOver
+                    .derive((this.alphaPressedSelectedFocusedPercent >= 0
+                            && this.alphaPressedSelectedFocusedPercent <= 1) ? this.alphaPressedSelectedFocusedPercent
+                                    : this.defaultAlphaPressedSelectedFocusedPercent);
+                break;
+            case BACKGROUND_MOUSEOVER_SELECTED:
+                alpha = AlphaComposite.SrcOver
+                    .derive((this.alphaMouseOverSelectedPercent >= 0 && this.alphaMouseOverSelectedPercent <= 1)
+                            ? this.alphaMouseOverSelectedPercent
                             : this.defaultAlphaMouseOverSelectedPercent);
-            break;
-        case BACKGROUND_MOUSEOVER_SELECTED_FOCUSED:
-            alpha = AlphaComposite.SrcOver
-                    .derive((this.alphaMouseOverSelectedFocusedPercent >= 0 && this.alphaMouseOverSelectedFocusedPercent <= 1) ? this.alphaMouseOverSelectedFocusedPercent
-                            : this.defaultAlphaMouseOverSelectedFocusedPercent);
-            break;
-        case BACKGROUND_DISABLED_SELECTED:
-            alpha = AlphaComposite.SrcOver
-                    .derive((this.alphaDisabledSelectedPercent >= 0 && this.alphaDisabledSelectedPercent <= 1) ? this.alphaDisabledSelectedPercent
+                break;
+            case BACKGROUND_MOUSEOVER_SELECTED_FOCUSED:
+                alpha = AlphaComposite.SrcOver
+                    .derive((this.alphaMouseOverSelectedFocusedPercent >= 0
+                            && this.alphaMouseOverSelectedFocusedPercent <= 1)
+                                    ? this.alphaMouseOverSelectedFocusedPercent
+                                    : this.defaultAlphaMouseOverSelectedFocusedPercent);
+                break;
+            case BACKGROUND_DISABLED_SELECTED:
+                alpha = AlphaComposite.SrcOver
+                    .derive((this.alphaDisabledSelectedPercent >= 0 && this.alphaDisabledSelectedPercent <= 1)
+                            ? this.alphaDisabledSelectedPercent
                             : this.defaultAlphaDisabledSelectedPercent);
-            break;
-        default:
-            alpha = super.getDerivedAlphaComposite();
+                break;
+            default:
+                alpha = super.getDerivedAlphaComposite();
         }
         return alpha;
     }
@@ -486,6 +510,7 @@ public class OToolBarToggleButtonPainter extends AbstractOButtonPainter {
     }
 
     public static Color defaultFocusBgColor = new Color(0x366581);
+
     protected Color focusBgColor;
 
     @Override
@@ -730,7 +755,6 @@ public class OToolBarToggleButtonPainter extends AbstractOButtonPainter {
 
     /**
      * This method recovers the gradient for the border of the middle layer.
-     * 
      * @param s
      * @return
      */
@@ -760,4 +784,5 @@ public class OToolBarToggleButtonPainter extends AbstractOButtonPainter {
         return this.decodeGradient(x, y, x, y + h - 1, new float[] { 0.0f, 1.0f }, new Color[] {
                 (Color) this.componentColors[4], (Color) this.componentColors[5] });
     }
+
 }

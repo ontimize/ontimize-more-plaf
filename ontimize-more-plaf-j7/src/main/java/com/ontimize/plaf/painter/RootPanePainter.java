@@ -65,4 +65,5 @@ public class RootPanePainter {
     protected boolean isMaximized(Window window) {
         return (window instanceof Frame) && (((Frame) window).getExtendedState() & 6) == 6;
     }
+
 }

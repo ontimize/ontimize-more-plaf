@@ -21,138 +21,137 @@ import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.utils.ContextUtils;
 
 public class OPanelUI extends BasicPanelUI implements PropertyChangeListener, SynthUI {
-	protected SynthStyle style;
 
-	public static ComponentUI createUI(JComponent c) {
-		return new OPanelUI();
-	}
+    protected SynthStyle style;
 
-	public void installUI(JComponent c) {
-		JPanel p = (JPanel) c;
+    public static ComponentUI createUI(JComponent c) {
+        return new OPanelUI();
+    }
 
-		super.installUI(c);
-		installListeners(p);
-	}
+    public void installUI(JComponent c) {
+        JPanel p = (JPanel) c;
 
-	public void uninstallUI(JComponent c) {
-		JPanel p = (JPanel) c;
+        super.installUI(c);
+        installListeners(p);
+    }
 
-		uninstallListeners(p);
-		super.uninstallUI(c);
-	}
+    public void uninstallUI(JComponent c) {
+        JPanel p = (JPanel) c;
 
-	protected void installListeners(JPanel p) {
-		p.addPropertyChangeListener(this);
-	}
+        uninstallListeners(p);
+        super.uninstallUI(c);
+    }
 
-	protected void uninstallListeners(JPanel p) {
-		p.removePropertyChangeListener(this);
-	}
+    protected void installListeners(JPanel p) {
+        p.addPropertyChangeListener(this);
+    }
 
-	protected void installDefaults(JPanel p) {
-		updateStyle(p);
-	}
+    protected void uninstallListeners(JPanel p) {
+        p.removePropertyChangeListener(this);
+    }
 
-	protected void uninstallDefaults(JPanel p) {
-		SynthContext context = getContext(p, ENABLED);
+    protected void installDefaults(JPanel p) {
+        updateStyle(p);
+    }
 
-		style.uninstallDefaults(context);
-		
-		style = null;
-	}
+    protected void uninstallDefaults(JPanel p) {
+        SynthContext context = getContext(p, ENABLED);
 
-	protected void updateStyle(JPanel c) {
-		SynthContext context = getContext(c, ENABLED);
-		SynthStyle      oldStyle = style;
-		
-//		style = OntimizeLookAndFeel.updateStyle(context, this);
-//		if(c instanceof Tab){
-//			Object obj = UIManager.getDefaults().get("TabbedPane:TabbedPaneContent.background");
-//			if(obj instanceof Color){
-//				c.setBackground((Color)obj);
-//			}
-//		}
-//		
-//		
-//		
-//		
-		
+        style.uninstallDefaults(context);
+
+        style = null;
+    }
+
+    protected void updateStyle(JPanel c) {
+        SynthContext context = getContext(c, ENABLED);
+        SynthStyle oldStyle = style;
+
+        // style = OntimizeLookAndFeel.updateStyle(context, this);
+        // if(c instanceof Tab){
+        // Object obj = UIManager.getDefaults().get("TabbedPane:TabbedPaneContent.background");
+        // if(obj instanceof Color){
+        // c.setBackground((Color)obj);
+        // }
+        // }
+        //
+        //
+        //
+        //
+
         style = OntimizeLookAndFeel.updateStyle(context, this);
 
         if (style != oldStyle) {
             updateStyle(c, context, getPropertyPrefix(c));
         }
-        
-	}
-	
-	/**
-     * Fetches the name used as a key to lookup properties through the
-     * UIManager.  This is used as a prefix to all the standard
-     * text properties.
-     *
+
+    }
+
+    /**
+     * Fetches the name used as a key to lookup properties through the UIManager. This is used as a
+     * prefix to all the standard text properties.
      * @return the name ("TextField")
      */
     protected String getPropertyPrefix(JComponent c) {
-    	if(c instanceof Tab){
-    		return "TabbedPane:TabbedPaneContent";
-    	}
-    	return "Panel";
-    }
-	
-	protected void updateStyle(JComponent c, SynthContext context, String prefix){
-		 Color bg = c.getBackground();
-        if ((bg == null) || (bg instanceof UIResource)) {
-            c.setBackground((Color)UIManager.get(prefix + ".background"));
+        if (c instanceof Tab) {
+            return "TabbedPane:TabbedPaneContent";
         }
-	}
+        return "Panel";
+    }
 
-	public SynthContext getContext(JComponent c) {
-		return getContext(c, getComponentState(c));
-	}
+    protected void updateStyle(JComponent c, SynthContext context, String prefix) {
+        Color bg = c.getBackground();
+        if ((bg == null) || (bg instanceof UIResource)) {
+            c.setBackground((Color) UIManager.get(prefix + ".background"));
+        }
+    }
 
-	protected SynthContext getContext(JComponent c, int state) {
-		if(this.style == null){
-    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
-    	}
-		return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style, state);
-	}
+    public SynthContext getContext(JComponent c) {
+        return getContext(c, getComponentState(c));
+    }
 
-	protected Region getRegion(JComponent c) {
-		return OntimizeLookAndFeel.getRegion(c);
-	}
+    protected SynthContext getContext(JComponent c, int state) {
+        if (this.style == null) {
+            this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+        }
+        return new SynthContext(c, OntimizeLookAndFeel.getRegion(c), this.style, state);
+    }
 
-	protected int getComponentState(JComponent c) {
-		return OntimizeLookAndFeel.getComponentState(c);
-	}
+    protected Region getRegion(JComponent c) {
+        return OntimizeLookAndFeel.getRegion(c);
+    }
 
-	public void update(Graphics g, JComponent c) {
-		SynthContext context = getContext(c);
+    protected int getComponentState(JComponent c) {
+        return OntimizeLookAndFeel.getComponentState(c);
+    }
 
-		OntimizeLookAndFeel.update(context, g);
-		ContextUtils.getPainter(context).paintPanelBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
-		paint(context, g);
-		
-	}
+    public void update(Graphics g, JComponent c) {
+        SynthContext context = getContext(c);
 
-	public void paint(Graphics g, JComponent c) {
-		SynthContext context = getContext(c);
+        OntimizeLookAndFeel.update(context, g);
+        ContextUtils.getPainter(context).paintPanelBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
+        paint(context, g);
 
-		paint(context, g);
-		
-	}
+    }
 
-	protected void paint(SynthContext context, Graphics g) {
-		// do actual painting
-	}
+    public void paint(Graphics g, JComponent c) {
+        SynthContext context = getContext(c);
 
-	public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-		ContextUtils.getPainter(context).paintPanelBorder(context, g, x, y, w, h);
-	}
+        paint(context, g);
 
-	public void propertyChange(PropertyChangeEvent pce) {
-		if (OntimizeLookAndFeel.shouldUpdateStyle(pce)) {
-			updateStyle((JPanel) pce.getSource());
-		}
-	}
+    }
+
+    protected void paint(SynthContext context, Graphics g) {
+        // do actual painting
+    }
+
+    public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
+        ContextUtils.getPainter(context).paintPanelBorder(context, g, x, y, w, h);
+    }
+
+    public void propertyChange(PropertyChangeEvent pce) {
+        if (OntimizeLookAndFeel.shouldUpdateStyle(pce)) {
+            updateStyle((JPanel) pce.getSource());
+        }
+    }
 
 }

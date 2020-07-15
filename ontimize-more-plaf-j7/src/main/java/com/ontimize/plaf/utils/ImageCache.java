@@ -1,7 +1,6 @@
 package com.ontimize.plaf.utils;
 
 
-
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.lang.ref.ReferenceQueue;
@@ -14,24 +13,31 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * ImageCache - A fixed pixel count sized cache of Images keyed by arbitrary set of arguments. All images are held with
- * SoftReferences so they will be dropped by the GC if heap memory gets tight. When our size hits max pixel count least
- * recently requested images are removed first.
+ * ImageCache - A fixed pixel count sized cache of Images keyed by arbitrary set of arguments. All
+ * images are held with SoftReferences so they will be dropped by the GC if heap memory gets tight.
+ * When our size hits max pixel count least recently requested images are removed first.
  */
 public class ImageCache {
+
     // Ordered Map keyed by args hash, ordered by most recent accessed entry.
-    protected final LinkedHashMap<Integer, PixelCountSoftReference> map =
-            new LinkedHashMap<Integer, PixelCountSoftReference>(16, 0.75f, true);
+    protected final LinkedHashMap<Integer, PixelCountSoftReference> map = new LinkedHashMap<Integer, PixelCountSoftReference>(
+            16, 0.75f, true);
+
     // Maximum number of pixels to cache, this is used if maxCount
     protected final int maxPixelCount;
+
     // Maximum cached image size in pxiels
     protected final int maxSingleImagePixelSize;
+
     // The current number of pixels stored in the cache
     protected int currentPixelCount = 0;
+
     // Lock for concurrent access to map
     protected final ReadWriteLock lock = new ReentrantReadWriteLock();
+
     // Reference queue for tracking lost softreferences to images in the cache
     protected final ReferenceQueue<Image> referenceQueue = new ReferenceQueue<Image>();
+
     // Singleton Instance
     protected static final ImageCache instance = new ImageCache();
 
@@ -63,7 +69,6 @@ public class ImageCache {
 
     /**
      * Check if the image size is to big to be stored in the cache
-     *
      * @param w The image width
      * @param h The image height
      * @return True if the image size is less than max
@@ -74,11 +79,11 @@ public class ImageCache {
 
     /**
      * Get the cached image for given keys
-     *
-     * @param config The graphics configuration, needed if cached image is a Volatile Image. Used as part of cache key
-     * @param w      The image width, used as part of cache key
-     * @param h      The image height, used as part of cache key
-     * @param args   Other arguments to use as part of the cache key
+     * @param config The graphics configuration, needed if cached image is a Volatile Image. Used as
+     *        part of cache key
+     * @param w The image width, used as part of cache key
+     * @param h The image height, used as part of cache key
+     * @param args Other arguments to use as part of the cache key
      * @return Returns the cached Image, or null there is no cached image for key
      */
     public Image getImage(GraphicsConfiguration config, int w, int h, Object... args) {
@@ -86,7 +91,7 @@ public class ImageCache {
         try {
             PixelCountSoftReference ref = map.get(hash(config, w, h, args));
             // check reference has not been lost and the key truly matches, in case of false positive hash match
-            if (ref != null && ref.equals(config,w, h, args)) {
+            if (ref != null && ref.equals(config, w, h, args)) {
                 return ref.get();
             } else {
                 return null;
@@ -98,16 +103,17 @@ public class ImageCache {
 
     /**
      * Sets the cached image for the specified constraints.
-     *
-     * @param image  The image to store in cache
-     * @param config The graphics configuration, needed if cached image is a Volatile Image. Used as part of cache key
-     * @param w      The image width, used as part of cache key
-     * @param h      The image height, used as part of cache key
-     * @param args   Other arguments to use as part of the cache key
+     * @param image The image to store in cache
+     * @param config The graphics configuration, needed if cached image is a Volatile Image. Used as
+     *        part of cache key
+     * @param w The image width, used as part of cache key
+     * @param h The image height, used as part of cache key
+     * @param args Other arguments to use as part of the cache key
      * @return true if the image could be cached or false if the image is too big
      */
     public boolean setImage(Image image, GraphicsConfiguration config, int w, int h, Object... args) {
-        if (!isImageCachable(w, h)) return false;
+        if (!isImageCachable(w, h))
+            return false;
         int hash = hash(config, w, h, args);
         lock.writeLock().lock();
         try {
@@ -126,8 +132,8 @@ public class ImageCache {
             currentPixelCount += newPixelCount;
             // clean out lost references if not enough space
             if (currentPixelCount > maxPixelCount) {
-                while ((ref = (PixelCountSoftReference)referenceQueue.poll()) != null){
-                    //reference lost
+                while ((ref = (PixelCountSoftReference) referenceQueue.poll()) != null) {
+                    // reference lost
                     map.remove(ref.hash);
                     currentPixelCount -= ref.pixelCount;
                 }
@@ -139,12 +145,13 @@ public class ImageCache {
                     Map.Entry<Integer, PixelCountSoftReference> entry = mapIter.next();
                     mapIter.remove();
                     Image img = entry.getValue().get();
-                    if (img != null) img.flush();
+                    if (img != null)
+                        img.flush();
                     currentPixelCount -= entry.getValue().pixelCount;
                 }
             }
             // finaly put new in map
-            map.put(hash, new PixelCountSoftReference(image, referenceQueue, newPixelCount,hash, config, w, h, args));
+            map.put(hash, new PixelCountSoftReference(image, referenceQueue, newPixelCount, hash, config, w, h, args));
             return true;
         } finally {
             lock.writeLock().unlock();
@@ -152,7 +159,7 @@ public class ImageCache {
     }
 
     /** Create a unique hash from all the input */
-    protected int hash(GraphicsConfiguration config, int w, int h, Object ... args) {
+    protected int hash(GraphicsConfiguration config, int w, int h, Object... args) {
         int hash;
         hash = (config != null ? config.hashCode() : 0);
         hash = 31 * hash + w;
@@ -164,16 +171,22 @@ public class ImageCache {
 
     /** Extended SoftReference that stores the pixel count even after the image is lost */
     protected static class PixelCountSoftReference extends SoftReference<Image> {
+
         protected final int pixelCount;
+
         protected final int hash;
+
         // key parts
         protected final GraphicsConfiguration config;
+
         protected final int w;
+
         protected final int h;
+
         protected final Object[] args;
 
         public PixelCountSoftReference(Image referent, ReferenceQueue<? super Image> q, int pixelCount, int hash,
-                                       GraphicsConfiguration config, int w, int h, Object[] args) {
+                GraphicsConfiguration config, int w, int h, Object[] args) {
             super(referent, q);
             this.pixelCount = pixelCount;
             this.hash = hash;
@@ -183,11 +196,13 @@ public class ImageCache {
             this.args = args;
         }
 
-        public boolean equals (GraphicsConfiguration config, int w, int h, Object[] args){
+        public boolean equals(GraphicsConfiguration config, int w, int h, Object[] args) {
             return config == this.config &&
-                            w == this.w &&
-                            h == this.h &&
-                            Arrays.equals(args, this.args);
+                    w == this.w &&
+                    h == this.h &&
+                    Arrays.equals(args, this.args);
         }
+
     }
+
 }

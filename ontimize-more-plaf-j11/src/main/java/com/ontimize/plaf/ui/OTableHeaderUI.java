@@ -47,9 +47,7 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
 
     /**
      * DOCUMENT ME!
-     *
-     * @param  h DOCUMENT ME!
-     *
+     * @param h DOCUMENT ME!
      * @return DOCUMENT ME!
      */
     public static ComponentUI createUI(JComponent h) {
@@ -69,12 +67,11 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
 
     /**
      * DOCUMENT ME!
-     *
      * @param c DOCUMENT ME!
      */
     protected void updateStyle(JTableHeader c) {
-        SynthContext context  = getContext(c, ENABLED);
-        SynthStyle      oldStyle = style;
+        SynthContext context = getContext(c, ENABLED);
+        SynthStyle oldStyle = style;
 
         style = OntimizeLookAndFeel.updateStyle(context, this);
         if (style != oldStyle) {
@@ -84,7 +81,7 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
             }
         }
 
-        
+
     }
 
     /**
@@ -106,7 +103,7 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
         SynthContext context = getContext(header, ENABLED);
 
         style.uninstallDefaults(context);
-        
+
         style = null;
     }
 
@@ -127,7 +124,7 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
         OntimizeLookAndFeel.update(context, g);
         ContextUtils.getPainter(context).paintTableHeaderBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
         paint(context, g);
-        
+
     }
 
     /**
@@ -137,14 +134,13 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
         SynthContext context = getContext(c);
 
         paint(context, g);
-        
+
     }
 
     /**
      * DOCUMENT ME!
-     *
      * @param context DOCUMENT ME!
-     * @param g       DOCUMENT ME!
+     * @param g DOCUMENT ME!
      */
     protected void paint(SynthContext context, Graphics g) {
         super.paint(g, context.getComponent());
@@ -170,24 +166,20 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
 
     /**
      * DOCUMENT ME!
-     *
-     * @param  c     DOCUMENT ME!
-     * @param  state DOCUMENT ME!
-     *
+     * @param c DOCUMENT ME!
+     * @param state DOCUMENT ME!
      * @return DOCUMENT ME!
      */
     protected SynthContext getContext(JComponent c, int state) {
-    	if(this.style == null){
-    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
-    	}
-    	return new SynthContext( c, SynthLookAndFeel.getRegion(c), this.style, state);
+        if (this.style == null) {
+            this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+        }
+        return new SynthContext(c, SynthLookAndFeel.getRegion(c), this.style, state);
     }
 
     /**
      * DOCUMENT ME!
-     *
-     * @param  c DOCUMENT ME!
-     *
+     * @param c DOCUMENT ME!
      * @return DOCUMENT ME!
      */
     protected int getComponentState(JComponent c) {
@@ -211,31 +203,30 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
         header.repaint(header.getHeaderRect(oldColumn));
         header.repaint(header.getHeaderRect(newColumn));
     }
-    
-    
-    
+
+
     // Size methods.
     @Override
     public Dimension getMinimumSize(JComponent c) {
-    	Dimension dim =  super.getMinimumSize(c);
-    	if(dim!=null && SwingUtilities.getAncestorOfClass(Table.class, c)!=null){
-    		dim.height = dim.height + c.getInsets().top + c.getInsets().bottom;
-    	}
-    	return dim;
+        Dimension dim = super.getMinimumSize(c);
+        if (dim != null && SwingUtilities.getAncestorOfClass(Table.class, c) != null) {
+            dim.height = dim.height + c.getInsets().top + c.getInsets().bottom;
+        }
+        return dim;
     }
-    
+
     @Override
     public Dimension getPreferredSize(JComponent c) {
-    	Dimension dim = super.getPreferredSize(c);
-    	if(dim!=null && SwingUtilities.getAncestorOfClass(Table.class, c)!=null){
-    		dim.height = dim.height + c.getInsets().top + c.getInsets().bottom;
-    	}
-    	return dim;
+        Dimension dim = super.getPreferredSize(c);
+        if (dim != null && SwingUtilities.getAncestorOfClass(Table.class, c) != null) {
+            dim.height = dim.height + c.getInsets().top + c.getInsets().bottom;
+        }
+        return dim;
     }
-    
-    
+
 
     public static class HeaderRenderer extends DefaultTableCellHeaderRenderer {
+
         protected static final long serialVersionUID = 3595483618538272322L;
 
         /**
@@ -247,13 +238,14 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
         }
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                int row,
                 int column) {
             boolean hasRollover = false; // (column == getRolloverColumn());
 
             if (isSelected || hasRollover || hasFocus) {
                 OntimizeLookAndFeel.setSelectedUI((OLabelUI) OntimizeLookAndFeel.getUIOfType(getUI(), OLabelUI.class),
-                                                  isSelected, hasFocus, table.isEnabled(), hasRollover);
+                        isSelected, hasFocus, table.isEnabled(), hasRollover);
             } else {
                 OntimizeLookAndFeel.resetSelectedUI();
             }
@@ -261,26 +253,27 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
             // Stuff a variable into the client property of this renderer
             // indicating the sort order, so that different rendering can be
             // done for the header based on sorted state.
-            RowSorter                                   rs       = table == null ? null : table.getRowSorter();
+            RowSorter rs = table == null ? null : table.getRowSorter();
             java.util.List<? extends RowSorter.SortKey> sortKeys = rs == null ? null : rs.getSortKeys();
 
-            if (sortKeys != null && sortKeys.size() > 0 && sortKeys.get(0).getColumn() == table.convertColumnIndexToModel(column)) {
+            if (sortKeys != null && sortKeys.size() > 0
+                    && sortKeys.get(0).getColumn() == table.convertColumnIndexToModel(column)) {
                 switch (sortKeys.get(0).getSortOrder()) {
 
-                case ASCENDING:
-                    putClientProperty("Table.sortOrder", "ASCENDING");
-                    break;
+                    case ASCENDING:
+                        putClientProperty("Table.sortOrder", "ASCENDING");
+                        break;
 
-                case DESCENDING:
-                    putClientProperty("Table.sortOrder", "DESCENDING");
-                    break;
+                    case DESCENDING:
+                        putClientProperty("Table.sortOrder", "DESCENDING");
+                        break;
 
-                case UNSORTED:
-                    putClientProperty("Table.sortOrder", "UNSORTED");
-                    break;
+                    case UNSORTED:
+                        putClientProperty("Table.sortOrder", "UNSORTED");
+                        break;
 
-                default:
-                    throw new AssertionError("Cannot happen");
+                    default:
+                        throw new AssertionError("Cannot happen");
                 }
             } else {
                 putClientProperty("Table.sortOrder", "UNSORTED");
@@ -300,12 +293,16 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
                 super.setBorder(border);
             }
         }
+
     }
 
     public static class DefaultTableCellHeaderRenderer extends DefaultTableCellRenderer implements UIResource {
+
         protected static final long serialVersionUID = -4466195868054511962L;
-        protected Icon              sortArrow;
-        protected EmptyIcon         emptyIcon        = new EmptyIcon();
+
+        protected Icon sortArrow;
+
+        protected EmptyIcon emptyIcon = new EmptyIcon();
 
         /**
          * Creates a new DefaultTableCellHeaderRenderer object.
@@ -325,7 +322,8 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
          * @see javax.swing.table.DefaultTableCellRenderer#getTableCellRendererComponent(javax.swing.JTable,
          *      java.lang.Object, boolean, boolean, int, int)
          */
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                int row,
                 int column) {
             Icon sortIcon = null;
 
@@ -365,19 +363,19 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
                     if (sortOrder != null) {
                         switch (sortOrder) {
 
-                        case ASCENDING:
-                            sortIcon = DefaultLookup.getIcon(this, ui, "Table.ascendingSortIcon");
-                            setFont(header.getFont().deriveFont(Font.BOLD));
-                            break;
+                            case ASCENDING:
+                                sortIcon = DefaultLookup.getIcon(this, ui, "Table.ascendingSortIcon");
+                                setFont(header.getFont().deriveFont(Font.BOLD));
+                                break;
 
-                        case DESCENDING:
-                            sortIcon = DefaultLookup.getIcon(this, ui, "Table.descendingSortIcon");
-                            setFont(header.getFont().deriveFont(Font.BOLD));
-                            break;
+                            case DESCENDING:
+                                sortIcon = DefaultLookup.getIcon(this, ui, "Table.descendingSortIcon");
+                                setFont(header.getFont().deriveFont(Font.BOLD));
+                                break;
 
-                        case UNSORTED:
-                            sortIcon = DefaultLookup.getIcon(this, ui, "Table.naturalSortIcon");
-                            break;
+                            case UNSORTED:
+                                sortIcon = DefaultLookup.getIcon(this, ui, "Table.naturalSortIcon");
+                                break;
                         }
                     }
                 }
@@ -441,7 +439,7 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
                 // aligned, or if the column is too narrow, then the text will
                 // be sized appropriately to make room for the icon that is
                 // about to be painted manually here.
-                emptyIcon.width  = sortArrow.getIconWidth();
+                emptyIcon.width = sortArrow.getIconWidth();
                 emptyIcon.height = sortArrow.getIconHeight();
                 Point position = computeIconPosition(g);
 
@@ -454,32 +452,36 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
 
         protected Point computeIconPosition(Graphics g) {
             FontMetrics fontMetrics = g.getFontMetrics();
-            Rectangle   viewR       = new Rectangle();
-            Rectangle   textR       = new Rectangle();
-            Rectangle   iconR       = new Rectangle();
-            Insets      i           = getInsets();
+            Rectangle viewR = new Rectangle();
+            Rectangle textR = new Rectangle();
+            Rectangle iconR = new Rectangle();
+            Insets i = getInsets();
 
-            viewR.x      = i.left;
-            viewR.y      = i.top;
-            viewR.width  = getWidth() - (i.left + i.right);
+            viewR.x = i.left;
+            viewR.y = i.top;
+            viewR.width = getWidth() - (i.left + i.right);
             viewR.height = getHeight() - (i.top + i.bottom);
-            SwingUtilities.layoutCompoundLabel(this, fontMetrics, getText(), sortArrow, getVerticalAlignment(), getHorizontalAlignment(),
-                                               getVerticalTextPosition(), getHorizontalTextPosition(), viewR, iconR, textR,
-                                               getIconTextGap());
-            int x = getComponentOrientation().isLeftToRight() ? getWidth() - i.right - sortArrow.getIconWidth() : i.left;
+            SwingUtilities.layoutCompoundLabel(this, fontMetrics, getText(), sortArrow, getVerticalAlignment(),
+                    getHorizontalAlignment(),
+                    getVerticalTextPosition(), getHorizontalTextPosition(), viewR, iconR, textR,
+                    getIconTextGap());
+            int x = getComponentOrientation().isLeftToRight() ? getWidth() - i.right - sortArrow.getIconWidth()
+                    : i.left;
             int y = iconR.y;
 
             return new Point(x, y);
         }
 
         protected class EmptyIcon implements Icon, Serializable {
+
             protected static final long serialVersionUID = -821523476678771032L;
-            int                       width            = 0;
-            int                       height           = 0;
+
+            int width = 0;
+
+            int height = 0;
 
             /**
-             * @see javax.swing.Icon#paintIcon(java.awt.Component,java.awt.Graphics,
-             *      int, int)
+             * @see javax.swing.Icon#paintIcon(java.awt.Component,java.awt.Graphics, int, int)
              */
             public void paintIcon(Component c, Graphics g, int x, int y) {
             }
@@ -497,6 +499,9 @@ public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChange
             public int getIconHeight() {
                 return height;
             }
+
         }
+
     }
+
 }

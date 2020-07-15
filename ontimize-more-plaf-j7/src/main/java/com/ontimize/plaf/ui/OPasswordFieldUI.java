@@ -18,16 +18,15 @@ import com.ontimize.plaf.utils.ContextUtils;
 /**
  * Sea Glass PasswordField UI delegate.
  *
- * <p>Based on SynthPasswordTextFieldUI, but needs to extend OTextFieldUI
- * instead.</p>
+ * <p>
+ * Based on SynthPasswordTextFieldUI, but needs to extend OTextFieldUI instead.
+ * </p>
  */
 public class OPasswordFieldUI extends OTextFieldUI {
 
     /**
      * Creates a UI for a JPasswordField.
-     *
-     * @param  c the JPasswordField
-     *
+     * @param c the JPasswordField
      * @return the UI
      */
     public static ComponentUI createUI(JComponent c) {
@@ -35,9 +34,8 @@ public class OPasswordFieldUI extends OTextFieldUI {
     }
 
     /**
-     * Fetches the name used as a key to look up properties through the
-     * UIManager. This is used as a prefix to all the standard text properties.
-     *
+     * Fetches the name used as a key to look up properties through the UIManager. This is used as a
+     * prefix to all the standard text properties.
      * @return the name ("PasswordField")
      */
     protected String getPropertyPrefix() {
@@ -46,16 +44,14 @@ public class OPasswordFieldUI extends OTextFieldUI {
 
     /**
      * Creates a view (PasswordView) for an element.
-     *
-     * @param  elem the element
-     *
+     * @param elem the element
      * @return the view
      */
     public View create(Element elem) {
         return new PasswordView(elem);
     }
 
-  
+
     void paintBackground(SynthContext context, Graphics g, JComponent c) {
         ContextUtils.getPainter(context).paintPasswordFieldBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
     }
@@ -79,4 +75,5 @@ public class OPasswordFieldUI extends OTextFieldUI {
             }
         }
     }
+
 }

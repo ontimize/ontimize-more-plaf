@@ -10,9 +10,11 @@ import javax.swing.UIManager;
 public class OTableHeaderVisualCalendarRendererPainter extends OTableHeaderRendererPainter {
 
     protected final Color color1 = new Color(0x959ea3);
+
     protected final Color color2 = new Color(0xb6bdbf);
 
     protected Paint topBorderColor;
+
     protected Paint bottomBorderColor;
 
     public OTableHeaderVisualCalendarRendererPainter(int state, PaintContext ctx) {

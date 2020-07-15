@@ -11,7 +11,7 @@ import javax.swing.plaf.synth.SynthContext;
 import com.ontimize.plaf.component.OntimizeArrowButton;
 import com.ontimize.plaf.utils.ContextUtils;
 
-public class OArrowButtonUI extends OButtonUI{
+public class OArrowButtonUI extends OButtonUI {
 
     /**
      * @see com.ontimize.plaf.ui.OButtonUI#installDefaults(javax.swing.AbstractButton)
@@ -22,22 +22,21 @@ public class OArrowButtonUI extends OButtonUI{
     }
 
     /**
-     * @see com.ontimize.plaf.ui.OButtonUI#paint(com.ontimize.plaf.SynthContext,
-     *      java.awt.Graphics)
+     * @see com.ontimize.plaf.ui.OButtonUI#paint(com.ontimize.plaf.SynthContext, java.awt.Graphics)
      */
     protected void paint(SynthContext context, Graphics g) {
         OntimizeArrowButton button = (OntimizeArrowButton) context.getComponent();
 
-        ContextUtils.getPainter(context).paintArrowButtonForeground(context, g, 0, 0, button.getWidth(), button.getHeight(),
-                                                        button.getDirection());
+        ContextUtils.getPainter(context)
+            .paintArrowButtonForeground(context, g, 0, 0, button.getWidth(), button.getHeight(),
+                    button.getDirection());
     }
 
     /**
      * Paint the arrow background.
-     *
      * @param context the SynthContext.
-     * @param g       the Graphics context.
-     * @param c       the arrow component.
+     * @param g the Graphics context.
+     * @param c the arrow component.
      */
     @SuppressWarnings("all")
     void paintBackground(SynthContext context, Graphics g, JComponent c) {
@@ -46,15 +45,12 @@ public class OArrowButtonUI extends OButtonUI{
 
     /**
      * Paint the arrow border.
-     *
      * @param context the SynthContext.
-     * @param g       the Graphics context.
-     * @param x       the x coordinate corresponding to the upper-left
-     *                corner to paint.
-     * @param y       the y coordinate corresponding to the upper-left
-     *                corner to paint.
-     * @param w       the width to paint.
-     * @param h       the height to paint.
+     * @param g the Graphics context.
+     * @param x the x coordinate corresponding to the upper-left corner to paint.
+     * @param y the y coordinate corresponding to the upper-left corner to paint.
+     * @param w the width to paint.
+     * @param h the height to paint.
      */
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
         ContextUtils.getPainter(context).paintArrowButtonBorder(context, g, x, y, w, h);
@@ -62,7 +58,6 @@ public class OArrowButtonUI extends OButtonUI{
 
     /**
      * Get the minimum size for the arrow.
-     *
      * @return the minimum size.
      */
     public Dimension getMinimumSize() {
@@ -71,7 +66,6 @@ public class OArrowButtonUI extends OButtonUI{
 
     /**
      * Get the maximum size for the arrow.
-     *
      * @return the maximum size.
      */
     public Dimension getMaximumSize() {
@@ -82,8 +76,8 @@ public class OArrowButtonUI extends OButtonUI{
      * @see com.ontimize.plaf.ui.OButtonUI#getPreferredSize(javax.swing.JComponent)
      */
     public Dimension getPreferredSize(JComponent c) {
-    	SynthContext context = getContext(c);
-        Dimension       dim     = null;
+        SynthContext context = getContext(c);
+        Dimension dim = null;
 
         if (context.getComponent().getName() == "ScrollBar.button") {
 
@@ -125,6 +119,5 @@ public class OArrowButtonUI extends OButtonUI{
 
         return dim;
     }
-
 
 }

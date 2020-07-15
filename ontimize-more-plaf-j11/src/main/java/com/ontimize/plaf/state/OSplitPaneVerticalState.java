@@ -5,12 +5,15 @@ import javax.swing.JSplitPane;
 import javax.swing.plaf.nimbus.State;
 
 public class OSplitPaneVerticalState extends State {
-	public OSplitPaneVerticalState() {
+
+    public OSplitPaneVerticalState() {
         super("Vertical");
     }
 
-    @Override public boolean isInState(JComponent c) {
+    @Override
+    public boolean isInState(JComponent c) {
 
-                        return c instanceof JSplitPane && (((JSplitPane)c).getOrientation() == 1);
+        return c instanceof JSplitPane && (((JSplitPane) c).getOrientation() == 1);
     }
+
 }

@@ -10,6 +10,7 @@ import javax.swing.UIManager;
 public class OButtonSelectionPainter extends AbstractOButtonPainter {
 
     public static Color defaultFocusBgColor = new Color(0x366581);
+
     protected Color focusBgColor;
 
     public OButtonSelectionPainter(int state, PaintContext ctx) {
@@ -20,12 +21,12 @@ public class OButtonSelectionPainter extends AbstractOButtonPainter {
     protected void doPaint(Graphics2D g, JComponent c, int width, int height, Object[] extendedCacheKeys) {
         this.componentColors = extendedCacheKeys;
         switch (this.state) {
-        case BACKGROUND_DEFAULT_FOCUSED:
-            this.paintBackgroundDefaultAndFocused(g);
-            break;
-        case BACKGROUND_FOCUSED:
-            this.paintBackgroundFocused(g);
-            break;
+            case BACKGROUND_DEFAULT_FOCUSED:
+                this.paintBackgroundDefaultAndFocused(g);
+                break;
+            case BACKGROUND_FOCUSED:
+                this.paintBackgroundFocused(g);
+                break;
         }
     }
 

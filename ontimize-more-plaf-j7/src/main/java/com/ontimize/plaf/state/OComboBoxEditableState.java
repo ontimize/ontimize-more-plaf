@@ -5,13 +5,15 @@ import javax.swing.JComponent;
 import javax.swing.plaf.nimbus.State;
 
 public class OComboBoxEditableState extends State {
-	public OComboBoxEditableState() {
-		super("Editable");
-	}
 
-	@Override
-	public boolean isInState(JComponent c) {
+    public OComboBoxEditableState() {
+        super("Editable");
+    }
 
-		return ((JComboBox) c).isEditable();
-	}
+    @Override
+    public boolean isInState(JComponent c) {
+
+        return ((JComboBox) c).isEditable();
+    }
+
 }

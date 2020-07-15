@@ -40,4 +40,5 @@ public class ORootPaneWindowFocusedState extends State {
         // Default to true.
         return true;
     }
+
 }

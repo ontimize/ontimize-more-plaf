@@ -19,32 +19,35 @@ import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeStyle;
 
 /**
- * OntimizeBorder is a border that delegates to a Painter. The Insets are
- * determined at construction time.
+ * OntimizeBorder is a border that delegates to a Painter. The Insets are determined at construction
+ * time.
  *
- * <p>Based on SynthBorder by Scott Violet.</p>
+ * <p>
+ * Based on SynthBorder by Scott Violet.
+ * </p>
  *
  * @see javax.swing.plaf.synth.SynthBorder
  */
 public class OntimizeBorder extends AbstractBorder implements UIResource {
-	protected static final long serialVersionUID = 2565840147056359672L;
-    protected SynthUI           ui;
-    protected Insets            insets;
+
+    protected static final long serialVersionUID = 2565840147056359672L;
+
+    protected SynthUI ui;
+
+    protected Insets insets;
 
     /**
      * Creates a new OntimizeBorder object.
-     *
-     * @param ui     the UI delegate for the control.
+     * @param ui the UI delegate for the control.
      * @param insets the border insets.
      */
     public OntimizeBorder(SynthUI ui, Insets insets) {
-        this.ui     = ui;
+        this.ui = ui;
         this.insets = insets;
     }
 
     /**
      * Creates a new OntimizeBorder object with no insets.
-     *
      * @param ui the UI degelate for the control.
      */
     public OntimizeBorder(SynthUI ui) {
@@ -52,13 +55,13 @@ public class OntimizeBorder extends AbstractBorder implements UIResource {
     }
 
     /**
-     * @see javax.swing.border.AbstractBorder#paintBorder(java.awt.Component,java.awt.Graphics,
-     *      int, int, int, int)
+     * @see javax.swing.border.AbstractBorder#paintBorder(java.awt.Component,java.awt.Graphics, int,
+     *      int, int, int)
      */
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        JComponent      jc      = (JComponent) c;
+        JComponent jc = (JComponent) c;
         SynthContext context = (SynthContext) ui.getContext(jc);
-        OntimizeStyle   style   = (OntimizeStyle) context.getStyle();
+        OntimizeStyle style = (OntimizeStyle) context.getStyle();
 
         if (style == null) {
             assert false : "OntimizeBorder is being used outside after the UI has been uninstalled";
@@ -70,12 +73,10 @@ public class OntimizeBorder extends AbstractBorder implements UIResource {
     }
 
     /**
-     * This default implementation returns a new <code>Insets</code> instance
-     * where the <code>top</code>, <code>left</code>, <code>bottom</code>, and
-     * <code>right</code> fields are set to <code>0</code>.
-     *
-     * @param  c the component for which this border insets value applies
-     *
+     * This default implementation returns a new <code>Insets</code> instance where the
+     * <code>top</code>, <code>left</code>, <code>bottom</code>, and <code>right</code> fields are set
+     * to <code>0</code>.
+     * @param c the component for which this border insets value applies
      * @return the new <code>Insets</code> object initialized to 0
      */
     public Insets getBorderInsets(Component c) {
@@ -84,10 +85,8 @@ public class OntimizeBorder extends AbstractBorder implements UIResource {
 
     /**
      * Reinitializes the insets parameter with this Border's current Insets.
-     *
-     * @param  c      the component for which this border insets value applies
-     * @param  insets the object to be reinitialized
-     *
+     * @param c the component for which this border insets value applies
+     * @param insets the object to be reinitialized
      * @return the <code>insets</code> object
      */
     public Insets getBorderInsets(Component c, Insets insets) {
@@ -96,10 +95,10 @@ public class OntimizeBorder extends AbstractBorder implements UIResource {
             if (insets == null) {
                 insets = new Insets(this.insets.top, this.insets.left, this.insets.bottom, this.insets.right);
             } else {
-                insets.top    = this.insets.top;
+                insets.top = this.insets.top;
                 insets.bottom = this.insets.bottom;
-                insets.left   = this.insets.left;
-                insets.right  = this.insets.right;
+                insets.left = this.insets.left;
+                insets.right = this.insets.right;
             }
         } else if (insets == null) {
             insets = new Insets(0, 0, 0, 0);
@@ -112,12 +111,14 @@ public class OntimizeBorder extends AbstractBorder implements UIResource {
             Region region = OntimizeLookAndFeel.getRegion((JComponent) c);
 
             if ((region == Region.ARROW_BUTTON || region == Region.BUTTON || region == Region.CHECK_BOX
-                        || region == Region.CHECK_BOX_MENU_ITEM || region == Region.MENU || region == Region.MENU_ITEM
-                        || region == Region.RADIO_BUTTON || region == Region.RADIO_BUTTON_MENU_ITEM || region == Region.TOGGLE_BUTTON)
+                    || region == Region.CHECK_BOX_MENU_ITEM || region == Region.MENU || region == Region.MENU_ITEM
+                    || region == Region.RADIO_BUTTON || region == Region.RADIO_BUTTON_MENU_ITEM
+                    || region == Region.TOGGLE_BUTTON)
                     && (c instanceof AbstractButton)) {
                 margin = ((AbstractButton) c).getMargin();
-            } else if ((region == Region.EDITOR_PANE || region == Region.FORMATTED_TEXT_FIELD || region == Region.PASSWORD_FIELD
-                        || region == Region.TEXT_AREA || region == Region.TEXT_FIELD || region == Region.TEXT_PANE)
+            } else if ((region == Region.EDITOR_PANE || region == Region.FORMATTED_TEXT_FIELD
+                    || region == Region.PASSWORD_FIELD
+                    || region == Region.TEXT_AREA || region == Region.TEXT_FIELD || region == Region.TEXT_PANE)
                     && (c instanceof JTextComponent)) {
                 margin = ((JTextComponent) c).getMargin();
             } else if (region == Region.TOOL_BAR && (c instanceof JToolBar)) {
@@ -127,10 +128,10 @@ public class OntimizeBorder extends AbstractBorder implements UIResource {
             }
 
             if (margin != null) {
-                insets.top    += margin.top;
+                insets.top += margin.top;
                 insets.bottom += margin.bottom;
-                insets.left   += margin.left;
-                insets.right  += margin.right;
+                insets.left += margin.left;
+                insets.right += margin.right;
             }
         }
 
@@ -139,10 +140,10 @@ public class OntimizeBorder extends AbstractBorder implements UIResource {
 
     /**
      * This default implementation returns false.
-     *
      * @return false
      */
     public boolean isBorderOpaque() {
         return false;
     }
+
 }

@@ -1,7 +1,6 @@
 package com.ontimize.plaf.utils;
 
 
-
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
@@ -11,29 +10,31 @@ public class ImageScalingHelper {
 
     /** Enumeration for the types of painting this class can handle. */
     public enum PaintType {
+
         /**
-         * Painting type indicating the image should be centered in the space provided.  When used the <code>mask</code>
-         * is ignored.
+         * Painting type indicating the image should be centered in the space provided. When used the
+         * <code>mask</code> is ignored.
          */
         CENTER,
 
         /**
-         * Painting type indicating the image should be tiled across the specified width and height.  When used the
-         * <code>mask</code> is ignored.
+         * Painting type indicating the image should be tiled across the specified width and height. When
+         * used the <code>mask</code> is ignored.
          */
         TILE,
 
         /**
-         * Painting type indicating the image should be split into nine regions with the top, left, bottom and right
-         * areas stretched.
+         * Painting type indicating the image should be split into nine regions with the top, left, bottom
+         * and right areas stretched.
          */
         PAINT9_STRETCH,
 
         /**
-         * Painting type indicating the image should be split into nine regions with the top, left, bottom and right
-         * areas tiled.
+         * Painting type indicating the image should be split into nine regions with the top, left, bottom
+         * and right areas tiled.
          */
         PAINT9_TILE
+
     }
 
     ;
@@ -41,41 +42,49 @@ public class ImageScalingHelper {
     protected static final Insets EMPTY_INSETS = new Insets(0, 0, 0, 0);
 
     public static final int PAINT_TOP_LEFT = 1;
+
     public static final int PAINT_TOP = 2;
+
     public static final int PAINT_TOP_RIGHT = 4;
+
     public static final int PAINT_LEFT = 8;
+
     public static final int PAINT_CENTER = 16;
+
     public static final int PAINT_RIGHT = 32;
+
     public static final int PAINT_BOTTOM_RIGHT = 64;
+
     public static final int PAINT_BOTTOM = 128;
+
     public static final int PAINT_BOTTOM_LEFT = 256;
+
     /**
-     * Specifies that all regions should be painted.  If this is set any other regions specified will not be painted.
-     * For example PAINT_ALL | PAINT_CENTER will paint all but the center.
+     * Specifies that all regions should be painted. If this is set any other regions specified will not
+     * be painted. For example PAINT_ALL | PAINT_CENTER will paint all but the center.
      */
     public static final int PAINT_ALL = 512;
 
     /**
      * Paints using the algorightm specified by <code>paintType</code>.
-     *
-     * @param g         Graphics to render to
-     * @param x         X-coordinate
-     * @param y         Y-coordinate
-     * @param w         Width to render to
-     * @param h         Height to render to
-     * @param image     Image to render from, if <code>null</code> this method will do nothing
-     * @param sInsets   Insets specifying the portion of the image that will be stretched or tiled, if <code>null</code>
-     *                  empty <code>Insets</code> will be used.
-     * @param dInsets   Destination insets specifying the portion of the image will be stretched or tiled, if
-     *                  <code>null</code> empty <code>Insets</code> will be used.
+     * @param g Graphics to render to
+     * @param x X-coordinate
+     * @param y Y-coordinate
+     * @param w Width to render to
+     * @param h Height to render to
+     * @param image Image to render from, if <code>null</code> this method will do nothing
+     * @param sInsets Insets specifying the portion of the image that will be stretched or tiled, if
+     *        <code>null</code> empty <code>Insets</code> will be used.
+     * @param dInsets Destination insets specifying the portion of the image will be stretched or tiled,
+     *        if <code>null</code> empty <code>Insets</code> will be used.
      * @param paintType Specifies what type of algorithm to use in painting
-     * @param mask      Specifies portion of image to render, if <code>PAINT_ALL</code> is specified, any other regions
-     *                  specified will not be painted, for example PAINT_ALL | PAINT_CENTER paints everything but the
-     *                  center.
+     * @param mask Specifies portion of image to render, if <code>PAINT_ALL</code> is specified, any
+     *        other regions specified will not be painted, for example PAINT_ALL | PAINT_CENTER paints
+     *        everything but the center.
      */
     public static void paint(Graphics g, int x, int y, int w, int h,
-                      Image image, Insets sInsets,
-                      Insets dInsets, PaintType paintType, int mask) {
+            Image image, Insets sInsets,
+            Insets dInsets, PaintType paintType, int mask) {
         if (image == null || image.getWidth(null) <= 0 || image.getHeight(null) <= 0) {
             return;
         }
@@ -95,11 +104,9 @@ public class ImageScalingHelper {
         } else if (paintType == PaintType.TILE) {
             // Tile the image
             int lastIY = 0;
-            for (int yCounter = y, maxY = y + h; yCounter < maxY;
-                 yCounter += (ih - lastIY), lastIY = 0) {
+            for (int yCounter = y, maxY = y + h; yCounter < maxY; yCounter += (ih - lastIY), lastIY = 0) {
                 int lastIX = 0;
-                for (int xCounter = x, maxX = x + w; xCounter < maxX;
-                     xCounter += (iw - lastIX), lastIX = 0) {
+                for (int xCounter = x, maxX = x + w; xCounter < maxX; xCounter += (iw - lastIX), lastIX = 0) {
                     int dx2 = Math.min(maxX, xCounter + iw - lastIX);
                     int dy2 = Math.min(maxY, yCounter + ih - lastIY);
                     g.drawImage(image, xCounter, yCounter, dx2, dy2,
@@ -183,11 +190,9 @@ public class ImageScalingHelper {
 
     /**
      * Draws a portion of an image, stretched or tiled.
-     *
      * @param image Image to render.
      * @param g Graphics to render to
-     * @param stretch Whether the image should be stretched or timed in the
-     *                provided space.
+     * @param stretch Whether the image should be stretched or timed in the provided space.
      * @param dx1 X origin to draw to
      * @param dy1 Y origin to draw to
      * @param dx2 End x location to draw to
@@ -196,22 +201,21 @@ public class ImageScalingHelper {
      * @param sy1 Y origin to draw from
      * @param sx2 Max x location to draw from
      * @param sy2 Max y location to draw from
-     * @param xDirection Used if the image is not stretched. If true it
-     *        indicates the image should be tiled along the x axis.
+     * @param xDirection Used if the image is not stretched. If true it indicates the image should be
+     *        tiled along the x axis.
      */
     protected static void drawChunk(Image image, Graphics g, boolean stretch,
-                           int dx1, int dy1, int dx2, int dy2, int sx1,
-                           int sy1, int sx2, int sy2,
-                           boolean xDirection) {
+            int dx1, int dy1, int dx2, int dy2, int sx1,
+            int sy1, int sx2, int sy2,
+            boolean xDirection) {
         if (dx2 - dx1 <= 0 || dy2 - dy1 <= 0 || sx2 - sx1 <= 0 ||
-                              sy2 - sy1 <= 0) {
+                sy2 - sy1 <= 0) {
             // Bogus location, nothing to paint
             return;
         }
         if (stretch) {
             g.drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
-        }
-        else {
+        } else {
             int xSize = sx2 - sx1;
             int ySize = sy2 - sy1;
             int deltaX;
@@ -220,8 +224,7 @@ public class ImageScalingHelper {
             if (xDirection) {
                 deltaX = xSize;
                 deltaY = 0;
-            }
-            else {
+            } else {
                 deltaX = 0;
                 deltaY = ySize;
             }
@@ -230,8 +233,8 @@ public class ImageScalingHelper {
                 int newDY2 = Math.min(dy2, dy1 + ySize);
 
                 g.drawImage(image, dx1, dy1, newDX2, newDY2,
-                            sx1, sy1, sx1 + newDX2 - dx1,
-                            sy1 + newDY2 - dy1, null);
+                        sx1, sy1, sx1 + newDX2 - dx1,
+                        sy1 + newDY2 - dy1, null);
                 dx1 += deltaX;
                 dy1 += deltaY;
             }
@@ -239,8 +242,8 @@ public class ImageScalingHelper {
     }
 
     protected static void drawImage(Image image, Graphics g,
-                           int dx1, int dy1, int dx2, int dy2, int sx1,
-                           int sy1, int sx2, int sy2) {
+            int dx1, int dy1, int dx2, int dy2, int sx1,
+            int sy1, int sx2, int sy2) {
         // PENDING: is this necessary, will G2D do it for me?
         if (dx2 - dx1 <= 0 || dy2 - dy1 <= 0 || sx2 - sx1 <= 0 ||
                 sy2 - sy1 <= 0) {
@@ -249,6 +252,5 @@ public class ImageScalingHelper {
         }
         g.drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
     }
-
 
 }
