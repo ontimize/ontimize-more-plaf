@@ -21,41 +21,44 @@ import com.ontimize.plaf.OntimizeStyle;
 /**
  * An icon that delegates to a painter.
  *
- * <p>Based on NimbusIcon by Richard Bair. Reimplemented because too much is
- * package local.</p>
+ * <p>
+ * Based on NimbusIcon by Richard Bair. Reimplemented because too much is package local.
+ * </p>
  *
  * @see com.sun.java.swing.plaf.nimbus.NimbusIcon
- */ 
+ */
 public class OntimizeSynthIcon implements SynthIcon {
-    protected int    width;
-    protected int    height;
+
+    protected int width;
+
+    protected int height;
+
     protected String prefix;
+
     protected String key;
 
     /**
      * Creates a new OntimizeSynthIcon object.
-     *
      * @param prefix the prefix to use to get the painter.
-     * @param key    the key to use to get the painter.
-     * @param w      the icon width.
-     * @param h      the icon height.
+     * @param key the key to use to get the painter.
+     * @param w the icon width.
+     * @param h the icon height.
      */
     public OntimizeSynthIcon(String prefix, String key, int w, int h) {
-        this.width  = w;
+        this.width = w;
         this.height = h;
         this.prefix = prefix;
-        this.key    = key;
+        this.key = key;
     }
 
     /**
      * Paints the icon at the specified location.
-     *
      * @param context Identifies hosting region, may be null.
-     * @param g       the Graphics context to paint with.
-     * @param x       x location to paint to.
-     * @param y       y location to paint to.
-     * @param w       Width of the region to paint to, may be 0.
-     * @param h       Height of the region to paint to, may be 0.
+     * @param g the Graphics context to paint with.
+     * @param x x location to paint to.
+     * @param y y location to paint to.
+     * @param w Width of the region to paint to, may be 0.
+     * @param h Height of the region to paint to, may be 0.
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -75,9 +78,9 @@ public class OntimizeSynthIcon implements SynthIcon {
         }
 
         if (painter != null && context != null) {
-            JComponent c      = context.getComponent();
-            boolean    rotate = false;
-            boolean    flip   = false;
+            JComponent c = context.getComponent();
+            boolean rotate = false;
+            boolean flip = false;
 
             // translatex and translatey are additional translations that
             // must occur on the graphics context when rendering a toolbar
@@ -89,7 +92,7 @@ public class OntimizeSynthIcon implements SynthIcon {
                 JToolBar toolbar = (JToolBar) c;
 
                 rotate = toolbar.getOrientation() == JToolBar.VERTICAL;
-                flip   = !toolbar.getComponentOrientation().isLeftToRight();
+                flip = !toolbar.getComponentOrientation().isLeftToRight();
                 Object o = OntimizeLookAndFeel.resolveToolbarConstraint(toolbar);
 
                 // we only do the +1 hack for UIResource borders, assuming
@@ -133,7 +136,7 @@ public class OntimizeSynthIcon implements SynthIcon {
                 // use image if we are printing to a Java 1.1 PrintGraphics as
                 // it is not a instance of Graphics2D
                 BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-                Graphics2D    gfx = img.createGraphics();
+                Graphics2D gfx = img.createGraphics();
 
                 if (rotate) {
                     gfx.rotate(Math.toRadians(90));
@@ -155,11 +158,9 @@ public class OntimizeSynthIcon implements SynthIcon {
     }
 
     /**
-     * Implements the standard Icon interface's paintIcon method as the standard
-     * synth stub passes null for the context and this will cause us to not
-     * paint any thing, so we override here so that we can paint the enabled
-     * state if no synth context is available
-     *
+     * Implements the standard Icon interface's paintIcon method as the standard synth stub passes null
+     * for the context and this will cause us to not paint any thing, so we override here so that we can
+     * paint the enabled state if no synth context is available
      * @param c the component to paint.
      * @param g the Graphics context to paint with.
      * @param x the x coordinate of the upper-left corner of the icon.
@@ -171,7 +172,7 @@ public class OntimizeSynthIcon implements SynthIcon {
         Painter painter = (Painter) UIManager.get(prefix + "[Enabled]." + key);
 
         if (painter != null) {
-            JComponent jc  = (c instanceof JComponent) ? (JComponent) c : null;
+            JComponent jc = (c instanceof JComponent) ? (JComponent) c : null;
             Graphics2D gfx = (Graphics2D) g;
 
             gfx.translate(x, y);
@@ -183,10 +184,7 @@ public class OntimizeSynthIcon implements SynthIcon {
     /**
      * Returns the icon's width. This is a cover methods for <code>
      * getIconWidth(null)</code>.
-     *
-     * @param  context the SynthContext describing the component/region, the
-     *                 style, and the state.
-     *
+     * @param context the SynthContext describing the component/region, the style, and the state.
      * @return an int specifying the fixed width of the icon.
      */
     @Override
@@ -214,10 +212,7 @@ public class OntimizeSynthIcon implements SynthIcon {
     /**
      * Returns the icon's height. This is a cover method for <code>
      * getIconHeight(null)</code>.
-     *
-     * @param  context the SynthContext describing the component/region, the
-     *                 style, and the state.
-     *
+     * @param context the SynthContext describing the component/region, the style, and the state.
      * @return an int specifying the fixed height of the icon.
      */
     @Override
@@ -249,14 +244,11 @@ public class OntimizeSynthIcon implements SynthIcon {
     }
 
     /**
-     * Scale a size based on the "JComponent.sizeVariant" client property of the
-     * component that is using this icon
-     *
-     * @param  context The synthContext to get the component from
-     * @param  size    The size to scale
-     *
-     * @return The scaled size or original if "JComponent.sizeVariant" is not
-     *         set
+     * Scale a size based on the "JComponent.sizeVariant" client property of the component that is using
+     * this icon
+     * @param context The synthContext to get the component from
+     * @param size The size to scale
+     * @return The scaled size or original if "JComponent.sizeVariant" is not set
      */
     protected int scale(SynthContext context, int size) {
         if (context == null || context.getComponent() == null) {
@@ -282,4 +274,5 @@ public class OntimizeSynthIcon implements SynthIcon {
 
         return size;
     }
+
 }

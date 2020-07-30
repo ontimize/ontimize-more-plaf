@@ -3,18 +3,16 @@
  *
  * This file is part of the Ontimize Pluggable Look and Feel.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
  * $Id: OToolBarUI.java,v 1.6 2013/06/25 06:28:12 daniel.grana Exp $
  */
 package com.ontimize.plaf.ui;
@@ -49,20 +47,24 @@ import com.ontimize.plaf.utils.ContextUtils;
 
 /**
  * OntimizeToolBarUI implementation.
- * 
+ *
  * Based on SynthToolBarUI.
- * 
+ *
  * @see javax.swing.plaf.synth.SynthToolBarUI
  */
 public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener, SynthUI {
-	public static int defaultToolBarHeight = 50;
-	
-    protected Icon      handleIcon  = null;
+
+    public static int defaultToolBarHeight = 50;
+
+    protected Icon handleIcon = null;
+
     protected Rectangle contentRect = new Rectangle();
 
-    protected SynthStyle  style;
-    protected SynthStyle  contentStyle;
-    protected SynthStyle  dragWindowStyle;
+    protected SynthStyle style;
+
+    protected SynthStyle contentStyle;
+
+    protected SynthStyle dragWindowStyle;
 
     public static ComponentUI createUI(JComponent c) {
         return new OToolBarUI();
@@ -79,7 +81,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
         super.installListeners();
         toolBar.addPropertyChangeListener(this);
 
-//        WindowUtils.installJComponentRepainterOnWindowFocusChanged(toolBar);
+        // WindowUtils.installJComponentRepainterOnWindowFocusChanged(toolBar);
     }
 
     @Override
@@ -92,12 +94,12 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
         SynthContext context = getContext(c, Region.TOOL_BAR_CONTENT, ENABLED);
         contentStyle = OntimizeLookAndFeel.updateStyle(context, this);
         context.getComponent().setOpaque(false);
-        
+
 
         context = getContext(c, Region.TOOL_BAR_DRAG_WINDOW, ENABLED);
         context.getComponent().setOpaque(false);
         dragWindowStyle = OntimizeLookAndFeel.updateStyle(context, this);
-        
+
 
         context = getContext(c, ENABLED);
         context.getComponent().setOpaque(false);
@@ -111,27 +113,27 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
                 installKeyboardActions();
             }
         }
-        
+
     }
 
     @Override
     protected void uninstallDefaults() {
-    	SynthContext context = getContext(toolBar, ENABLED);
+        SynthContext context = getContext(toolBar, ENABLED);
 
         style.uninstallDefaults(context);
-        
+
         style = null;
 
         handleIcon = null;
 
         context = getContext(toolBar, Region.TOOL_BAR_CONTENT, contentStyle, ENABLED);
         contentStyle.uninstallDefaults(context);
-        
+
         contentStyle = null;
 
         context = getContext(toolBar, Region.TOOL_BAR_DRAG_WINDOW, dragWindowStyle, ENABLED);
         dragWindowStyle.uninstallDefaults(context);
-        
+
         dragWindowStyle = null;
 
         toolBar.setLayout(null);
@@ -154,35 +156,35 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
     }
 
     protected SynthContext getContext(JComponent c, int state) {
-    	if(this.style == null){
-    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
-    	}
-    	return new SynthContext( c, OntimizeLookAndFeel.getRegion(c), this.style, state);
+        if (this.style == null) {
+            this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+        }
+        return new SynthContext(c, OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
     protected SynthContext getContext(JComponent c, Region region, SynthStyle style) {
-    	 return new SynthContext( c, region, style, this.getComponentState(c, region));
+        return new SynthContext(c, region, style, this.getComponentState(c, region));
     }
 
     protected SynthContext getContext(JComponent c, Region region, SynthStyle style, int state) {
-    	return new SynthContext( c, region, style, state);
+        return new SynthContext(c, region, style, state);
     }
-    
+
     protected SynthContext getContext(JComponent c, Region region, int state) {
         SynthStyle style = this.style;
 
-        if(region == Region.TOOL_BAR_CONTENT){
-        	if(this.contentStyle == null){
-        		this.contentStyle = new DefaultSynthStyle();// OntimizeLookAndFeel.getOntimizeStyle(c, region);
-        	}
-        	style = this.contentStyle;
-        }else if (region == Region.TOOL_BAR_DRAG_WINDOW) {
-        	if(this.dragWindowStyle == null){
-        		this.dragWindowStyle = new DefaultSynthStyle();//OntimizeLookAndFeel.getOntimizeStyle(c, region);
-        	}
+        if (region == Region.TOOL_BAR_CONTENT) {
+            if (this.contentStyle == null) {
+                this.contentStyle = new DefaultSynthStyle();// OntimizeLookAndFeel.getOntimizeStyle(c, region);
+            }
+            style = this.contentStyle;
+        } else if (region == Region.TOOL_BAR_DRAG_WINDOW) {
+            if (this.dragWindowStyle == null) {
+                this.dragWindowStyle = new DefaultSynthStyle();// OntimizeLookAndFeel.getOntimizeStyle(c, region);
+            }
             style = dragWindowStyle;
         }
-        return new SynthContext( c, region, style, state);
+        return new SynthContext(c, region, style, state);
     }
 
     protected int getComponentState(JComponent c) {
@@ -195,37 +197,39 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
 
     @Override
     public void update(Graphics g, JComponent c) {
-    	SynthContext context = getContext(c);
+        SynthContext context = getContext(c);
 
-    	OntimizeLookAndFeel.update(context, g);
-        ContextUtils.getPainter(context).paintToolBarBackground(context, g, 0, 0, c.getWidth(), c.getHeight(), toolBar.getOrientation());
+        OntimizeLookAndFeel.update(context, g);
+        ContextUtils.getPainter(context)
+            .paintToolBarBackground(context, g, 0, 0, c.getWidth(), c.getHeight(), toolBar.getOrientation());
         paint(context, g);
-        
+
     }
-    
+
     @Override
     public Dimension getPreferredSize(JComponent c) {
-    	Dimension d = super.getPreferredSize(c);
-    	return d;
+        Dimension d = super.getPreferredSize(c);
+        return d;
     }
-    
+
     @Override
     public Dimension getMinimumSize(JComponent c) {
-    	Dimension d = super.getMinimumSize(c);
-    	return d;
+        Dimension d = super.getMinimumSize(c);
+        return d;
     }
 
     @Override
     public void paint(Graphics g, JComponent c) {
-    	SynthContext context = getContext(c);
+        SynthContext context = getContext(c);
 
         paint(context, g);
-        
+
     }
 
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
-    	//We don't want that the Toolbar border was painted.
-//        ContextUtils.getPainter(context).paintToolBarBorder(context, g, x, y, w, h, toolBar.getOrientation());
+        // We don't want that the Toolbar border was painted.
+        // ContextUtils.getPainter(context).paintToolBarBorder(context, g, x, y, w, h,
+        // toolBar.getOrientation());
     }
 
     // Overloaded to do nothing so we can share listeners.
@@ -247,8 +251,9 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
         if (handleIcon != null && toolBar.isFloatable()) {
             int startX = toolBar.getComponentOrientation().isLeftToRight() ? 0 : toolBar.getWidth()
                     - SynthIcon.getIconWidth(handleIcon, context);
-            SynthIcon.paintIcon(handleIcon, context, g, startX, 0, SynthIcon.getIconWidth(handleIcon, context), SynthIcon.getIconHeight(
-                handleIcon, context));
+            SynthIcon.paintIcon(handleIcon, context, g, startX, 0, SynthIcon.getIconWidth(handleIcon, context),
+                    SynthIcon.getIconHeight(
+                            handleIcon, context));
         }
 
         SynthContext subcontext = getContext(toolBar, Region.TOOL_BAR_CONTENT, contentStyle);
@@ -256,11 +261,13 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
     }
 
     public void paintContent(SynthContext context, Graphics g, Rectangle bounds) {
-    	OntimizeLookAndFeel.updateSubregion(context, g, bounds);
-        ContextUtils.getPainter(context).paintToolBarContentBackground(context, g, bounds.x, bounds.y, bounds.width, bounds.height,
-            toolBar.getOrientation());
-        ContextUtils.getPainter(context).paintToolBarContentBorder(context, g, bounds.x, bounds.y, bounds.width, bounds.height,
-            toolBar.getOrientation());
+        OntimizeLookAndFeel.updateSubregion(context, g, bounds);
+        ContextUtils.getPainter(context)
+            .paintToolBarContentBackground(context, g, bounds.x, bounds.y, bounds.width, bounds.height,
+                    toolBar.getOrientation());
+        ContextUtils.getPainter(context)
+            .paintToolBarContentBorder(context, g, bounds.x, bounds.y, bounds.width, bounds.height,
+                    toolBar.getOrientation());
     }
 
     @Override
@@ -269,9 +276,11 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
         int h = dragWindow.getHeight();
         SynthContext context = getContext(toolBar, Region.TOOL_BAR_DRAG_WINDOW, dragWindowStyle);
         OntimizeLookAndFeel.updateSubregion(context, g, new Rectangle(0, 0, w, h));
-        ContextUtils.getPainter(context).paintToolBarDragWindowBackground(context, g, 0, 0, w, h, dragWindow.getOrientation());
-        ContextUtils.getPainter(context).paintToolBarDragWindowBorder(context, g, 0, 0, w, h, dragWindow.getOrientation());
-        
+        ContextUtils.getPainter(context)
+            .paintToolBarDragWindowBackground(context, g, 0, 0, w, h, dragWindow.getOrientation());
+        ContextUtils.getPainter(context)
+            .paintToolBarDragWindowBorder(context, g, 0, 0, w, h, dragWindow.getOrientation());
+
     }
 
     //
@@ -285,6 +294,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
     }
 
     class SynthToolBarLayoutManager implements LayoutManager {
+
         public void addLayoutComponent(String name, Component comp) {
         }
 
@@ -323,7 +333,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
             dim.width += insets.left + insets.right;
             dim.height += insets.top + insets.bottom;
 
-            
+
             return dim;
         }
 
@@ -359,7 +369,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
             dim.width += insets.left + insets.right;
             dim.height += insets.top + insets.bottom;
 
-            
+
             return dim;
         }
 
@@ -381,7 +391,8 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
             // and figure out how much space should be allocated to them.
             int glueCount = 0;
             for (int i = 0; i < tb.getComponentCount(); i++) {
-                if (isGlue(tb.getComponent(i))) glueCount++;
+                if (isGlue(tb.getComponent(i)))
+                    glueCount++;
             }
 
             if (tb.getOrientation() == JToolBar.HORIZONTAL) {
@@ -408,7 +419,8 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
                 if (glueCount > 0) {
                     int minWidth = minimumLayoutSize(parent).width;
                     extraSpacePerGlue = (tb.getWidth() - minWidth) / glueCount;
-                    if (extraSpacePerGlue < 0) extraSpacePerGlue = 0;
+                    if (extraSpacePerGlue < 0)
+                        extraSpacePerGlue = 0;
                 }
 
                 for (int i = 0; i < tb.getComponentCount(); i++) {
@@ -429,7 +441,8 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
                         // if the component is a "glue" component then add to
                         // its
                         // width the extraSpacePerGlue it is due
-                        if (isGlue(c)) d.width += extraSpacePerGlue;
+                        if (isGlue(c))
+                            d.width += extraSpacePerGlue;
                         c.setBounds(ltr ? x : x - d.width, y, d.width, h);
                         x = ltr ? x + d.width : x - d.width;
                     }
@@ -454,7 +467,8 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
                 if (glueCount > 0) {
                     int minHeight = minimumLayoutSize(parent).height;
                     extraSpacePerGlue = (tb.getHeight() - minHeight) / glueCount;
-                    if (extraSpacePerGlue < 0) extraSpacePerGlue = 0;
+                    if (extraSpacePerGlue < 0)
+                        extraSpacePerGlue = 0;
                 }
 
                 for (int i = 0; i < tb.getComponentCount(); i++) {
@@ -475,13 +489,14 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
                         // if the component is a "glue" component then add to
                         // its
                         // height the extraSpacePerGlue it is due
-                        if (isGlue(c)) d.height += extraSpacePerGlue;
+                        if (isGlue(c))
+                            d.height += extraSpacePerGlue;
                         c.setBounds(x, y, w, d.height);
                         y += d.height;
                     }
                 }
             }
-            
+
         }
 
         protected boolean isGlue(Component c) {
@@ -493,5 +508,7 @@ public class OToolBarUI extends BasicToolBarUI implements PropertyChangeListener
             }
             return false;
         }
+
     }
+
 }

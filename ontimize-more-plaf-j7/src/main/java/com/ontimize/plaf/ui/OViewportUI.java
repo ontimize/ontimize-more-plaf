@@ -25,12 +25,13 @@ import com.ontimize.plaf.utils.ContextUtils;
 
 /**
  * OViewportUI implementation.
- * 
+ *
  * Based on SynthViewPortUI, which is package local.
- * 
+ *
  * @see javax.swing.plaf.synth.SynthViewportUI
  */
 public class OViewportUI extends ViewportUI implements PropertyChangeListener, SynthUI {
+
     protected SynthStyle style;
 
     public static ComponentUI createUI(JComponent c) {
@@ -55,16 +56,16 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
 
     protected void updateStyle(JComponent c) {
         SynthContext context = getContext(c, ENABLED);
-        
-		if(c.getComponents().length>0){
-			int length = c.getComponents().length;
-			for(int i=0;i<length;i++){
-				if(c.getComponent(i) instanceof JTextArea){
-					LookAndFeel.installProperty(c, "opaque", Boolean.FALSE);
-					c.setOpaque(false);
-				}
-			}
-		}
+
+        if (c.getComponents().length > 0) {
+            int length = c.getComponents().length;
+            for (int i = 0; i < length; i++) {
+                if (c.getComponent(i) instanceof JTextArea) {
+                    LookAndFeel.installProperty(c, "opaque", Boolean.FALSE);
+                    c.setOpaque(false);
+                }
+            }
+        }
 
         // Note: JViewport is special cased as it does not allow for
         // a border to be set. JViewport.setBorder is overriden to throw
@@ -78,10 +79,10 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
                 oldStyle.uninstallDefaults(context);
             }
             ContextUtils.setComponentStyle(context, newStyle);
-			OntimizeLookAndFeel.updateStyle(context, this);
+            OntimizeLookAndFeel.updateStyle(context, this);
         }
         this.style = newStyle;
-        
+
     }
 
     protected void installListeners(JComponent c) {
@@ -93,9 +94,9 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
     }
 
     protected void uninstallDefaults(JComponent c) {
-    	SynthContext context = getContext(c, ENABLED);
+        SynthContext context = getContext(c, ENABLED);
         style.uninstallDefaults(context);
-        
+
         style = null;
     }
 
@@ -104,10 +105,10 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
     }
 
     protected SynthContext getContext(JComponent c, int state) {
-    	if(this.style == null){
-    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
-    	}
-    	return new SynthContext( c, this.getRegion(c), this.style, state);
+        if (this.style == null) {
+            this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+        }
+        return new SynthContext(c, this.getRegion(c), this.style, state);
     }
 
     protected Region getRegion(JComponent c) {
@@ -119,12 +120,12 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
     }
 
     public void update(Graphics g, JComponent c) {
-    	SynthContext context = getContext(c);
+        SynthContext context = getContext(c);
 
-    	OntimizeLookAndFeel.update(context, g);
+        OntimizeLookAndFeel.update(context, g);
         ContextUtils.getPainter(context).paintViewportBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
         paint(context, g);
-        
+
     }
 
     public void paintBorder(SynthContext context, Graphics g, int x, int y, int w, int h) {
@@ -133,10 +134,10 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
     }
 
     public void paint(Graphics g, JComponent c) {
-    	SynthContext context = getContext(c);
+        SynthContext context = getContext(c);
 
         paint(context, g);
-        
+
     }
 
     protected void paint(SynthContext context, Graphics g) {
@@ -147,26 +148,21 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
             Object ui = (view == null) ? null : invokeGetter(view, "getUI", null);
             if (ui instanceof ViewportPainter) {
                 ((ViewportPainter) ui).paintViewport(context, g, viewport);
-            } 
-            else {
+            } else {
                 if (viewport.getView() != null) {
                     g.setColor(viewport.getView().getBackground());
                     g.fillRect(0, 0, c.getWidth(), c.getHeight());
                 }
             }
         }
-        
+
     }
 
     /**
      * Invokes the specified getter method if it exists.
-     * 
-     * @param obj
-     *            The object on which to invoke the method.
-     * @param methodName
-     *            The name of the method.
-     * @param defaultValue
-     *            This value is returned, if the method does not exist.
+     * @param obj The object on which to invoke the method.
+     * @param methodName The name of the method.
+     * @param defaultValue This value is returned, if the method does not exist.
      * @return The value returned by the getter method or the default value.
      */
     protected static Object invokeGetter(Object obj, String methodName, Object defaultValue) {
@@ -188,4 +184,5 @@ public class OViewportUI extends ViewportUI implements PropertyChangeListener, S
             updateStyle((JComponent) e.getSource());
         }
     }
+
 }

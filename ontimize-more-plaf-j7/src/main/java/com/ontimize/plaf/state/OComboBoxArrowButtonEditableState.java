@@ -7,14 +7,16 @@ import javax.swing.JComponent;
 import javax.swing.plaf.nimbus.State;
 
 public class OComboBoxArrowButtonEditableState extends State {
-	public OComboBoxArrowButtonEditableState() {
-		super("Editable");
-	}
 
-	@Override
-	public boolean isInState(JComponent c) {
+    public OComboBoxArrowButtonEditableState() {
+        super("Editable");
+    }
 
-		Component parent = c.getParent();
-		return parent instanceof JComboBox && ((JComboBox) parent).isEditable();
-	}
+    @Override
+    public boolean isInState(JComponent c) {
+
+        Component parent = c.getParent();
+        return parent instanceof JComboBox && ((JComboBox) parent).isEditable();
+    }
+
 }

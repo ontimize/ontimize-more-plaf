@@ -23,9 +23,12 @@ import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.border.OntimizeBorder;
 import com.ontimize.plaf.utils.ContextUtils;
 
-public class OListUI  extends BasicListUI implements PropertyChangeListener, SynthUI{
+public class OListUI extends BasicListUI implements PropertyChangeListener, SynthUI {
+
     protected SynthStyle style;
+
     protected boolean useListColors;
+
     protected boolean useUIBorder;
 
     public static ComponentUI createUI(JComponent list) {
@@ -33,25 +36,25 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
     }
 
     public void update(Graphics g, JComponent c) {
-    	
+
         SynthContext context = getContext(c);
 
         OntimizeLookAndFeel.update(context, g);
         ContextUtils.getPainter(context).paintListBackground(context, g, 0, 0, c.getWidth(), c.getHeight());
-        
+
         paint(g, c);
     }
-    
+
     @Override
     public void paint(Graphics g, JComponent c) {
-    	super.paint(g, c);
+        super.paint(g, c);
     }
 
     public void paintBorder(SynthContext context, Graphics g, int x,
-                            int y, int w, int h) {
+            int y, int w, int h) {
         ContextUtils.getPainter(context).paintListBorder(context, g, x, y, w, h);
     }
-    
+
 
     protected void installListeners() {
         super.installListeners();
@@ -60,7 +63,7 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
 
     public void propertyChange(PropertyChangeEvent e) {
         if (OntimizeLookAndFeel.shouldUpdateStyle(e)) {
-            updateStyle((JList)e.getSource());
+            updateStyle((JList) e.getSource());
         }
     }
 
@@ -71,14 +74,14 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
 
     protected void installDefaults() {
         if (list.getCellRenderer() == null ||
-                 (list.getCellRenderer() instanceof UIResource)) {
+                (list.getCellRenderer() instanceof UIResource)) {
             list.setCellRenderer(new OListCellRenderer());
         }
         updateStyle(list);
     }
 
     protected void updateStyle(JComponent c) {
-    	SynthContext context = getContext(list, ENABLED);
+        SynthContext context = getContext(list, ENABLED);
         SynthStyle oldStyle = style;
 
         style = OntimizeLookAndFeel.updateStyle(context, this);
@@ -88,19 +91,19 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
             Color sbg = list.getSelectionBackground();
             if (sbg == null || sbg instanceof UIResource) {
                 list.setSelectionBackground(style.getColor(
-                                 context, ColorType.TEXT_BACKGROUND));
+                        context, ColorType.TEXT_BACKGROUND));
             }
 
             Color sfg = list.getSelectionForeground();
             if (sfg == null || sfg instanceof UIResource) {
                 list.setSelectionForeground(style.getColor(
-                                 context, ColorType.TEXT_FOREGROUND));
+                        context, ColorType.TEXT_FOREGROUND));
             }
 
             useListColors = style.getBoolean(context,
-                                  "List.rendererUseListColors", true);
+                    "List.rendererUseListColors", true);
             useUIBorder = style.getBoolean(context,
-                                  "List.rendererUseUIBorder", true);
+                    "List.rendererUseUIBorder", true);
 
             int height = style.getInt(context, "List.cellHeight", -1);
             if (height != -1) {
@@ -111,7 +114,7 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
                 installKeyboardActions();
             }
         }
-        
+
     }
 
     protected void uninstallDefaults() {
@@ -120,7 +123,7 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
         SynthContext context = getContext(list, ENABLED);
 
         style.uninstallDefaults(context);
-        
+
         style = null;
     }
 
@@ -129,10 +132,10 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
     }
 
     protected SynthContext getContext(JComponent c, int state) {
-    	if(this.style == null){
-    		this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
-    	}
-    	return new SynthContext( c,
+        if (this.style == null) {
+            this.style = OntimizeLookAndFeel.getOntimizeStyle(c, OntimizeLookAndFeel.getRegion(c));
+        }
+        return new SynthContext(c,
                 OntimizeLookAndFeel.getRegion(c), this.style, state);
     }
 
@@ -146,6 +149,7 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
 
 
     protected class OListCellRenderer extends DefaultListCellRenderer.UIResource {
+
         public String getName() {
             return "List.cellRenderer";
         }
@@ -157,18 +161,16 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
         }
 
         public Component getListCellRendererComponent(JList list, Object value,
-                  int index, boolean isSelected, boolean cellHasFocus) {
+                int index, boolean isSelected, boolean cellHasFocus) {
             if (!useListColors && (isSelected || cellHasFocus)) {
-                OntimizeLookAndFeel.setSelectedUI((OLabelUI)OntimizeLookAndFeel.
-                             getUIOfType(getUI(), OLabelUI.class),
-                                   isSelected, cellHasFocus, list.isEnabled(), false);
-            }
-            else {
+                OntimizeLookAndFeel.setSelectedUI((OLabelUI) OntimizeLookAndFeel.getUIOfType(getUI(), OLabelUI.class),
+                        isSelected, cellHasFocus, list.isEnabled(), false);
+            } else {
                 OntimizeLookAndFeel.resetSelectedUI();
             }
-            
+
             super.getListCellRendererComponent(list, value, index,
-                                               isSelected, cellHasFocus);
+                    isSelected, cellHasFocus);
             return this;
         }
 
@@ -176,6 +178,7 @@ public class OListUI  extends BasicListUI implements PropertyChangeListener, Syn
             super.paint(g);
             OntimizeLookAndFeel.resetSelectedUI();
         }
+
     }
 
 }

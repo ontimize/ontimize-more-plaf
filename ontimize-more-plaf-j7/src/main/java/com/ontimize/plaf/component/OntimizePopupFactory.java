@@ -8,12 +8,13 @@ import javax.swing.PopupFactory;
 
 public class OntimizePopupFactory extends PopupFactory {
 
-	public Popup getPopup(Component owner, Component contents, int x, int y) throws IllegalArgumentException {
-		if(owner instanceof JComboBox){
-			return super.getPopup(owner, contents, x, y);
-		}
-		// A more complete implementation would cache and reuse popups
-//		return new OntimizePopup(owner, contents, x, y);
-		return OntimizePopup.getHeavyWeightPopup(owner, contents, x, y);
-	}
+    public Popup getPopup(Component owner, Component contents, int x, int y) throws IllegalArgumentException {
+        if (owner instanceof JComboBox) {
+            return super.getPopup(owner, contents, x, y);
+        }
+        // A more complete implementation would cache and reuse popups
+        // return new OntimizePopup(owner, contents, x, y);
+        return OntimizePopup.getHeavyWeightPopup(owner, contents, x, y);
+    }
+
 }

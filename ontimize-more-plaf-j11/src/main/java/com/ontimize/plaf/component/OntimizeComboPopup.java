@@ -14,58 +14,55 @@ import javax.swing.plaf.basic.BasicComboPopup;
 
 import com.ontimize.plaf.ui.OComboBoxUI;
 
-public class OntimizeComboPopup  extends BasicComboPopup{
-	
-	public static Border O_LIST_BORDER = new LineBorder(new Color(0x8ca0ad), 2);
-    
-    public OntimizeComboPopup( JComboBox combo ) {
+public class OntimizeComboPopup extends BasicComboPopup {
+
+    public static Border O_LIST_BORDER = new LineBorder(new Color(0x8ca0ad), 2);
+
+    public OntimizeComboPopup(JComboBox combo) {
         super(combo);
     }
 
     /**
-     * Configures the list which is used to hold the combo box items in the
-     * popup. This method is called when the UI class
-     * is created.
+     * Configures the list which is used to hold the combo box items in the popup. This method is called
+     * when the UI class is created.
      *
      * @see #createList
      */
     @Override
     protected void configureList() {
-        list.setFont( comboBox.getFont() );
-        list.setCellRenderer( comboBox.getRenderer() );
-        list.setFocusable( false );
+        list.setFont(comboBox.getFont());
+        list.setCellRenderer(comboBox.getRenderer());
+        list.setFocusable(false);
         list.setBorder(null);
-        list.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         int selectedIndex = comboBox.getSelectedIndex();
-        if ( selectedIndex == -1 ) {
+        if (selectedIndex == -1) {
             list.clearSelection();
-        }
-        else {
-            list.setSelectedIndex( selectedIndex );
-	    list.ensureIndexIsVisible( selectedIndex );
+        } else {
+            list.setSelectedIndex(selectedIndex);
+            list.ensureIndexIsVisible(selectedIndex);
         }
         installListListeners();
     }
-    
+
     @Override
     protected void configurePopup() {
-    	super.configurePopup();
-    	Object o = UIManager.getLookAndFeel().getDefaults().get("\"ComboBox.scrollPane\".border");
-    	Border border = o!=null ? (Border)o : O_LIST_BORDER; 
-    	setBorder(border);
+        super.configurePopup();
+        Object o = UIManager.getLookAndFeel().getDefaults().get("\"ComboBox.scrollPane\".border");
+        Border border = o != null ? (Border) o : O_LIST_BORDER;
+        setBorder(border);
     }
-    
+
     /**
      * @inheritDoc
-     * 
-     * Overridden to take into account any popup insets specified in
-     * SynthComboBoxUI
+     *
+     *             Overridden to take into account any popup insets specified in SynthComboBoxUI
      */
     @Override
-    protected Rectangle computePopupBounds(int px,int py,int pw,int ph) {
+    protected Rectangle computePopupBounds(int px, int py, int pw, int ph) {
         ComboBoxUI ui = comboBox.getUI();
         if (ui instanceof OComboBoxUI) {
-        	OComboBoxUI sui = (OComboBoxUI)ui;
+            OComboBoxUI sui = (OComboBoxUI) ui;
             if (sui.popupInsets != null) {
                 Insets i = sui.popupInsets;
                 return super.computePopupBounds(
@@ -77,4 +74,5 @@ public class OntimizeComboPopup  extends BasicComboPopup{
         }
         return super.computePopupBounds(px, py, pw, ph);
     }
+
 }
