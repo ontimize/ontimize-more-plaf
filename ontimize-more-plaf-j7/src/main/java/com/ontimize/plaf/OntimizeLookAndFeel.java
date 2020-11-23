@@ -1955,7 +1955,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
          * white color is used.
          */
         OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
-        OntimizeLookAndFeel.setColor(d, compName, "foreground", "#ffffff");
+        OntimizeLookAndFeel.setColor(d, compName, "foreground", "#6387A0");
         OntimizeLookAndFeel.setColor(d, compName, "disabled", "#FFFFFF7D");
         OntimizeLookAndFeel.setColor(d, compName, "disabledText", "#243b4aCC");
 
