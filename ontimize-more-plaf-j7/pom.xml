@@ -15,27 +15,27 @@
     	<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
 
-	<build>
-		<plugins>
- 			<plugin>
- 				<groupId>org.apache.maven.plugins</groupId>
- 				<artifactId>maven-compiler-plugin</artifactId>
- 				<version>3.1</version>
- 				<configuration>
- 					<verbose>true</verbose>
- 					<fork>true</fork>
- 					<executable>${JAVA_1_7_HOME}/bin/javac</executable>
- 					<compilerVersion>1.7</compilerVersion>
- 					<source>1.7</source>
- 					<target>1.7</target>
- 					<compilerArguments>
- 						<verbose />
-  						<bootclasspath>${JAVA_1_7_HOME}/jre/lib/rt.jar</bootclasspath>
- 					</compilerArguments>
- 				</configuration>
- 			</plugin>
-		</plugins>
-	</build>
+<!--	<build>-->
+<!--		<plugins>-->
+<!-- 			<plugin>-->
+<!-- 				<groupId>org.apache.maven.plugins</groupId>-->
+<!-- 				<artifactId>maven-compiler-plugin</artifactId>-->
+<!-- 				<version>3.1</version>-->
+<!-- 				<configuration>-->
+<!-- 					<verbose>true</verbose>-->
+<!-- 					<fork>true</fork>-->
+<!-- 					<executable>${JAVA_1_7_HOME}/bin/javac</executable>-->
+<!-- 					<compilerVersion>1.7</compilerVersion>-->
+<!-- 					<source>1.7</source>-->
+<!-- 					<target>1.7</target>-->
+<!-- 					<compilerArguments>-->
+<!-- 						<verbose />-->
+<!--  						<bootclasspath>${JAVA_1_7_HOME}/jre/lib/rt.jar</bootclasspath>-->
+<!-- 					</compilerArguments>-->
+<!-- 				</configuration>-->
+<!-- 			</plugin>-->
+<!--		</plugins>-->
+<!--	</build>-->
 
 	<dependencies>
 		<dependency>
