@@ -11,7 +11,7 @@
 		<version>2.0.6</version>
 	</parent>
 	<properties>
-		<ontimize-core.version>6.0.4</ontimize-core.version>
+		<ontimize-core.version>6.0.5</ontimize-core.version>
 		<ontimize-more-workflow.version>2.6.1</ontimize-more-workflow.version>
 		<ontimize-more-diagram.version>2.3.1</ontimize-more-diagram.version>
 		<ontimize-more-agenda.version>2.1.1</ontimize-more-agenda.version>
