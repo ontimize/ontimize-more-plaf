@@ -1956,7 +1956,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
          * white color is used.
          */
         OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
-        OntimizeLookAndFeel.setColor(d, compName, "foreground", "#ffffff");
+        OntimizeLookAndFeel.setColor(d, compName, "foreground", "#6387A0");
         OntimizeLookAndFeel.setColor(d, compName, "disabled", "#FFFFFF7D");
         OntimizeLookAndFeel.setColor(d, compName, "disabledText", "#243b4aCC");
 
@@ -4325,8 +4325,9 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
         OntimizeLookAndFeel.setColor(d, compName, "background", "#FFFFFF");
 
-        OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#335971");
-        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8F9CA4");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#FFFFFF");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#FFFFFF7F");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[MouseOver].textForeground", "#426A84");
 
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].background", "#366581");
         OntimizeLookAndFeel.setFloat(d, compName, "[Focused].alphaTransparency", "0.5");

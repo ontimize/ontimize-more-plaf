@@ -13,10 +13,10 @@ import javax.swing.UIManager;
 import javax.swing.plaf.UIResource;
 import javax.swing.plaf.synth.SynthContext;
 
-import sun.swing.plaf.synth.SynthIcon;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeStyle;
+import sun.swing.plaf.synth.SynthIcon;
 
 /**
  * An icon that delegates to a painter.
