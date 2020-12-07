@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>ontimize-more-plaf</artifactId>
-	<version>1.1.2</version>
+	<version>1.1.5</version>
 	<packaging>pom</packaging>
 	<parent>
 		<groupId>com.ontimize</groupId>
@@ -11,7 +11,7 @@
 		<version>2.0.6</version>
 	</parent>
 	<properties>
-		<ontimize-core.version>6.0.4</ontimize-core.version>
+		<ontimize-core.version>6.0.5</ontimize-core.version>
 		<ontimize-more-workflow.version>2.6.1</ontimize-more-workflow.version>
 		<ontimize-more-diagram.version>2.3.1</ontimize-more-diagram.version>
 		<ontimize-more-agenda.version>2.1.1</ontimize-more-agenda.version>
