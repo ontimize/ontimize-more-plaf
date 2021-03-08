@@ -2483,6 +2483,14 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         d.put(compName + "[Editable+Pressed].backgroundPainter",
                 this.createLazyPainter(pClass, OComboBoxPainter.BACKGROUND_PRESSED_EDITABLE, ctx));
 
+
+        compName = "ComboBox:\"ComboBox.renderer\"";
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#FF0000"); //335971
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#FF0000"); //8e8f91
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#FF0000"); //61BEE8
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FF0000"); //FFFFFF
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Required].textForeground", "#FF0000");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Required].textForeground", "#FF0000");
     }
 
     protected void defineComboBoxTextField(UIDefaults d) {
@@ -2608,11 +2616,16 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         if (compName == null) {
             compName = "ComboBox:\"ComboBox.listRenderer\"";
         }
+        d.put(compName + ".States", "Disabled,Selected,Required");
+        d.put(compName + ".Required", new RequiredState());
+
         OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 10 2 6");
         OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
-        OntimizeLookAndFeel.setColor(d, compName, "background", "#ffffff");
-        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
-        OntimizeLookAndFeel.setColor(d, compName, "[Selected].textForeground", "#ffffff");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff");
+
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Required].textForeground", "#8e8f91");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#ffffff"); //8e8f91
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#ffffff"); //ffffff
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#36627F");
     }
 
@@ -6053,7 +6066,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
      * <p>
      * If the given region/prefix combo has already been registered, then it will not be registered
      * twice. The second registration attempt will fail silently.
-     * </p>
+     * </p>register
      * @param region The Synth Region that is being registered. Such as Button, or ScrollBarThumb.
      * @param prefix The UIDefault prefix. For example, could be ComboBox, or if a named components,
      *        "MyComboBox", or even something like ToolBar:"MyComboBox":"ComboBox.arrowButton"
@@ -6310,7 +6323,6 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         this.register(Region.TEXT_FIELD, "ComboBox:\"ComboBox.textField\"");
         this.register(Region.ARROW_BUTTON, "ComboBox:\"ComboBox.arrowButton\"");
         this.register(Region.LABEL, "ComboBox:\"ComboBox.listRenderer\"");
-        this.register(Region.LABEL, "ComboBox:\"ComboBox.renderer\"");
         this.register(Region.SCROLL_PANE, "\"ComboBox.scrollPane\"");
         this.register(Region.FILE_CHOOSER, "FileChooser");
         this.register(Region.INTERNAL_FRAME_TITLE_PANE, "InternalFrameTitlePane");
