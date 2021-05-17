@@ -10,9 +10,9 @@
 	<artifactId>ontimize-more-plaf-j7</artifactId>
 	<name>ontimize-more-plaf-j7</name>
 	
-<!--	<properties> -->
-<!-- 	    <maven.compiler.source>1.7</maven.compiler.source> -->
-<!--     	<maven.compiler.target>1.7</maven.compiler.target> -->
+<!--	<properties>-->
+<!-- 	    <maven.compiler.source>1.7</maven.compiler.source>-->
+<!--     	<maven.compiler.target>1.7</maven.compiler.target>-->
 <!-- 	</properties>-->
 
 	<build>
