@@ -478,12 +478,20 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
 
     public static Font defaultAppFont = null;
 
+    public static Font getDefaultAppFont(){
+        return defaultAppFont;
+    }
+
+    public static void setDefaultAppFont(Font font){
+        defaultAppFont = font;
+    }
+
     protected Font getDefaultFont() {
 
         if (this.defaultFont == null) {
             this.defaultFont = StyleUtil.getFont("Application", "font", null);
 
-            if ((OntimizeLookAndFeel.defaultAppFont instanceof Font) && (this.defaultFont == null)) {
+            if ((OntimizeLookAndFeel.defaultAppFont instanceof Font)) {
                 this.defaultFont = OntimizeLookAndFeel.defaultAppFont;
             }
 
@@ -2001,7 +2009,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         // Button
         OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "7 7 7 7");
         OntimizeLookAndFeel.setBoolean(d, compName, "defaultButtonFollowsFocus", "false");
-        OntimizeLookAndFeel.setFontUIResource(d, compName, "font", null);
+        OntimizeLookAndFeel.setFontUIResource(d, compName, "font", OntimizeLAFParseUtils.fontToString(this.defaultFont));
         OntimizeLookAndFeel.setColorUIResource(d, compName, "disabled", null);
         OntimizeLookAndFeel.setColorUIResource(d, compName, "disabledText", null);
 
