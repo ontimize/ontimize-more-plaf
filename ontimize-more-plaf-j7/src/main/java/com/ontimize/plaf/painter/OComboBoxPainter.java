@@ -1020,6 +1020,9 @@ public class OComboBoxPainter extends AbstractRegionPainter {
         double x = this.decodeX(0.0f) + this.getMaximumRadius() + this.numBorders;
         double radius = this.getRadius();
         double x_arc = this.decodeX(0.0f) + this.numBorders + radius;
+        if (x > this.intValue(this.decodeX(1.0f))) {
+            x = this.intValue(this.decodeX(1.0f));
+        }
         if (x_arc > x) {
             x_arc = x;
             radius = this.getMaximumRadius();
