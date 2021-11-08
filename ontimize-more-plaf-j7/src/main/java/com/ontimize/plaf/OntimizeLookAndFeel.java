@@ -612,6 +612,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         d.put(compName + "[Disabled+Required].textForeground", disabledRequiredFgColor);
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused+Required+Selected].textForeground", "#FFFFFF");
         d.put(compName + "[Required].textForeground", requiredFgColor);
         d.put(compName + "[Focused+Required].textForeground", focusedRequiredFgColor);
         DataField.requiredFieldForegroundColor = requiredFgColor;
@@ -690,7 +691,6 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
                 this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED, ctx));
         d.put(compName + "[Disabled+Required].borderPainter",
                 this.createLazyPainter(pClass, AbstractOTextFieldPainter.BORDER_DISABLED_REQUIRED, ctx));
-
     }
 
     protected void defineTextArea(UIDefaults d) {
