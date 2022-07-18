@@ -618,6 +618,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         DataField.requiredFieldForegroundColor = requiredFgColor;
 
         // Background:
+        ColorUIResource enabledColor = StyleUtil.getColorUI(compName, "[Enabled].background", "#FFFFFF");
         ColorUIResource disabledColor = StyleUtil.getColorUI(compName, "[Disabled].background", "#FFFFFF7D");
         ColorUIResource focusedColor = StyleUtil.getColorUI(compName, "[Focused].background", "#FFFFFF");
         ColorUIResource requiredColor = StyleUtil.getColorUI(compName, "[Required].background", "#89A5B9");
@@ -628,11 +629,13 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         focusedRequiredColor = focusedRequiredColor != null ? focusedRequiredColor : requiredColor;
 
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
+        d.put(compName + "[Enabled].background", enabledColor);
         d.put(compName + "[Disabled].background", disabledColor);
         d.put(compName + "[Focused].background", focusedColor);
         d.put(compName + "[Required].background", requiredColor);
         d.put(compName + "[Focused+Required].background", focusedRequiredColor);
         d.put(compName + "[Disabled+Required].background", disabledRequiredColor);
+        DataField.BACKGROUNDCOLOR = enabledColor;
         DataField.defaultDisableBackgroundColor = disabledColor;
         DataField.FOCUS_BACKGROUNDCOLOR = focusedColor;
         DataField.requiredFieldBackgroundColor = requiredColor;
