@@ -678,6 +678,8 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
                 this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_ENABLED, ctx));
         d.put(compName + "[Selected].backgroundPainter",
                 this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
+        d.put(compName + "[Focused].backgroundPainter",
+                this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_FOCUSED, ctx));
         d.put(compName + "[Required].backgroundPainter",
                 this.createLazyPainter(pClass, AbstractOTextFieldPainter.BACKGROUND_REQUIRED, ctx));
         d.put(compName + "[Focused+Required].backgroundPainter",
