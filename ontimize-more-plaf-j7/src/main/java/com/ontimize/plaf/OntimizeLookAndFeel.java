@@ -1159,7 +1159,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "4 14 4 30");
 
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#335971");
-        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#8e8f91");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#a0b5c3");
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Focused].textForeground", "#61BEE8");
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#FFFFFF");
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#FFFFFF");
@@ -3909,7 +3909,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         }
         String pClass = StyleUtil.getProperty(compName, "painterClass", "com.ontimize.plaf.painter.ORowPanelPainter");
 
-        OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#FFFFFF14");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#48718c");
         OntimizeLookAndFeel.setPaint(d, compName, "bgpaint", null);
         OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
         OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
@@ -3935,7 +3935,7 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         String pClass = StyleUtil.getProperty(compName, "painterClass",
                 "com.ontimize.plaf.painter.OColumnPanelPainter");
 
-        OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#FFFFFF14");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#48718c");
         OntimizeLookAndFeel.setPaint(d, compName, "bgpaint", null);
         OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "false");
         OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "0 0 0 0");
