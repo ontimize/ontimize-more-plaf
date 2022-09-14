@@ -25,10 +25,10 @@ import javax.swing.Popup;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import com.ontimize.gui.ExtendedJPopupMenu;
-
 import sun.awt.AppContext;
 import sun.awt.ModalExclude;
+
+import com.ontimize.gui.ExtendedJPopupMenu;
 
 public class OntimizePopup extends Popup {
 

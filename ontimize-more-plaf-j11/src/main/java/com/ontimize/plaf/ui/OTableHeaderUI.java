@@ -32,12 +32,12 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
+import sun.swing.DefaultLookup;
+
 import com.ontimize.gui.table.Table;
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.border.OntimizeBorder;
 import com.ontimize.plaf.utils.ContextUtils;
-
-import sun.swing.DefaultLookup;
 
 public class OTableHeaderUI extends BasicTableHeaderUI implements PropertyChangeListener, SynthUI {
 

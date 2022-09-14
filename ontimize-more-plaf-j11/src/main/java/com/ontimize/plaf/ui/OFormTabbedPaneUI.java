@@ -47,6 +47,9 @@ import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 import javax.swing.text.View;
 
+import sun.swing.SwingUtilities2;
+import sun.swing.plaf.synth.DefaultSynthStyle;
+
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.OntimizeRegion;
 import com.ontimize.plaf.OntimizeSynthPainterImpl;
@@ -56,9 +59,6 @@ import com.ontimize.plaf.component.TabbedPanePopup;
 import com.ontimize.plaf.utils.ContextUtils;
 import com.ontimize.plaf.utils.ControlOrientation;
 import com.ontimize.plaf.utils.OTabCloseListener;
-
-import sun.swing.SwingUtilities2;
-import sun.swing.plaf.synth.DefaultSynthStyle;
 
 /**
  * TabbedPane UI delegate.
