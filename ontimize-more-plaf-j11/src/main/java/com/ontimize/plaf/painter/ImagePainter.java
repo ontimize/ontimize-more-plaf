@@ -9,10 +9,10 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
-import com.ontimize.plaf.utils.OntimizeLAFParseUtils;
-
 import sun.awt.AppContext;
 import sun.swing.plaf.synth.Paint9Painter;
+
+import com.ontimize.plaf.utils.OntimizeLAFParseUtils;
 
 public abstract class ImagePainter extends AbstractPainter {
 

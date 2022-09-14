@@ -27,7 +27,6 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import com.ontimize.plaf.utils.ImageCache;
 import com.ontimize.plaf.utils.ImageScalingHelper;
 
-
 public abstract class AbstractRegionPainter implements Painter<JComponent> {
 
     /**

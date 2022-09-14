@@ -14,6 +14,7 @@ import java.net.URL;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.plaf.UIResource;
 
 import com.ontimize.plaf.OntimizeLookAndFeel;
 
@@ -474,8 +475,9 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
 
     protected Paint getBackgroundColor(JComponent c, Paint defaultColor) {
         if (c != null) {
-            if ((c.getBackground() != null) && c.isEnabled()) {
-                return c.getBackground();
+            Color bg = c.getBackground();
+            if ((bg != null) && !(bg instanceof UIResource) && c.isEnabled()) {
+                return bg;
             }
         }
         return defaultColor;

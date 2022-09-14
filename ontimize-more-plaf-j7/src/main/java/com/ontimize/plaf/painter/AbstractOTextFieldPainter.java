@@ -476,7 +476,7 @@ public abstract class AbstractOTextFieldPainter extends AbstractRegionPainter {
     protected Paint getBackgroundColor(JComponent c, Paint defaultColor) {
         if (c != null) {
             Color bg = c.getBackground();
-            if (bg != null && !(bg instanceof UIResource) && c.isEnabled()) {
+            if ((bg != null) && !(bg instanceof UIResource) && c.isEnabled()) {
                 return bg;
             }
         }
