@@ -19,7 +19,6 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * This class contains Painter utils for the Ontimize Look And Feel.
  *
@@ -486,17 +485,17 @@ public class OntimizeLAFPainterUtils {
         }
 
         if (OntimizeLAFPainterUtils.HORIZONTAL_DEGRADATED.equalsIgnoreCase(direction)) {
-            return OntimizeLAFPainterUtils.decodeGradient((0.5f * w) + x, (0.0f * h) + y, (0.5f * w) + x, (1.0f * h)
-                    + y, fractions, colors, cycleMethod);
+            return OntimizeLAFPainterUtils.decodeGradient((0.5f * w) + x, (0.0f * h) + y, (0.5f * w) + x,
+                    (1.0f * h) + y, fractions, colors, cycleMethod);
         } else if (OntimizeLAFPainterUtils.VERTICAL_DEGRADATED.equalsIgnoreCase(direction)) {
-            return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (0.5f * h) + y, (1.0f * w) + x, (0.5f * h)
-                    + y, fractions, colors, cycleMethod);
+            return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (0.5f * h) + y, (1.0f * w) + x,
+                    (0.5f * h) + y, fractions, colors, cycleMethod);
         } else if (OntimizeLAFPainterUtils.ASCENT_TRANSVERSAL_DEGRADATED.equalsIgnoreCase(direction)) {
-            return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (1.0f * h) + y, (1.0f * w) + x, (0.0f * h)
-                    + y, fractions, colors, cycleMethod);
+            return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (1.0f * h) + y, (1.0f * w) + x,
+                    (0.0f * h) + y, fractions, colors, cycleMethod);
         } else if (OntimizeLAFPainterUtils.DESCENT_TRANSVERSAL_DEGRADATED.equalsIgnoreCase(direction)) {
-            return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (0.0f * h) + y, (1.0f * w) + x, (1.0f * h)
-                    + y, fractions, colors, cycleMethod);
+            return OntimizeLAFPainterUtils.decodeGradient((0.0f * w) + x, (0.0f * h) + y, (1.0f * w) + x,
+                    (1.0f * h) + y, fractions, colors, cycleMethod);
         } else {
 
             // also custom directions are allowed. (seldom, rarely used):
@@ -759,9 +758,8 @@ public class OntimizeLAFPainterUtils {
         try {
             InputStream in = OntimizeLAFPainterUtils.class.getClassLoader().getResourceAsStream(prop);
             BufferedImage mImage = null;
-            if (prop.endsWith(".jpeg") || prop.endsWith(".jpg") || prop.endsWith(".JPEG") || prop.endsWith("JPG")) {
-                mImage = ImageIO.read(in);
-            } else if (prop.endsWith(".png") || prop.endsWith(".PNG")) {
+            if (prop.endsWith(".jpeg") || prop.endsWith(".jpg") || prop.endsWith(".JPEG") || prop.endsWith("JPG")
+                    || prop.endsWith(".png") || prop.endsWith(".PNG")) {
                 mImage = ImageIO.read(in);
             }
             in.close();
@@ -778,7 +776,6 @@ public class OntimizeLAFPainterUtils {
             // caching the result for future uses:
             OntimizeLAFParseUtils.olafCache.put(prop, tp);
             return tp;
-
         } catch (IOException e) {
             OntimizeLAFPainterUtils.logger.error("", e);
         }

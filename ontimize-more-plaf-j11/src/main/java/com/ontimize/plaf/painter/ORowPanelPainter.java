@@ -41,6 +41,11 @@ public class ORowPanelPainter extends AbstractRegionPainter {
     }
 
     @Override
+    protected Object[] getExtendedCacheKeys(JComponent c) {
+        return new Object[] { c.getBackground() };
+    }
+
+    @Override
     protected void init() {
         Object obj = UIManager.getLookAndFeelDefaults().get(this.getComponentKeyName() + ".bgpaint");
         if (obj instanceof Paint) {

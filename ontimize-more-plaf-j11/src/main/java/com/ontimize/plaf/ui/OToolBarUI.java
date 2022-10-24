@@ -40,10 +40,10 @@ import javax.swing.plaf.synth.SynthGraphicsUtils;
 import javax.swing.plaf.synth.SynthStyle;
 import javax.swing.plaf.synth.SynthUI;
 
+import sun.swing.plaf.synth.DefaultSynthStyle;
+
 import com.ontimize.plaf.OntimizeLookAndFeel;
 import com.ontimize.plaf.utils.ContextUtils;
-
-import sun.swing.plaf.synth.DefaultSynthStyle;
 
 /**
  * OntimizeToolBarUI implementation.
