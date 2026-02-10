@@ -2626,18 +2626,21 @@ public class OntimizeLookAndFeel extends javax.swing.plaf.nimbus.NimbusLookAndFe
         if (compName == null) {
             compName = "ComboBox:\"ComboBox.listRenderer\"";
         }
-        d.put(compName + ".States", "Disabled,Selected,Required");
+        d.put(compName + ".States", "Enabled,Disabled,Selected,Required");
         d.put(compName + ".Required", new RequiredState());
 
         OntimizeLookAndFeel.setInsetsUIResource(d, compName, "contentMargins", "2 10 2 6");
         OntimizeLookAndFeel.setBoolean(d, compName, "opaque", "true");
         OntimizeLookAndFeel.setColorUIResource(d, compName, "background", "#ffffff");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "textForeground", "#000000");
 
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled].textForeground", "#616d75");
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Disabled+Required].textForeground", "#d4d5d7");
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Required].textForeground", "#ffffff"); //8e8f91
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].textForeground", "#ffffff"); //ffffff
         OntimizeLookAndFeel.setColorUIResource(d, compName, "[Selected].background", "#36627F");
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].textForeground", "#000000"); //ffffff
+        OntimizeLookAndFeel.setColorUIResource(d, compName, "[Enabled].background", "#ffffff");
     }
 
     protected void defineComboBoxRenderer(UIDefaults d) {
