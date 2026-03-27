@@ -233,10 +233,16 @@ public class OntimizePopup extends Popup {
         this.component.setVisible(true);
         this._pack();
 
+        Color bg = new Color(0, 0, 0, 1);
+        if (!this.popupWindow.getGraphicsConfiguration().isTranslucencyCapable()) {
+        	// Using transparencies on a device without translucency capability causes that the modal blocker will be lost for the blocked windows.
+        	bg = new Color(0, 0, 0, 255);
+        }
+
         // AWTUtilities.setWindowOpaque(popupWindow, false);
-        this.popupWindow.setBackground(new Color(0, 0, 0, 1));
+        this.popupWindow.setBackground(bg);
         if (this.popupWindow.getContentPane() instanceof JPanel) {
-            this.popupWindow.getRootPane().setBackground(new Color(0, 0, 0, 1));
+            this.popupWindow.getRootPane().setBackground(bg);
             ((JPanel) this.popupWindow.getContentPane()).setOpaque(false);
             this.popupWindow.getContentPane().repaint();
         }
@@ -263,7 +269,7 @@ public class OntimizePopup extends Popup {
             this.fadeInTimer.setRepeats(true);
             this.fadeInTimer.start();
         } else {
-            this.popupWindow.setBackground(new Color(0, 0, 0, 1));
+            this.popupWindow.setBackground(bg);
         }
 
     }

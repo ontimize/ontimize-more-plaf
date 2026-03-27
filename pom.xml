@@ -3,15 +3,88 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>ontimize-more-plaf</artifactId>
-	<version>1.1.14</version>
+	<version>1.1.15</version>
 	<packaging>pom</packaging>
 	<parent>
 		<groupId>com.ontimize</groupId>
 		<artifactId>ontimize-master</artifactId>
 		<version>2.0.7</version>
 	</parent>
+
+	<organization>
+		<name>Imatia Innovation</name>
+		<url>http://imatia.com</url>
+	</organization>
+
+	<name>Ontimize More Plaf</name>
+	<description>Ontimize More Plaf contains everything related to the styles of the look and feel of Ontimize.</description>
+	<url>https://www.ontimize.com</url>
+
+	<developers>
+		<developer>
+			<name>Daniel Graña Cousido</name>
+			<email>daniel.grana@imatia.com</email>
+			<organization>Imatia Innovation</organization>
+			<organizationUrl>http://imatia.com</organizationUrl>
+		</developer>
+		<developer>
+			<name>Enrique Álvarez Pereira</name>
+			<email>enrique.alvarez@imatia.com</email>
+			<organization>Imatia Innovation</organization>
+			<organizationUrl>http://imatia.com</organizationUrl>
+		</developer>
+		<developer>
+			<name>Faustino Lage Rego</name>
+			<email>faustino.lage@imatia.com</email>
+			<organization>Imatia Innovation</organization>
+			<organizationUrl>http://imatia.com</organizationUrl>
+		</developer>
+		<developer>
+			<name>Pablo Martínez Kirsten</name>
+			<email>pablo.martinez@imatia.com</email>
+			<organization>Imatia Innovation</organization>
+			<organizationUrl>http://imatia.com</organizationUrl>
+		</developer>
+		<developer>
+			<name>Xoán Loureiro Santamaría</name>
+			<email>xoan.loureiro@imatia.com</email>
+			<organization>Imatia Innovation</organization>
+			<organizationUrl>http://imatia.com</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/ontimize/ontimize-more-plaf.git</connection>
+		<developerConnection>scm:git:ssh://github.com:ontimize/ontimize-more-plaf.git</developerConnection>
+		<url>https://github.com/ontimize/ontimize-more-plaf/tree/master</url>
+	</scm>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>imatia-artifactory</id>
+			<name>libs-snapshot-local</name>
+			<url>https://artifactory.imatia.com/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+		<repository>
+			<id>imatia-artifactory</id>
+			<name>libs-release-local</name>
+			<url>https://artifactory.imatia.com/artifactory/libs-release-local</url>
+		</repository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>imatia-artifactory</id>
+			<name>libs-release</name>
+			<url>https://artifactory.imatia.com/artifactory/libs-release</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<properties>
-		<ontimize-core.version>6.0.15</ontimize-core.version>
+		<ontimize-core.version>6.2.3</ontimize-core.version>
 		<ontimize-more-workflow.version>2.6.2</ontimize-more-workflow.version>
 		<ontimize-more-diagram.version>2.3.2</ontimize-more-diagram.version>
 		<ontimize-more-agenda.version>2.1.2</ontimize-more-agenda.version>
@@ -22,20 +95,7 @@
 		<ontimize-more-planning.version>2.2.2</ontimize-more-planning.version>
 		<javadoc-plugin.version>3.1.0</javadoc-plugin.version>
 	</properties>
-	
-	<distributionManagement>
-	    <repository>
-			<id>public-artifactory</id>
-			<name>public-artifactory-releases</name>
-			<url>https://public-artifactory.imatia.com/artifactory/ontimize-release-opensource</url>
-	    </repository>
-		<snapshotRepository>
-			<id>imatia-artifactory</id>
-			<name>libs-snapshot-local</name>
-			<url>https://artifactory.imatia.com/artifactory/libs-snapshot-local</url>
-		</snapshotRepository>
-	</distributionManagement>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -79,7 +139,6 @@
 		<module>ontimize-more-plaf-j7</module>
 <!--		<module>ontimize-more-plaf-j11</module>-->
 	</modules>
-
 
 	<profiles>
 		<profile>
@@ -138,7 +197,7 @@
 								</manifest>
 								<manifestEntries>
 									<Built-By>${project.organization.name}</Built-By>
-									<Ontimize-version-number>${ontimize-version-number}</Ontimize-version-number>
+									<Ontimize-version-number>${ontimize-core.version}</Ontimize-version-number>
 									<Version-number>${project.version}</Version-number>
 									<Version-date>${maven.build.timestamp}</Version-date>
 									<Component-name>${project.artifactId}</Component-name>
@@ -164,3 +223,4 @@
 		</profile>
 	</profiles>
 </project>
+
